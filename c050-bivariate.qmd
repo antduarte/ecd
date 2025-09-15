@@ -1,0 +1,962 @@
+---
+metadata-files:
+  - _chapter.yml
+  
+listing:
+  id: bivar-listing
+  include:
+    ecd-order: [4, 5, 7]
+---
+
+```{r}
+#| include: false
+
+source("R/chapters.R")
+```
+
+# Dados Bivariados {#sec-bivar}
+
+Nesta secção são apresentadas as principais técnicas para descrever o relacionamento entre duas variáveis. No final do capítulo aborda-se, de forma sumária, algumas alternativas para incluir mais do que duas variáveis numa visualização.
+
+A secção está organizada segundo o tipo de variáveis envolvidas: ambas categóricas (@sec-bivar-cat), uma categórica e uma numérica (@sec-bivar-cat-num) ou ambas numéricas (@sec-bivar-num). No final aborda-se o caso de se pretender envolver mais do que duas variáveis (@sec-bivar-2plus).
+
+## Duas variáveis categóricas {#sec-bivar-cat}
+
+Quando se está perante duas variáveis categóricas, a informação pode ser visualizada num gráfico de barras ou num gráfico em mosaico. Também é possível medir o grau de independência das variáveis através de estatísticas adequadas que não se apresentam neste capítulo.
+
+Para ilustrar estas visualizações vamos utilizar o conjunto de dados do R `HairEyeColor`, que contém a cor do cabelo e a cor dos olhos de um conjunto de alunos. A @tbl-bivar-hair-eye mostra uma tabela de contingência cruzada para as duas variáveis.
+
+```{r}
+#| label: tbl-bivar-hair-eye
+#| tbl-cap: "Tabela de contingência para a cor dos olhos e do cabelo"
+#| echo: false
+#| html-table-processing: none
+#| file: assets/tbl-hair-eye.R
+```
+
+### Gráfico de barras
+
+O gráfico de barras é a ferramenta de eleição para representar informação categórica. No caso de haver duas variáveis o gráfico pode ser apresentado em três variantes: barras sobrepostas, barras agrupadas e barras sobrepostas normalizadas. Vamos analisar as três variantes. Em qualquer das variantes, o eixo horizontal apresenta uma das variáveis e o eixo vertical representa frequências. A segunda variável é apresentada utilizando cores.
+
+#### Barras sobrepostas {.unnumbered}
+
+Num gráfico de barras sobrepostas, as frequências da segunda variável são sobrepostas na mesma barra, utilizando cores diferentes. A @fig-bivar-bplot exemplifica o que foi dito. A mesma informação pode ser apresentada de duas formas, trocando as variáveis entre o eixo horizontal e a legenda. Naturalmente, deve ser preferida a figura que melhor ilustre as conclusões.
+
+```{r}
+#| label: fig-bivar-bplot
+#| fig-cap: Gráfico de barras sobrepostas
+#| fig-subcap:
+#|   - "cor do cabelo no eixo"
+#|   - "cor dos olhos no eixo"
+#| layout-ncol: 2
+#| echo: false
+
+labs <- c(names(dimnames(t)), "Frequência")
+pcol1 <- c(3, 2, 4, 5)
+pcol2 <- c(9, 5, 2, 8)
+
+par(mar = c(5, 4, 2, 6) + 0.1, xpd = TRUE)
+p <- par(no.readonly = TRUE)
+aleg1 <- aleg2 <- list(x = "right", title = labs[1], inset = -0.2)
+aleg2$title <- labs[2]
+
+ecd_barplot(
+  t,
+  xlab = labs[2],
+  ylab = labs[3],
+  col = pcol1,
+  legend.text = TRUE,
+  args.legend = aleg1
+  )
+
+ecd_barplot(
+  t(t),
+  xlab = labs[1],
+  ylab = labs[3],
+  col = pcol2,
+  legend.text = TRUE,
+  args.legend = aleg2
+  )
+```
+
+Neste gráfico, as comparações entre categorias da segunda variável são difíceis de fazer, especialmente se as barras ou os segmentos tiverem tamanhos muito diferentes.
+
+#### Barras agrupadas {.unnumbered}
+
+Em vez de sobrepor vários segmentos numa barra, pode criar-se uma barra para cada categoria da segunda variável e agrupar as barras. A @fig-bivar-bplot-group ilustra este tipo de gráfico.
+
+```{r}
+#| label: fig-bivar-bplot-group
+#| fig-cap: Gráfico de barras agrupadas
+#| fig-subcap:
+#|   - "cor do cabelo no eixo"
+#|   - "cor dos olhos no eixo"
+#| layout-ncol: 2
+#| echo: false
+
+par(p)
+
+ecd_barplot(
+  t,
+  beside = TRUE,
+  xlab = labs[2],
+  ylab = labs[3],
+  col = pcol1,
+  legend.text = TRUE,
+  args.legend = aleg1
+  )
+
+ecd_barplot(
+  t(t),
+  beside = TRUE,
+  xlab = labs[1],
+  ylab = labs[3],
+  col = pcol2,
+  legend.text = TRUE,
+  args.legend = aleg2
+  )
+```
+
+Neste caso, é fácil comparar as categorias da segunda variável, mas dificulta a perceção dos totais para cada categoria em ambas as variáveis. Esta alternativa pode gerar gráficos confusos, caso haja muitas categorias.
+
+#### Barras sobrepostas normalizadas {.unnumbered}
+
+Uma última alternativa para visualizar a informação consiste em normalizar a altura das colunas para 1 unidade ou 100%. A @fig-bivar-bplot-norm apresenta esta alternativa.
+
+```{r}
+#| label: fig-bivar-bplot-norm
+#| fig-cap: Gráfico de barras sobrepostas normalizadas
+#| fig-subcap:
+#|   - "cor do cabelo no eixo"
+#|   - "cor dos olhos no eixo"
+#| layout-ncol: 2
+#| echo: false
+
+tm1 <- prop.table(t, margin = 2)
+tm2 <- prop.table(t(t), margin = 2)
+
+par(p)
+
+ecd_barplot(
+  tm1,
+  xlab = labs[2],
+  ylab = paste(labs[3], "relativa"),
+  col = pcol1,
+  legend.text = TRUE,
+  args.legend = aleg1
+  )
+
+ecd_barplot(
+  tm2,
+  xlab = labs[1],
+  ylab = paste(labs[3], "relativa"),
+  col = pcol2,
+  legend.text = TRUE,
+  args.legend = aleg2
+  )
+```
+
+Esta variante facilita a comparação de categorias, mas não é possível ajuízar as frequências absolutas em cada categoria.
+
+::: callout-important
+Como se pode constatar, mesmo com uma visualização simples, existem inúmeras alternativas relativamente à ordem das variáveis, à ordem das categorias, etc. A alternativa mais adequada depende daquilo que se quer salientar. A escolha do melhor gráfico envolve um processo de experimentação por tentativa e erro até obter resultados satisfatórios.
+:::
+
+### Gráfico em mosaico {#sec-bivar-mosaic}
+
+Uma outra forma de visualizar a relação entre duas variáveis categóricas é o gráfico em mosaico. No fundo, trata-se de uma variante ao gráfico de barras em que a largura das barras é proporcional às frequências na categoria respetiva. A @fig-bivar-mosaic mostra duas variantes em que apenas se trocaram as variáveis de eixo. Neste caso foram utilizadas cores, mas o gráfico também é aceitável com apenas uma cor.
+
+```{r}
+#| label: fig-bivar-mosaic
+#| fig-cap: Gráfico em mosaico
+#| fig-subcap:
+#|   - "cor do cabelo no eixo"
+#|   - "cor dos olhos no eixo"
+#| layout-ncol: 2
+#| echo: false
+
+par(mar = c(3, 3, 2, 2) + 0.1, xpd = TRUE)
+
+mosaicplot(
+  t(t), 
+  main = "",
+  color = pcol1,
+  las = 1
+  )
+
+mosaicplot(
+  t, 
+  main = "",
+  color = pcol2,
+  las = 1
+  )
+```
+
+Neste gráfico são claras as proporções para cada variável e a proporção global de cada célula, no entanto, se houver muitas categorias o gráfico torna-se difícil de interpretar.
+
+## Uma variável categórica e uma numérica {#sec-bivar-cat-num}
+
+Quando se está perante uma variável numérica e uma variável categórica, por norma, pretende-se avaliar as diferenças entre as várias categorias que a variável numérica apresenta. Naturalmente, as estatísticas referidas para uma variável (média, desvio padrão, etc.) podem ser calculadas e analisadas para cada grupo de observações. Graficamente, há duas alternativas genéricas:
+
+-   No mesmo gráfico, utilizar diferentes elementos visuais para diferenciar as categorias. Esta abordagem pode ser estendida a mais do que duas variáveis.
+
+-   Segmentar os dados da variável contínua por categoria e elaborar um subgráfico para cada categoria.
+
+Para ilustrar as diferentes alternativas vamos utilizar o conjunto de dados `chickwts` disponível no R. Estes dados contêm o peso de 6 conjuntos de frangos com 6 semanas após terem sido alimentados com diferentes dietas. Na @tbl-bivar-stats-by-factor apresentam-se algumas estatísticas para cada dieta.
+
+```{r}
+#| label: tbl-bivar-stats-by-factor
+#| tbl-cap: "Estatísticas para as várias dietas (`chickwts`)"
+#| echo: false
+#| html-table-processing: none
+
+dt <- array2DF(tapply(chickwts$weight, chickwts$feed, summary))
+colnames(dt) <- c("Dieta", "Mínimo", "Q1", "Mediana", "Média", "Q3", "Máximo")
+
+kbl(dt, align = "lcccccc", digits = 2) |> # TODO: digits not havin effect, why?
+  kable_paper(
+    c("striped"),
+    html_font = "\"Lato\"",
+    font_size = 15
+    ) |>
+  add_footnote("Intencionalmente, os nomes das dietas não foram traduzidos.") |> 
+  column_spec(1, bold = TRUE)
+```
+
+Uma forma de visualizar os dados consiste na utilização de um diagrama de extremos e quartis para cada categoria, apresentados no mesmo gráfico. A @fig-bivar-boxplot-cat apresenta duas versões do gráfico referido.
+
+```{r}
+#| label: fig-bivar-boxplot-cat
+#| fig-cap: Diagrama de extremos e quartis por categoria
+#| fig-subcap:
+#|   - "apenas uma cor"
+#|   - "uma cor por categoria"
+#| layout-ncol: 2
+#| echo: false
+
+par(mar = c(5, 5, 2, 2) + 0.1)
+labs <- c("Dieta", "Peso (g)")
+
+ecd_boxplot(weight ~ feed, data = chickwts, xlab = labs[1], ylab = labs[2])
+ecd_boxplot(weight ~ feed, data = chickwts, xlab = labs[1], ylab = labs[2], col = 2:7)
+```
+
+Na versão [-@fig-bivar-boxplot-cat-2], ao contrário da versão [-@fig-bivar-boxplot-cat-1] são utilizadas cores. Neste caso, a utilização da cor é redundante e não acrescenta nada à compreensão do gráfico, sendo preferível a primeira versão. Se o gráfico estiver inserido num conjunto de materiais em que se associa uma cor a cada categoria, fará sentido utilizar cores.
+
+Caso se pretenda ter mais detalhes sobre a distribuição, uma outra forma de visualizar os dados consiste em segmentar o gráfico em vários subgráficos, um por cada categoria. A @fig-bivar-hist-mult mostra o resultado quando se aplica a segmentação ao histograma.
+
+```{r}
+#| label: fig-bivar-hist-mult
+#| fig-cap: Histogramas parciais por tipo de dieta
+#| echo: false
+
+par(mfrow = c(2, 3))
+levs <- levels(chickwts$feed)
+
+bks <- hist(chickwts$weight, plot = FALSE)$breaks
+cnt <- sapply(
+  levs, 
+  function(lev) {
+    max(hist(chickwts$weight[chickwts$feed == lev], plot = FALSE)$counts)
+    }
+  )
+
+par(mar = c(4, 4, 2, 0))
+
+labs[3] <- "Frequência"
+
+for (f in 1:6) {
+  ecd_hist(
+    chickwts$weight[chickwts$feed == levs[f]],
+    breaks = bks,
+    main = levs[f],
+    xlab = ifelse(f > 3, labs[2], ""),
+    ylab = ifelse(f %% 3 == 1, labs[3], ""),
+    ylim = c(0, max(cnt))
+    )
+}
+```
+
+Note-se o cuidado de utilizar as mesmas escalas para todos os histogramas com o objetivo de facilitar a comparação entre histogramas.
+
+Esta técnica -- utilização de uma (ou mais) variável categórica para segmentar os dados -- não se limita ao histograma e pode ser utilizada para outro tipo de gráficos.
+
+No caso do histograma, encontram-se com alguma frequência casos em que são colocados dois ou mais histogramas no mesmo gráfico, utilizando barras de cor diferente para separar visualmente as categorias. A não ser em casos muito concretos, com poucas (2) categorias e pouca sobreposição, tende a resultar num gráfico confuso. Na @fig-bivar-hist-overplot exemplifica-se a colocação de dois histogramas no mesmo gráfico usando cores diferentes.
+
+```{r}
+#| label: fig-bivar-hist-overplot
+#| fig-cap: Histogramas parciais por tipo de dieta
+#| echo: false
+
+par(mar = c(4, 4, 2, 6), xpd = TRUE)
+
+cats <- c("horsebean", "sunflower")
+
+ecd_hist(
+  chickwts$weight[chickwts$feed == cats[1]],
+  breaks = bks,
+  main = "",
+  xlab = labs[2],
+  ylab = labs[3],
+  ylim = c(0, max(cnt))
+  )
+
+ecd_hist(
+  chickwts$weight[chickwts$feed == cats[2]],
+  breaks = bks,
+  add = TRUE,
+  col = palette.colors(alpha = 0.7)[2]
+  )
+
+legend(
+  "right",
+  inset = -0.22,
+  legend = cats,
+  title = labs[1],
+  fill = 3:2
+)
+
+```
+
+Note-se que, mesmo com apenas duas categorias e uma zona de sobreposição reduzida, o gráfico é confuso, sendo muito mais clara a @fig-bivar-hist-mult. Claramente, é um tipo de gráfico que não se recomenda.
+
+::: callout-important
+Tipicamente, na presença de uma variável categórica e de uma variável numérica, o objetivo é verificar se a variável numérica se comporta da mesma forma para as diversas categorias.
+:::
+
+## Duas variáveis numéricas {#sec-bivar-num}
+
+Perante duas variáveis numéricas o objetivo da análise descritiva passa por estudar como elas estão relacionadas. Mais uma vez, pode recorrer-se ao cálculo de estatísticas e a métodos gráficos.
+
+### Diagrama de dispersão {#sec-bivar-scatter}
+
+O diagrama de dispersão, muitas vezes designado em inglês por *scatter plot*, é um digrama de pontos em que cada ponto representa o par de observações para as variáveis envolvidas, estando uma variável associada ao eixo horizontal e a outra associada ao eixo vertical.
+
+Para ilustrar os conteúdos desta secção vai-se utilizar o conjunto de dados `trees` disponível no R. Este conjunto de dados contém medições do diâmetro (em polegadas) e da altura (em pés) relativos a 31 árvores da mesma espécie. A @fig-bivar-scatter mostra o diagrama de dispersão para estes dados.
+
+```{r}
+#| label: fig-bivar-scatter
+#| fig-cap: Diagrama de dispersão
+#| echo: false
+
+labs <- c("Diâmetro (in)", "Altura (ft)")
+par(mar = c(5, 5, 2, 2) + 0.1)
+
+ecd_plot(
+  Height ~ Girth, data = trees,
+  xlab = labs[1],
+  ylab = labs[2]
+  )
+```
+
+O diagrama de dispersão permite avaliar o tipo e o grau de relacionamento entre as variáveis. O tipo de relacionamento pode ser classificado em:
+
+-   **Positivo**: tendencialmente, as variáveis variam conjuntamente no mesmo sentido, isto é, quando uma aumenta a outra também aumenta.
+
+-   **Negativo**: tendencialmente, as variáveis variam conjuntamente em sentidos opostos, isto é, quando uma aumenta a outra diminui.
+
+No caso da @fig-bivar-scatter parece haver um relacionamento positivo entre as variáveis, o que faz sentido, pois o diâmetro e a altura das árvores tendem ambos a aumentar com a idade.
+
+### Ajuste de uma linha de tendência {#sec-bivar-ltrend}
+
+Para melhor visualizar o tipo de relacionamento entre as variáveis pode estimar-se uma *relação linear*. Uma relação linear é uma reta *ajustada* aos dados. Se a reta for definida pela equação reduzida, $y=a+bx$, estimar a relação linear corresponde a estimar os valores das constantes $a$ e $b$.
+
+Embora este assunto vá ser aprofundado no capítulo relativo à regressão, para estimar os valores de $a$ e $b$ é necessário definir uma medida de ajuste. Como a reta ajustada faz uma estimativa do valor de $y$ para um determinado valor de $x$, podemos definir o erro de ajuste, $e_i$, para cada observação, como a diferença entre o valor de $y_i$ e o valor estimado pela reta, $\hat{y_i}$, ou seja, para cada observação, $e_i$ é dado por
+
+$$e_i = y_i - \hat{y_i} = y_i - (a + bx_i)$$ {#eq-lm-error}
+
+Os erros de ajuste podem ser visualizados na @fig-bivar-lm-errors. Como se pode verificar vão existir erros positivos (pontos acima da reta) e erros negativos (pontos abaixo da reta), havendo uma infinidade de retas que igualam a soma dos erros a 0, por exemplo, qualquer reta que passe pelo ponto $(\bar{x}, \bar{y})$.
+
+```{r}
+#| label: fig-bivar-lm-errors
+#| fig-cap: Visualização dos erros de ajuste numa relação linear
+#| echo: false
+
+cols <- 7:8
+n <- 7
+x <- 1:n
+y <- c(3, 2, 6, 3, 7, 8, 6)
+
+par(mar = c(3, 3, 2, 2) + 0.1)
+
+plot(y ~ x, axes = FALSE, frame.plot = TRUE, ann = FALSE, type = "n")
+mtext("x", side = 1, line = 1)
+mtext("y", side = 2, line = 1)
+
+# line and error bars
+m <- lm(y ~ x)
+segments(x, y, x, m$fitted.values, col = cols[2], lwd = 2)
+abline(m, col = cols[1], lwd = 2)
+
+# points on top
+ecd_points(y ~ x)
+
+# text
+text(
+  x, (y + m$fitted.values) / 2,
+  as.expression(sapply(x, function(idx) bquote(e[.(idx)]))),
+  pos = 4, col = cols[2], xpd = TRUE, offset = 0.3
+  )
+
+text(4, 7, expression(y == a + b*x), col = cols[1], pos = 3)
+arrows(4, 7, 4.5, predict.lm(m, newdata = list(x = 4.6)), col = cols[1], length = 0.1)
+```
+
+Para estimar o melhor ajuste é utilizado o *método dos mínimos quadrados*, que consiste em minimizar a soma dos erros elevados ao quadrado, $SEQ$, definida como
+
+$$SEQ=\sum_i e_i = \sum_i y_i - (a + bx_i)$$ {#eq-lm-seq}
+
+Para determinar os valores de $a$ e $b$ que minimizam aquela soma, utilizam-se derivadas. Seja $SEQ(a, b)$ uma função de $a$ e $b$ que resulta na soma dos erros aos quadrado para um determinado conjunto de dados. Para determinar $a$ e $b$ basta resolver o seguinte sistema de equações:
+
+$$
+\begin{cases}
+  \frac{\partial SEQ(a,b)}{\partial a} = 0 \\
+  \frac{\partial SEQ(a,b)}{\partial b} = 0
+\end{cases}
+$$ {#eq-lm-ms-partial}
+
+A resolução do sistema de equações (omitida, é um bom exercício) resulta em
+
+$$
+\begin{cases}
+  b= \frac{\sum_i(x_i-\bar{x})(y_i-\bar{y})}{\sum_i(x_i-\bar{x})^2} = \frac{S_{xy}}{S_{xx}} \\
+  a= \bar{y} - b\bar{x}
+\end{cases}
+$$ {#eq-lm-ms-solution}
+
+O coeficiente de correlação de Pearson é uma medida de associação que pode variar entre -1 (associação linear negativa perfeita) e 1 (associação linear positiva perfeita).
+
+::: {#exr-estimate-lm .blockquote}
+# Cálculo dos coeficientes $a$ e $b$
+
+Considere os dados usados na @fig-bivar-lm-errors:
+
+-   Variável $x$: `r x`
+-   Variável $y$: `r y`
+
+Para estimar os valores de $a$ e $b$:
+
+```{r}
+#| include: false
+
+mx <- mean(x)
+my <- mean(y)
+
+dx <- x - mx
+dy <- y - my
+
+xy <- dx * dy
+xx <- dx ^ 2
+
+sxy <- sum(xy)
+sxx <- sum(xx)
+
+b <- sxy / sxx
+s_b <- format(b, digits = 2)
+a <- my - b * mx
+s_a <- format(a, digits = 3)
+```
+
+1.  Começar por calcular as médias. Deve obter $\bar{x}=`r mx`$ e $\bar{y}=`r my`$.
+
+2.  Calcular as diferenças:
+
+    -   $(x_i-\bar{x})$, obtendo: `r dx`
+    -   $(y_i-\bar{y})$, obtendo `r dy`
+
+3.  Calcular os produtos:
+
+    -   $(x_i-\bar{x})(y_i-\bar{y})$, obtendo: `r xy`
+    -   $(x_i-\bar{x})^2$, obtendo: `r xx`
+
+4.  Calcular $S_{xy}$ e $S_{xx}$. Deverá obter $S_{xy} = `r sxy`$ e $S_{xx} = `r sxx`$.
+
+5.  Calcular $b = \frac{S_{xy}}{S_{xx}} = \frac{`r sxy`}{`r sxx`} \approx `r s_b`$
+
+6.  Calcular $a= \bar{y} - b\bar{x} = `r my` - `r s_b`\times `r mx` \approx `r s_a`$
+:::
+
+::: {.callout-note}
+
+# Expressões alternativas
+
+$$S_{xy} = \sum_i(x_i-\bar{x})(y_i-\bar{y}) = \sum_i x_i y_i - n\bar{x}\bar{y}$$
+$$S_{xx} = \sum_i(x_i-\bar{x})^2 = \sum_i x_i^2 - n\bar{x}$$
+
+$$S_{yy} = \sum_i(y_i-\bar{y})^2 = \sum_i y_i^2 - n\bar{y}$$
+:::
+
+Procedendo de forma semelhante ao @exr-estimate-lm, utilizando os dados do conjunto `trees`, apresentam-se novamente na @fig-bivar-scatter-lm os dados, a que se adicionou a relação linear ajustada.
+
+```{r}
+#| label: fig-bivar-scatter-lm
+#| fig-cap: Diagrama de dispersão com linha de tendência
+#| echo: false
+#| out-extra: class="preview-image"
+
+par(mar = c(5, 5, 2, 2) + 0.1)
+
+ecd_plot(
+  Height ~ Girth, data = trees,
+  xlab = labs[1],
+  ylab = labs[2]
+  )
+
+mtrees <- lm(Height ~ Girth, data = trees)
+abline(mtrees, col = cols[1], lwd = 2)
+
+options(digits = 4)
+
+e <- c(
+  expression(y == a + b*x),
+  bquote(a == .(mtrees$coefficients[1])),
+  bquote(b == .(mtrees$coefficients[2]))
+  )
+text(18, seq(from = 75, by = -1.6, along = e), e, col = cols[1], pos = 4)
+```
+
+::: callout-important
+É sempre possível ajustar uma relação linear a um conjunto de dados (excetuando o caso de todos os valores de da variável $X$ serem todos iguais, que não tem qualquer interesse prático). O facto de se poder calcular um ajuste linear não significa que as variáveis tenham uma relação linear ou que existe uma relação de causa e efeito. São apenas cálculos, que devem ser interpretados no contexto dos dados.
+
+Por exemplo, na @fig-bivar-scatter-lm pode verificar-se que os erros não estão distribuídos de forma aproximadamente simétrica em torna da reta. Isto indica que a relação entre as variáveis, provavelmente, não é linear.
+:::
+
+### Coeficiente de correlação {#sec-bivar-correl}
+
+A análise visual feita na @sec-bivar-ltrend pode não ser muito precisa, pois é baseada na perceção do diagrama de dispersão que, em larga medida, é subjetiva. Nesta secção propõe-se algumas estatísticas para avaliar o relacionamento de duas variáveis de forma mais assertiva.
+
+Podemos inferir se a associação entre duas variáveis é positiva ou negativa, através do sinal do coeficiente $b$. Na @eq-lm-ms-solution pode verificar-se que o sinal de $b$ é igual ao sinal do produto cruzado $S_{xy}$, uma vez que $S_{xx}$ terá que ser não negativo.
+
+Dividindo o produto cruzado $S_{xy}$ pelo número de observações menos 1 (tal como no cálculo da variância) obtém-se uma medida designada por *covariância*, $cov_{xy}$.
+
+$$cov_{xy} = \frac{S_{xy}}{n-1} = \frac{(x_i-\bar{x})(y_i-\bar{y})}{n-1}$$ {#eq-covariance}
+
+Embora se possa estabelecer o sentido da associação entre as variáveis a partir do sinal da covariância, o valor absoluto da covariância é difícil de interpretar, pois depende da escala na qual as variáveis estão expressas.
+
+Por este motivo, dividindo a covariância pelo produto dos desvios padrão obtem-se uma medida adimensional mais fácil de interpretar: o *coeficiente de correlação (de Pearson)*, $r_{xy}$.
+
+$$r_{xy} = \frac{cov_{xy}}{s_x s_y}$$ {#eq-pearson-r}
+
+::: {#exr-cov-and-pearson .blockquote}
+# Cálculo do coeficiente de correlação
+
+```{r}
+#| include: false
+
+cov <- sxy / (n - 1)
+s_cov <- format(cov, digits = 3)
+sx <- sd(x)
+s_sx <- format(sx, digits = 3)
+sy <- sd(y)
+s_sy <- format(sy, digits = 3)
+r <- cov / (sx * sy)
+s_r <- format(r, digits = 3)
+```
+
+Tomando novamente os dados do @exr-estimate-lm, comece-se por calcular a covariância:
+
+$$cov_{xy} = \frac{S_{xy}}{n-1} = \frac{`r sxy`}{`r n`-1} \approx `r s_cov`$$
+
+É necessário também calcular o valor do desvio padrão de ambas as variáveis, obtendo-se $s_x \approx `r s_sx`$ e $s_y \approx `r s_sy`$.
+
+Agora pode-se calcular o valor do coeficiente de correlação amostral:
+
+$$r_{xy} = \frac{cov_{xy}}{s_x s_y} = \frac{`r s_cov`}{`r s_sx`\times `r s_sy`} \approx `r s_r`$$
+:::
+
+O coeficiente de correlação linear (Pearson) mede o grau de associação **linear** entre as variáveis. No entanto, a não existência de uma relação linear não significa que não haja uma relação. Na @fig-bivar-pearson-examples mostram-se vários conjuntos de dados e os respetivos coeficientes de correlação linear.
+
+```{r}
+#| label: fig-bivar-pearson-examples
+#| echo: false
+#| fig-height: 6.5
+#| fig-cap: Exemplos de coeficientes de correlação [^fig-bivar-pearson-examples-attrib]
+#| warning: false
+
+set.seed(202504)
+par(mar = c(1, 0.5, 2, 0.5) + 0.1, mfrow = c(4, 5))
+
+# parametrize plot
+small_plot <- function(xy, target_cor = cor(xy)[1, 2]) {
+  ecd_plot(
+    xy, 
+    axes = FALSE, frame.plot = FALSE, xlab = "", ylab = "",
+    xlim = c(-4, 4), ylim = c(-4, 4),
+    main = bquote(r == .(round(target_cor, 2))),
+    asp = 1, cex = 1
+    )
+  box(col = 9)
+}
+  
+  
+# generate data and plot row 1
+generate_and_plot1 <- function(cov, sy) {
+  vcov = matrix(c(1, cov, cov, sy), ncol = 2)
+  xy = mvtnorm::rmvnorm(n, c(0, 0), vcov)
+  small_plot(xy, cov)
+}
+
+# generate data and plot row 2
+generate_and_plot2 <- function(rot) {
+  xy <- matrix(c(rnorm(n), rep(0, n)), ncol = 2)
+  # rotate points
+  xy <- xy %*% matrix(c(cos(rot), sin(rot), -sin(rot), cos(rot)), ncol = 2)
+  small_plot(xy)
+}
+
+n <- 500
+
+# first row
+cor <- c(-1, -0.7, 0, 0.7, 1)
+sy <- rep(1, 5)
+ignore <- mapply(generate_and_plot1, cor, sy)
+
+# second row
+rot <- c(pi / 5, pi / 12, 0, -pi / 12, -pi / 5)
+ignore <- sapply(rot, generate_and_plot2)
+
+# third row
+vx <- runif(n, -4, 4)
+vy <-  -7 / 128 * vx ^ 3 + runif(n, -0.35, 0.35)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy)
+
+vx <- runif(n, -4, 4)
+vy <-  -7 / exp(4) * exp(vx) + 3.5 + runif(n, -0.35, 0.35)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy)
+
+vx <- runif(n, -4, 4)
+vy <-  tanh(vx) * 3.5 + runif(n, -0.35, 0.35)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy)
+
+vx <- runif(n, -4, 4)
+vy <-  7 / exp(4) * exp(vx) - 3.5 + runif(n, -0.35, 0.35)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy)
+
+vx <- runif(n, -4, 4)
+vy <-  7 / 128 * vx ^ 3 + runif(n, -0.35, 0.35)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy)
+
+# fourth row
+# W
+vx <- runif(n, -1, 1)
+vy <- 3.5 * (8 * (vx ^ 4 - vx ^ 2) + 1) + runif(n, -0.5, 0.5)
+vx <- vx * 4
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy, 0)
+
+# V
+vx <- runif(n, -4, 4)
+vy <- 28 / 49 * vx ^ 2 - 3.5 + runif(n, -0.5, 0.5)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy, 0)
+
+# ^
+vx <- runif(n, -4, 4)
+vy <- -7 / 4 * abs(vx) + 7 / 2 + runif(n, -0.5, 0.5)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy, 0)
+
+# O
+vx <- cos(seq(0, 2 * pi, length = n)) * 3.5 + runif(n, -0.5, 0.5)
+vy <- sin(seq(0, 2 * pi, length = n)) * 3.5 + runif(n, -0.5, 0.5)
+xy <- matrix(c(vx, vy), ncol = 2)
+small_plot(xy, 0)
+
+# ::
+vcov <- matrix(c(0.4, 0, 0, 0.4), ncol = 2)
+xy <- rbind(
+  mvtnorm::rmvnorm(n / 4, c(2, 2), vcov),
+  mvtnorm::rmvnorm(n / 4, c(-2, 2), vcov),
+  mvtnorm::rmvnorm(n / 4, c(2, -2), vcov),
+  mvtnorm::rmvnorm(n / 4, c(-2, -2), vcov)
+)
+small_plot(xy, 0)
+```
+
+[^fig-bivar-pearson-examples-attrib]: Algumas ideias para as figuras e para o código foram inspiradas em [DenisBoigelot, original uploader was Imagecreator](https://commons.wikimedia.org/wiki/File:Correlation_examples2.svg){target="_blank"}, CC0, via Wikimedia Commons.
+
+Relativamente à @fig-bivar-pearson-examples verifica-se o seguinte:
+
+* Perante uma relação linear, o coeficiente aproxima-se de -1 ou de 1 conforme o conjunto de pontos mais se aproxime da colineariedade, sendo 0 quando não existe qualquer tipo de correlação (linha 1).
+
+* Perante uma relação linear perfeita, o coeficiente de correlação é sempre igual a -1 ou a 1, apenas dependendo do sinal do declive que os pontos formam (linha 2).
+
+* Coeficientes de correlação elevados não implicam necessariamente uma relação linear, havendo muitas relações não lineares que apresentam coeficientes elevados (linha 3).
+
+* Um coeficiente de correlação nulo não implica a inexistência de padrões de relacionamento entre as variáveis. Apenas não se trata de relações lineares (linha 4).
+
+::: {.callout-tip}
+* Um coeficente de correlação linear elevado não significa necessariamente que haja uma relação linear entre as variáveis, pode haver ou não haver.
+* Um coeficiente de correlação linear nulo não significa que as variáveis não possam estar relacionadas.
+* É sempre necessário inspecionar o digrama de dispersão!
+:::
+
+
+::: {.callout-note}
+
+# Expressão alternativa para o cálculo do coeficiente de correlação
+
+O coeficiente de correlação também pode ser calculado com a @eq-pearson-r-alt, especialmente útil para cálculos manuais.
+
+$$r_{xy} = \frac{S_{xy}}{\sqrt{S_{xx}}\sqrt{S_{yy}}}
+= \frac{\sum_i x_i y_i - n\bar{x}\bar{y}} {\sqrt{\sum_i x_i^2 - n\bar{x}^2} \sqrt{\sum_i y_i^2 - n\bar{y}^2}}$$ {#eq-pearson-r-alt}
+
+Note-se também que
+
+$$r_{xy} = b\frac{\sqrt{S_{xx}}}{\sqrt{S_{yy}}}$$ {#eq-pearson-r-alt2}
+
+que mostra que o coeficiente de correlação é nulo quando o declive da relação linear ajustada é nulo. 
+:::
+
+
+### Coeficiente de determinação
+
+Uma outra medida que pode ser utilizada para medir o grau de relacionamento entre duas variáveis numéricas é o coeficiente de determinação, $r_{xy}^2$, ou seja, o quadrado do coeficiente de correlação.
+
+$$r_{xy}^2 = \frac{S_{xy}^2}{S_{xx} S_{yy}} = b^2 \frac{S_{xx}}{S_{yy}}$$ {#eq-pearson-r2}
+
+Manipulando as expressões apresentadas ao longo das secções anteriores, consegue-se demonstrar que
+
+$$r_{xy}^2 = \frac{\sum_i(\hat{y_i}-\bar{y})^2}{\sum_i(y_i-\bar{y})^2}$$ {#eq-pearson-r2-alt}
+
+Note-se que, para cada observação,
+
+$$y_i-\bar{y} = (y_i-\hat{y_i})+(\hat{y_i}-\bar{y}) = e_i+(\hat{y_i}-\bar{y})$$ {#eq-pearson-r2-decomp}
+
+A interpretação geométrica da @eq-pearson-r2-decomp pode ser visualizada na @fig-bivar-lm-r-squared.
+
+```{r}
+#| label: fig-bivar-lm-r-squared
+#| fig-cap: Interpretação geométrica do coeficiente de determinação
+#| echo: false
+
+cols <- 7:8
+
+par(mar = c(3, 3, 2, 2) + 0.1)
+
+plot(y[-c(1:2, 7)] ~ x[-c(1:2, 7)],
+     axes = FALSE, frame.plot = TRUE, ann = FALSE, type = "n")
+mtext("x", side = 1, line = 1)
+mtext("y", side = 2, line = 1)
+
+# lets aim to precision
+usr <- par("usr")
+ratio <- (usr[1] - usr[2]) / (usr[3] - usr[4]) * 5 / 7
+extra <- 0.05 * (usr[2] - usr[1]) / c(1, ratio)
+
+# model line
+abline(m, col = cols[1], lwd = 2)
+
+# references
+xf <- c(rep(mx - extra[1], 2), mx, x[5])
+yf <- c(my, y[5], rep(my - extra[2], 2))
+xt <- c(rep(x[5] + extra[1], 2), mx, x[5])
+yt <- c(my, y[5], rep(y[5] + extra[2], 2))
+segments(xf, yf, xt, yt, col = cols[2], lty = "dotted")
+
+# points on top
+ecd_points(y ~ x)
+
+# arrows
+xf <- c(mx, mx, mx, x[5])
+yf <- c(rep(m$fitted.values[5], 2), my, my)
+xt <- c(mx, mx, x[5], x[5])
+yt <- c(my, y[5], my, y[5])
+arrows(xf, yf, xt, yt, col = cols[2], code = 3, length = 0.075, lwd = 1.5)
+
+# expressions
+e <- expression(
+  group("(", list(x[i], y[i]),")"),
+  bar(x),
+  bar(y),
+  y[i] - bar(y),
+  x[i] - bar(x),
+  hat(y)[i] - bar(y) == b * group("(", x[i] - bar(x),")"),
+  e[i] == y[i] - hat(y)[i]
+  )
+x0 <- c(x[5], mx, mx - extra[1], x[5], (mx + x[5]) / 2, mx, mx)
+y0 <- c(y[5] + extra[2] / 2, my - extra[2], my, (my + y[5]) / 2, my, (my + m$fitted.values[5]) / 2, (y[5] + m$fitted.values[5]) / 2)
+p0 <- c(4, 1, 2, 2, 1, 2, 2)
+text(x0, y0, e, pos = p0, col = cols[2], offset = 0.3, cex = 0.95)
+
+# predicted
+arrows(mx - extra[1], m$fitted.values[5],
+       x[5] + extra[1], m$fitted.values[5],
+       col = cols[1], lty = "dotted", length = 0.1
+       )
+text(x[5] + extra[1], m$fitted.values[5],
+     expression(
+       {hat(y)[i] == a + b * x[i]} ==
+         bar(y) + b * group("(", x[i] - bar(x),")")),
+     col = cols[1], pos = 4, cex = 0.95
+     )
+```
+
+A relação estimada prevê que, quando a variável $X$ se altera de $\bar{x}$ para $x_i$, o valor de $Y$ deve passar de $\bar{y}$ para $\hat{y_i}$ (variação explicada). A diferença entre o valor de $y_i$ e $\hat{y_i}$ é o erro da previsão ou estimativa (variação não explicada). Estas duas diferenças somadas são iguais à diferença entre $y_i$ e $\bar{y}$ (variação total).
+
+Neste contexto, através da @eq-pearson-r2-alt, podemos entender o $r_{xy}^2$ como o quociente entre a variação em $Y$ que a reta ajustada explica e a variação total em $Y$. Este quociente será um valor entre 0 e 1 e pode ser entendido como a proporção de variação que a reta ajustada explica. Naturalmente, quanto mais as observações estiverem próximas da reta ajustada, mais o coeficiente de determinação se aproxima de 1.
+
+Uma outra forma de expressar o coeficiente de determinação é
+
+$$r_{xy}^2 = 1 - \frac{\sum_i(y_i - \hat{y_i})^2}{\sum_i(y_i-\bar{y})^2} = 1- \frac{\sum_i e_i^2}{S_{yy}}$$ {#eq-pearson-r2-alt2}
+
+::: {.callout-important}
+Os termos *variação explicada* e *variação não explicada* podem induzir a presunção de uma relação de causa e efeito entre as variáveis. Nunca é demais relembrar que, a não ser que os dados provenham de uma experiência desenhada para poder inferir tal relação, as conclusões são meramente correlacionais (@sec-collect).
+
+Relembrando: **correlação** $\neq$ **causa e efeito**.
+:::
+
+
+### Séries cronológicas
+
+Um caso particular de dados bivariados envolve as *séries cronológicas*. Neste caso os valores da série dizem respeito a intervalos de tempo regulares. Por exemplo, as vendas semanais de uma loja são uma série temporal. Como os valores da série estão referidos em função do tempo, o tempo será a outra variável.
+
+No caso de séries temporais o diagrama de dispersão, onde apenas aparecem pontos, costuma ser substituído por um diagrama semelhante, mas com linhas em vez de pontos. A ideia é mostrar a evolução da variável ao longo do tempo.
+
+Na @fig-bivar-time-serie é representada desta forma a série cronológica `AirPassengers` disponível no R. A série diz respeito ao número mensal de passageiros transportados (em milhares) entre 1949 e 1960.
+
+```{r}
+#| label: fig-bivar-time-serie
+#| fig-cap: Representação de uma série cronológica
+#| echo: false
+
+par(mar = c(5, 5, 2, 2) + 0.1)
+
+plot(
+  AirPassengers,
+  xlab = "Período",
+  ylab = "Passageiros",
+  col = 6
+  )
+ecd_grid()
+```
+
+Neste tipo de gráfico é possível visualizar tendências e sazonalidade e é ideal para este tipo de dados.
+
+Para lá da representação gráfica, as séries cronológicas apresentam características que as tornam muito diferentes de outro tipo de dados e exigem técnicas específicas. Por exemplo, as observações de um período costumam estar correlacionadas as observações desfasadas um determinado intervalo. Por este motivo, o tratamento de séries cronológicas sai do âmbito deste texto.
+
+::: {.callout-important}
+As séries cronológicas são variáveis especiais, tendo características que exigem técnicas diferentes das variáveis comuns. Se necessitar de tratar este tipo de dados, deve consultar um texto especializado, por exemplo, @hyndman-fpp.
+:::
+
+
+## Mais de duas variáveis {#sec-bivar-2plus}
+
+Nesta secção faz-se uma breve referência ao caso de haver mais do que duas variáveis a descrever de forma conjunta, mencionando apenas como podem os métodos gráficos já abordados ser adaptados.
+
+Como a representação gráfica é bidimensional, para incluir uma terceira variável, uma das alternativas é utilizar a perspetiva. Desta forma, se houver 3 variáveis numéricas pode ser construído um gráfico de dispersão tridimensional ou uma superfície tridimensional, tal como na @fig-bivar-3d-surface.
+
+```{r}
+#| label: fig-bivar-3d-surface
+#| fig-cap: Representação em perspetiva para 3 variáveis
+#| fig-subcap:
+#|   - "superfície 3D"
+#|   - "dispersão 3D"
+#|   - "intensidade 2D"
+#| layout-ncol: 3
+#| fig-width: 5
+#| echo: false
+
+par(mar = c(1, 1, 1, 1) + 0.1)
+
+n <- 21
+x <- seq(-3, 3, length = n)
+y <- rep(x, n)
+x <- rep(x, each = n)
+
+z <- mvtnorm::dmvnorm(matrix(c(x, y), ncol = 2))
+
+lattice::wireframe(z ~ x + y, col = 6)
+
+lattice::cloud(
+  z ~ x + y,
+  # subset = sample(n ^ 2, n * 3),
+  type = c("p", "h"), pch = 16
+  )
+
+lattice::levelplot(
+  z ~ x + y,
+  cuts = n,
+  colorkey = FALSE,
+  col.regions = colorRampPalette(c("white", 6))(n),
+  scales = list(draw = FALSE), aspect = 1
+  )
+```
+
+Foi utilizada a mesma informação para produzir os 3 diagramas apresentados na @fig-bivar-3d-surface. Enquanto que nas figuras [-@fig-bivar-3d-surface-1] e [-@fig-bivar-3d-surface-2] a variável `z` aparece num terceiro eixo e é utilizada uma perspetiva tridimensional, em [-@fig-bivar-3d-surface-3] a figura é bidimensional e é utilizada a cor para representar a intensidade da variável `z` (tipicamente, essa informação é colocada numa legenda que, neste caso, foi omitida).
+
+Embora a representação tridimensional seja adequada em situações específicas, a utilização da perspetiva pode levar a gráficos complexos e difíceis de interpretar. Por exemplo na @fig-bivar-3d-surface-1 os dados de um dos quadrantes estão ocultos por trás da figura representada, não se conseguindo visualizar todos os dados da mesma forma. Já na @fig-bivar-3d-surface-2, a representação é algo confusa.
+
+Por este motivo, o mais frequente é fazer algo semelhante à @fig-bivar-3d-surface-3: representar variáveis adicionais (pode ser mais do que uma) utilizando elementos visuais (cores, tamanhos, formas), acompanhando a figura de uma legenda para ajudar à interpretação.
+
+No caso da @fig-bivar-3d-surface, as 3 variáveis são numéricas. No entanto, é frequente nem todas as variáveis serem numéricas. Na @sec-bivar-cat-num já se apresentou uma técnica que pode ser utilizada para lidar com variáveis categóricas adicionais: utilizar um subgráfico para representar o conjunto de observações onde a variável categórica toma determinado nível. A @fig-bivar-hist-mult exemplificou a técnica para o caso do histograma. Naturalmente, a mesma técnica pode ser implementada para outras visualizações.
+
+Utilizando o conjunto de dados `mtcars`, a figura @fig-bivar-sub-scatter apresenta diagramas de dispersão para as variáveis `disp` (cilindrada, em polegadas cúbicas) e `mpg` (consumo, em milhas por galão). Adicionou-se à visualização a variável `am`, do tipo nominal, que indica o tipo de transmissão de cada carro, automática ou manual.
+
+```{r}
+#| label: fig-bivar-sub-scatter
+#| fig-cap: "Diagrama de dispersão com uma variável adicional"
+#| fig-subcap:
+#|   - "Transmissão manual"
+#|   - "Transmissão automática"
+#|   - "Utilização de cores diferentes"
+#|   - "Utilização de símbolos diferentes"
+#| layout-ncol: 2
+#| echo: false
+
+cols <- 6:7
+bgs <- 3:2
+labs <- c("Automática", "Manual")
+
+par(mar = c(4, 4, 1, 1) + 0.1)
+
+# automatic
+plot(mpg ~ disp, data = mtcars, type = "n")
+points(
+  mpg ~ disp, data = mtcars, subset = am == 0,
+  col = cols[1], bg = bgs[1], pch = 21, cex = 1.25
+)
+
+# manual
+plot(mpg ~ disp, data = mtcars, type = "n")
+points(
+  mpg ~ disp, data = mtcars, subset = am == 1,
+  col = cols[2], bg = bgs[2], pch = 21, cex = 1.25
+)
+
+# color
+plot(
+  mpg ~ disp, data = mtcars,
+  col = cols[am + 1], bg = bgs[am + 1], pch = 21, cex = 1.25
+)
+legend(
+  "topright", labs, title = "Transmissão", inset = 0.05,
+  pch = 21, col = cols, pt.bg = bgs, cex = 1.25
+)
+
+# symbol
+plot(
+  mpg ~ disp, data = mtcars,
+  col = 1, bg = 8, pch = 22 + am, cex = 1.25
+)
+legend(
+  "topright", labs, title = "Transmissão", inset = 0.05,
+  pch = 22:23, col = 1, pt.bg = 8, cex = 1.25
+)
+```
+
+Nas figuras [-@fig-bivar-sub-scatter-1] e [-@fig-bivar-sub-scatter-2] cada tipo de transmissão foi representado num subgráfico. Para facilitar a comparação, note que ambos os gráficos utilizam as mesmas escalas. Na @fig-bivar-sub-scatter-3, utilizou-se a cor para diferenciar o tipo de transmissão de cada carro observado. Já na @fig-bivar-sub-scatter-4, utilizaram-se símbolos diferentes para fazer a distinção. Como se pode observar, a cor parece ser mais eficaz a transmitir a informação.
+
+Naturalmente, quanto mais elementos visuais se colocarem no gráfico, mais difícil se torna a interpretação. Logo, deve ser exercida parcimónia na quantidade de informação que se coloca num gráfico, pois é fácil exagerar e a visualização perder a eficácia.
+
+Como se pode inferir, as possibilidades são ilimitadas e poder-se-iam escrever-se livros inteiros sobre o assunto. Há dezenas de gráficos específicos para determinadas áreas. Nesta secção apenas se pretendeu fazer uma menção muito superficial, uma vez que, no resto do texto, todas as visualizações utilizadas são, quase sempre, simples.
+
+{{< include _tutorial-section.qmd >}}
+
+::: {#bivar-listing}
+:::

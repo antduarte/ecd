@@ -1,0 +1,345 @@
+---
+description: >
+  Demonstração da aplicação das técnicas de contagem mais frequentes, especialmente úteis na presença de populações de pequena dimensão.
+date: 2025-07-05
+ecd-order: 8
+engine: knitr
+
+knitr: 
+  opts_chunk: 
+    prompt: true
+    collapse: true
+---
+
+# Técnicas de Contagem {#sec-tut-count}
+
+Em Estatística, recorre-se com alguma frequência a *técnicas de contagem*, também designadas por *cálculo combinatório*. Por norma, para obter determinadas probabilidades, é necessário determinar quantos elementos tem um conjunto que resulta de determinadas operações. Enquanto algumas técnicas são bastante intuitivas, outras podem ser mais complexas. Apresentam-se de seguida algumas das situações mais frequentes.
+
+## Regra da Multiplicação {#sec-tut-count-mult}
+
+Considerem-se $K$ conjuntos não vazios, cada um com $n_k$ elementos e com $k=1,2,\ldots, K$. Selecionando exatamente um elemento de cada um dos conjuntos, pretende-se determinar quantos conjuntos diferentes é possível formar.
+
+Trata-se de uma situação bastante simples, em que a a resposta é o produto do número de elementos dos vários conjuntos. Se $N$ representar esse valor, então
+
+$$N=n_1\times n_2 \times \cdots \times n_K$$ {#eq-tut-count-mult}
+
+::: callout-tip
+### Exemplo
+
+Numa unidade curricular há 4 turmas com 15, 16, 13 e 17 alunos, respetivamente. Pretende-se formar uma comissão de 4 alunos que, obrigatoriamente, tenha um aluno de cada turma. Quantas comissões diferentes é possível formar?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Neste caso, basta para aplicar a @eq-tut-count-mult, multiplicando o número de alunos em cada turma.
+
+$$N=15\times16\times13\times17=`r format(15*16*13*17, scientific = FALSE)`$$
+:::
+
+No caso de os vários conjuntos terem o mesmo número de elementos, ou seja, $n_1=n_2=\cdots=n_K=n$, a @eq-tut-count-mult pode ser simplificada para
+
+$$N=n^K$$ {#eq-tut-count-mult-simple}
+
+::: callout-tip
+### Exemplo
+
+Pretende-se criar um código de 3 letras, usando as 26 letras do alfabeto. As letras podem ser repetidas. Por exemplo, os códigos ABC, DEE ou FFF são válidos. Quantos códigos diferentes é possível gerar?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Neste exemplo, temos condições para aplicar a @eq-tut-count-mult-simple, pois cada letra é retirada de um conjunto de 26 letras. Então,
+
+$$N=26^4=`r format(26^4, scientific = FALSE)`$$
+:::
+
+## Permutações
+
+Quando se considera um conjunto não vazio com $n$ elementos, designa-se por *permutação* cada uma das ordens possíveis para os elementos do conjunto. Podemos designar o número de permutações possíveis de um conjunto por $P(n)$. É fácil de demonstrar que[^t080-counting-1]
+
+[^t080-counting-1]: Para quem não sabe e para quem já não se recorda, $n!=n\times(n-1)\times(n-1)\times\cdots\times2\times1$.
+
+$$P(n)=n!$$ {#eq-tut-count-permut}
+
+O primeiro elemento da sequência pode ser um qualquer dos $n$ elementos do conjunto. Uma vez decidido o primeiro elemento, na segunda posição apenas pode ser colocado um dos restantes $n-1$ elementos e assim sucessivamente. Aplicando a @eq-tut-count-mult, chega-se facilmente à @eq-tut-count-permut.
+
+::: callout-tip
+### Exemplo
+
+Num palco vão sentar-se 5 pessoas numa fila de cadeiras. De quantas formas possíveis se podem ordenar as 5 pessoas nas 5 cadeiras.
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Aplicando a @eq-tut-count-permut, fazendo $n=5$,
+
+$$P(5)=5!=`r factorial(5)`$$
+:::
+
+Para calcular o fatorial de um número no R, existe a função `factorial()`, por exemplo,
+
+```{r}
+factorial(5)
+```
+
+#### Arranjos {.unnumbered}
+
+Caso se considere apenas um subconjunto de $k$ elementos selecionados entre os $n$ elementos do conjunto (naturalmente, $k<n$) e se considerem as sequências, que possam diferir, quer na ordem, quer nos elementos que a compõem, pode ter interesse saber quantas sequências daquele tipo é possível formar.
+
+Este tipo de sequências são normalmente designadas por *arranjos* ou *permutações-k* e podem ser denotadas por $P(n,k)$, podendo ser calculado o número de arranjos possíveis com
+
+$$P(n,k)=\frac{n!}{(n-k)!}$$ {#eq-tut-count-permut-k}
+
+Outras designações possíveis para este tipo de permutações incluem $A_k^n$, $_nP_k$ ou $^nP_k$.
+
+::: callout-tip
+### Exemplo
+
+No torneio de futebol dos Jogos Olímpicos de Paris 2024 estavam representados 16 países. De quantas formas possíveis podem ser atribuídas as medalhas de ouro, prata e bronze?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Neste caso, são selecionados 3 países de um conjunto de 16, ou seja, $k=3$ e $n=16$. Aplicando a @eq-tut-count-permut-k,
+
+$$P(16,3)=\frac{16!}{(16-3)!}=\frac{16!}{13!}=`r factorial(16) / factorial(13)`$$
+:::
+
+#### Permutações circulares {.unnumbered}
+
+Esta situação surge quando se pretende arranjar um conjunto de objetos em redor de um círculo. Ao contrário do caso linear, abordado no início desta secção, num círculo, qualquer posição pode ser vista como a primeira. Na @fig-tut-count-permut-circ pode verificar aquela situação constatando que os quatro permutações mostradas apenas diferem na orientação do círculo, pois os elementos estão nas mesmas posições relativas, o que faz com que se trate da mesma permutação.
+
+```{mermaid}
+%%| label: fig-tut-count-permut-circ
+%%| fig-cap: Ilustração das permutações circulares
+%%| fig-width: 8
+
+---
+config:
+  flowchart:
+    rankSpacing: 10
+---
+
+flowchart TD
+  subgraph 1[ ]
+      a1[A] ~~~ d1[D] & b1[B] ~~~ c1[C]
+  end
+  subgraph 2[ ]
+      d2[D] ~~~ c2[C] & a2[A] ~~~ b2[B]
+  end
+   subgraph 3[ ]
+      c3[C] ~~~ b3[B] & d3[D] ~~~ a3[A]
+  end
+   subgraph 4[ ]
+      b4[B] ~~~ a4[A] & c4[C] ~~~ d4[D]
+  end
+    
+classDef sbg fill:transparent,stroke:gray,rx:20,ry:20;
+class 1,2,3,4 sbg
+
+classDef rnode rx:10,ry:10;
+class a1,a2,a3,a4 rnode
+class b1,b2,b3,b4 rnode
+class c1,c2,c3,c4 rnode
+class d1,d2,d3,d4 rnode
+```
+
+Neste caso, se $n$ for o número de elementos a dispor num círculo, o número de permutações pode ser calculado com
+
+$$N=(n-1)!$$ {#eq-tut-count-permut-circ}
+
+::: callout-tip
+### Exemplo
+
+Admita agora que se pretende sentar 5 pessoas à volta de uma mesa redonda. De quantas formas possíveis se podem ordenar as 5 pessoas nas 5 cadeiras relativamente umas às outras?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Trivialmente, aplicando a @eq-tut-count-permut-circ, fazendo $n=5$,
+
+$$N=(5-1)!=4!=`r factorial(4)`$$
+:::
+
+
+#### Permutações com repetição {.unnumbered}
+
+Ao utilizar permutações, é admitido que não há possibilidade de repetição de elementos no subconjunto. Relaxando esta condição e admitindo a possibilidade de haver repetição de elementos, o problema reduz-se ao caso já abordado na @sec-tut-count-mult, ou seja, $N=n^k$. Este tipo de permutações é também designado por *arranjos completos*.
+
+## Combinações
+
+Uma *combinação* é um conceito semelhante à permutação mas a ordem dos $k$ elementos é irrelevante. Isto significa que duas sequências de $k$ elementos que apenas difiram na ordem são a mesma combinação. Por exemplo as sequências de elementos ABC e ACB são a mesma combinação.
+
+O número de combinações possíveis de $n$ elementos tomados $k$ a $k$ pode ser designado por $C^n_k$. Tomando a @eq-tut-count-permut e constatando que o número de arranjos em cada combinação é $k!$, o número de combinações possíveis pode ser calculado com
+
+$$C^n_k=\frac{P(n,k)}{k!}= \frac{n!}{k!( n-k)!}$$ {#eq-tut-count-combin}
+
+Alternativamente, as combinações podem ser denotadas por $^nC_k$, $_nC_k$ ou $\binom{n}{k}$, esta última de uso frequente em textos matemáticos.
+
+::: callout-tip
+### Exemplo
+
+Num torneio de xadrez estão presentes 10 jogadores. Para apurar o vencedor, cada jogador terá de defrontar todos os adversários exatamente uma vez. No total, quantos jogos terá o torneio?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Para responder à questão é necessário saber quantas combinações de 2 jogadores existem, bastando aplicar a @eq-tut-count-combin,
+
+$$C^{10}_2=\frac{10!}{2!( 10-2)!}=`r choose(10, 2)`$$
+:::
+
+#### Triângulo de Pascal {.unnumbered}
+
+::: {style="float: right; margin: 20px; width: 220px;"}
+![Triângulo de Pascal (fonte: Hersfold, Public domain, via Wikimedia Commons)](https://upload.wikimedia.org/wikipedia/commons/0/0d/PascalTriangleAnimated2.gif){#fig-tut-count-pascal .preview-image}
+:::
+
+Uma forma expedita de visualizar e calcular combinações, pelo menos para valores de $n$ pequenos, consiste em utilizar o *Triângulo de Pascal*, assim denominado em homenagem ao matemático [Blaise Pascal](https://en.wikipedia.org/wiki/Blaise_Pascal){target="_blank"}.
+
+No referido triângulo, cada elemento resulta da soma dos dois elementos imediatamente acima. Cada um dos elementos do triângulo corresponde a $C^n_k$, em que $n$ é o número da linha e em que $k$ é o número da coluna, iniciando a numeração em 0. No topo do triângulo está $C^0_0=1$. Na segunda linha, $n=1$, temos $C^1_0=1$ e $C^1_1=1$. Na terceira linha, $C^2_0=1$, $C^2_1=2$ e $C^2_2=1$. E assim sucessivamente para as restantes linhas, conforme se pode visualizar na @fig-tut-count-pascal.
+
+A partir do triângulo de Pascal é possível intuir, por exemplo, que
+
+$$C^n_k=C^n_{n-k}$$ {#eq-tut-prob-pascal}
+
+No R, para calcular o número de combinações, existe a função `choose()`, por exemplo,
+
+```{r}
+choose(10, 2)
+```
+
+#### Combinações totais {.unnumbered}
+
+Caso se pretenda determinar qual o número total de combinações que se podem formar a partir de um conjunto de $n$ elementos, sendo irrelevante o número de elementos em cada combinação, podendo ser 0, 1, 2, ..., ou até mesmo $n$, podemos utilizar
+
+$$N=C^n_0+C^n_1+C^n_2+\cdots+C^n_n=2^n$$ {#eq-tut-count-combin-tot}
+
+Como cada elemento do conjunto pode ou não entrar numa combinação (2 possibilidades) e temos $n$ elementos, usando a regra da multiplicação enunciada acima, o número de possíveis combinações é $2^n$.
+
+Pode notar que a @eq-tut-count-combin-tot corresponde à soma de uma linha no triângulo de Pascal.
+
+::: callout-tip
+### Exemplo
+
+Num sorteio há 4 prémios que podem ser atribuídos a pessoas diferentes, mas havendo a possibilidade de uma pessoa ganhar 1, 2, 3 ou até mesmo os 4 prémios (ou nenhum). De quantas formas possíveis pode uma pessoa ser premiada, isto é, quantas combinações de prémios é possível ganhar?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+A resposta pode ser calculada através da @eq-tut-count-combin-tot,
+
+$$N=2^4=`r 2 ^ 4`$$
+
+ou, em alternativa,
+
+$$N=C^4_0+C^4_1+C^4_2+C^4_3+C^4_4=
+`r choose(4, 0)`+
+`r choose(4, 1)`+
+`r choose(4, 2)`+
+`r choose(4, 3)`+
+`r choose(4, 4)`
+=`r 2 ^ 4`$$
+:::
+
+#### Combinações com repetição {.unnumbered}
+
+Considere-se agora o problema mais complexo em que é possível repetir os elementos que compõem a combinação mas a ordem dos elementos é irrelevante. Considere-se o seguinte exemplo.
+
+::: callout-tip
+### Exemplo
+
+Determinado dia decidiu tomar um pequeno almoço saudável, composto por 3 ~~peças de fruta~~ *donuts*. Tem à sua disposição 5 coberturas diferentes e pode escolher os 3 *donuts* livremente, isto é, pode escolher qualquer combinação de *donuts*, iguais ou diferentes. Quantas combinações diferentes tem à sua disposição?
+:::
+
+Comece-se por analisar o problema por enumeração. É imediato concluir que há 3 tipos de escolhas:
+
+-   Escolhas com 3 *donuts* iguais: 5 possibilidades, uma por cor disponível.
+-   Escolhas com 3 *donuts* diferentes: $C^5_3=10$ possibilidades.
+-   Escolhas com 2 *donuts* de um tipo e 1 *donut* diferente: depois de escolhidas as 2 coberturas entre as 5 possíveis, restam 4 coberturas para o *donut* diferente, logo há $5 \times 4=20$ possibilidades, ou, alternativamente, $P(5,2)$.
+
+Totalizando os 3 tipos de encomendas, temos $5+10+20=35$ encomendas possíveis.
+
+Embora a enumeração seja atrativa para este pequeno exemplo, se o número de possibilidades ou o número de elementos presentes na combinação crescer, a enumeração torna-se impraticável. Como exercício, utilizando a mesma abordagem, determine o número de possibilidades caso decida comer 4 *donuts* (a resposta correta é `r choose(5 + 4 - 1, 4)`).
+
+Haverá alguma expressão genérica para resolver este tipo de problema?
+
+Para uma visualização alternativa deste problema, comece-se por colocar num diagrama uma **estrela** para cada um dos 3 *donuts* a escolher, simplesmente
+
+::: {style="text-align: center"}
+★★★
+:::
+
+Seguidamente, imagine que os *donuts* são retirados de uma caixa com 5 compartimentos. Necessariamente, para 5 compartimentos, há $5-1=4$ divisórias a separa-los. Designem-se as 5 coberturas por A, B, C, D, E e, por hipótese, quer 2 *donuts* com a cobertura B e 1 *donut* com a cobertura E. No diagrama, vamos acrescentar **barras** para representar as divisórias da referida caixa. O diagrama ficaria
+
+::: {style="text-align: center"}
+❙★★❙❙❙★
+:::
+
+Este diagrama é simples de interpretar:
+
+* O número de estrelas à esquerda da primeira barra representa o número de elementos a incluir do primeiro conjunto, neste caso, os *donuts* com cobertura A (0).
+* Entre cada par de barras colocamos um número de estrelas correspondente ao número de elementos a incluir de cada conjunto respetivo, neste caso, 2 elementos do conjunto B e nenhum dos conjuntos C e D.
+* Finalmente, à direita da última barra, tantas estrelas quantos os elementos do último conjunto a incluir, neste caso, 1 *donut* com a cobertura E.
+
+Esta notação é equivalente a utilizar 5 números para indicar quantos elementos de cada conjunto. Neste caso, seria 0|2|0|0|1 ou, simplesmente 02001. 
+
+::: callout-tip
+### Exercício
+
+Como ficaria o diagrama caso pretendesse as coberturas A, B e E, ou seja, em notação numérica, 11001?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+::: {style="text-align: center"}
+★❙★❙❙❙★
+:::
+
+:::
+
+A vantagem de utilizar esta notação com estrelas e barras é evidenciar a estrutura do problema. Seja $n$ o número de conjuntos (neste caso, os tipos de coberturas, $n=5$) e seja $k$ o número de elementos a escolher (neste caso, o número de *donuts*, $k=3$)
+
+* O diagrama terá sempre $n+k-1$ símbolos, ou seja, $n-1$ barras e $k$ estrelas.
+* Tanto as barras como as estrelas, podem estar em qualquer posição do diagrama.
+
+Para calcular o número possibilidade diferentes podemos calcular o número de combinações para as posições das estrelas:
+
+$$N=C^{n+k-1}_{k}=\frac{(n+k-1)!}{k!(n+k-1-k)!}=\frac{(n+k-1)!}{k!(n-1)!}$$ {#eq-tut-count-combin-rep-1}
+
+Ou as combinações para a posição das barras:
+
+$$N=C^{n+k-1}_{n-1}=\frac{(n+k-1)!}{(n-1)!(n+k-1-(n-1))!}=\frac{(n+k-1)!}{k!(n-1)!}$$ {#eq-tut-count-combin-rep-2}
+
+Note-se que esta igualdade já foi expressa de outra forma na @eq-tut-prob-pascal relativa ao triângulo de Pascal.
+
+Voltando ao nosso problema, a resposta será
+
+$$N=C^7_3=C^7_4=35$$
+
+
+::: callout-tip
+### Exercício
+
+Numa estante existem 3 prateleiras (superior, intermédia e inferior). Pretende-se distribuir 5 livros iguais pelas prateleiras, não havendo restrições quanto ao número de livros por prateleira, isto é, cada prateleira pode receber entre 0 e 5 livros. De quantas formas é possível distribuir os livros pelas prateleiras?
+:::
+
+::: {.callout-tip collapse="true" appearance="simple" icon="false"}
+### Resposta
+
+Este problema é uma inversão do problema dos *donuts* analisado nesta secção, pois, neste caso, $n=3$ e $k=5$. Aplicando a @eq-tut-count-combin-rep-1,
+
+$$N=C^{3+5-1}_5=C^7_5=`r choose(7, 5)`$$
+
+Alternativamente, aplicando a @eq-tut-count-combin-rep-2,
+
+$$N=C^{3+5-1}_{3-1}=C^7_2=`r choose(7, 2)`$$
+:::

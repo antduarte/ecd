@@ -1,0 +1,3 @@
+## Tutoriais {.unnumbered}
+
+Depois de ler este capítulo pode verificar como são implementados estes conceitos no ambiente computacional R. Os tutoriais listados abaixo estão diretamente relacionados com este capítulo.

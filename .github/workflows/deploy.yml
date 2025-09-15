@@ -1,0 +1,33 @@
+name: Deploy to IPB pages
+
+on:
+  push:
+    branches: main
+
+jobs:
+  deploy-to-ipb-pages:
+    name: Deploy to IPB pages
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install OpenVPN
+        run: |
+          sudo apt-get update -y -qq
+          sudo apt-get install -y openvpn openvpn-systemd-resolved
+          
+      - name: Checkout
+        uses: actions/checkout@v4
+  
+      - name: Connect to VPN
+        uses: uzaysan/github-openvpn-connect-action@main
+        with:
+          config: ${{ secrets.PLAIN_OVPN }}
+          
+      - name: Deploy with SFTP
+        uses: milanmk/actions-file-deployer@master
+        with:
+          remote-host: ${{ secrets.FTP_HOST }}
+          remote-user: ${{ secrets.FTP_USER }}
+          remote-password: ${{ secrets.FTP_PWD }}
+          local-path: "_book"
+          remote-path: /public_html/ecd
+          sync: full

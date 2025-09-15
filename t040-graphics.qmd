@@ -1,0 +1,630 @@
+---
+description: >
+  Noções fundamentais sobre a elaboração de gráficos no R.
+date: 2025-04-14
+ecd-order: 4
+other-links:
+  - text: Color Palette Finder
+    href: https://r-graph-gallery.com/color-palette-finder
+    rel: external
+    target: _blank
+---
+
+# Gráficos {#sec-tut-graphics}
+
+Neste tutorial apresentam-se conceitos introdutórios sobre a elaboração de gráficos no R. Estes conceitos serão depois aplicados em situações específicas ao longo de outros tutoriais.
+
+## A função `plot()` {#sec-tut-graphics-plot}
+
+A função `plot()` é uma função genérica para representar graficamente o objeto que é passado à função. O tipo de gráfico criado depende da natureza do objeto fornecido à função, sendo o processo de seleção automático.
+
+### Uma ou duas variáveis
+
+Por norma são passadas à função `plot()` um (`x`) ou dois (`x` e `y`) vetores com os dados a serem representados. O tipo de gráfico produzido depende da natureza, numérica ou categórica, das variáveis especificadas. O código que se segue ilustra as várias possibilidades estando os gráficos resultantes na @fig-tut-graphics-plot. A descrição das variáveis pode ser obtida executando `?mtcars` na consola do R.
+
+```{r}
+#| label: fig-tut-graphics-plot
+#| fig-cap: Resultado de `plot()` conforme o tipo de variáveis
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Uma variável numérica"
+#|   - "Duas variáveis numéricas"
+#|   - "Uma variável categórica codificada como numérica"
+#|   - "Uma variável categórica codificada corretamente"
+#|   - "Duas variáveis categóricas"
+#|   - "Uma variável categórica e uma variável numérica"
+
+plot(mtcars$mpg)                            # <1>
+plot(mtcars$mpg, mtcars$disp)               # <2>
+plot(mtcars$am)                             # <3>
+plot(factor(mtcars$am))                     # <4>
+plot(factor(mtcars$am), factor(mtcars$vs))  # <5>
+plot(factor(mtcars$am), mtcars$mpg)         # <6>
+```
+
+1.  @fig-tut-graphics-plot-1: quando a variável passada à função é numérica, é produzido um diagrama de dispersão com o índice da observação no eixo horizontal.
+2.  @fig-tut-graphics-plot-2: no caso de serem passadas duas variáveis numéricas é produzido um diagrama de dispersão de `y` em função de `x`. Esta é a utilização mais frequente da função `plot()`.
+3.  @fig-tut-graphics-plot-3: como não foi indicado ao R que a variável `am` é nominal e foram utilizados os valores 0 e 1 para codificar a informação, o resultado é um diagrama de dispersão semelhante ao primeiro caso.
+4.  @fig-tut-graphics-plot-4: neste caso, indicou-se ao R que a variável `am` é de natureza nominal utilizando a função `factor()` apresentada na @sec-data-categorical. De forma sensata, o gráfico apresentado é um diagrama de barras mostrando a contagem de observações em cada categoria.
+5.  @fig-tut-graphics-plot-5: No caso de ambas as variáveis serem categóricas é produzido um gráfico de barras sobrepostas normalizadas. A largura das barras é proporcional às contagens da variável `x`.
+6.  @fig-tut-graphics-plot-6: quando se passa à função `plot()` uma variável categórica e uma numérica (nesta ordem) o gráfico produzido é um diagrama de extremos e quartis para cada nível da variável categórica.
+
+::: callout-note
+Para já, vamos ignorar as questões estéticas. Sem parametrização adicional, os gráficos do R são bastante simples, apenas com os elementos essenciais. Voltar-se-à a este tópico noutras secções.
+:::
+
+### *Data frames*
+
+Para especificar as variáveis a representar, não é obrigatório utilizar vetores. Em alternativa pode passar-se à função `plot()`, como argumento `x`, uma *data frame* com duas variáveis uma uma matriz com duas colunas. Por exemplo, considere-se o conjunto de dados `cars` e invoque-se a função `plot()`. O resultado é o da @fig-tut-graphics-plot-cars.
+
+```{r}
+#| label: fig-tut-graphics-plot-cars
+#| fig-cap: Resultado de `plot(cars)`
+
+plot(cars)
+```
+
+Neste caso, como o objeto `cars` é uma *data frame* com duas variáveis, `speed` (velocidade) e `dist` (distância de paragem), a função devolve um diagrama de dispersão com a primeira variável no eixo horizontal e a segunda no eixo vertical.
+
+Caso houvesse mais de duas variáveis, como no conjunto de dados `trees`, seria apresentado um gráfico semelhante ao da @fig-tut-graphics-plot-trees, em que é apresentado um diagrama de dispersão para cada combinação de duas de variáveis, escolhidas entre as variáveis presentes na *data frame*, podendo este gráfico ser também obtido com a função `pairs()`.
+
+```{r}
+#| label: fig-tut-graphics-plot-trees
+#| fig-cap: Resultado de `plot(trees)`
+
+plot(trees)
+```
+
+### Outros objetos
+
+Para uso em aplicações mais avançadas, a função `plot()` está definida para outro tipo de objetos, como séries cronológicas e números complexos, e tem inúmeras potencialidades. Nesta secção pretendeu-se apenas dar uma ideia da flexibilidade da função.
+
+### Outras representações
+
+Por omissão, a função `plot()` representa diagramas de dispersão utilizando pontos. É possível obter outro tipo de representações através do argumento `type =`. Na @fig-tut-graphics-plot-type ilustram-se os vários tipos de representações disponíveis.
+
+```{r}
+#| label: fig-tut-graphics-plot-type
+#| fig-cap: Diferentes tipos de representação disponíveis em `plot()`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - 'Pontos, `type = "p"` (por omissão)'
+#|   - 'Linhas, `type = "l"`'
+#|   - 'Pontos e linhas, `type = "b"`'
+#|   - 'Pontos e linhas, `type = "o"`'
+#|   - 'Densidade, `type = "h"`'
+#|   - 'Escada, `type = "s"` (ponto no topo)'
+#|   - 'Escada, `type = "S"` (ponto no fundo)'
+#|   - 'Nada, `type = "n"` (apenas estabelece os eixos)'
+
+plot(mtcars$mpg)
+plot(mtcars$mpg, type = "l")
+plot(mtcars$mpg, type = "b")
+plot(mtcars$mpg, type = "o")
+plot(mtcars$mpg, type = "h")
+plot(mtcars$mpg, type = "s")
+plot(mtcars$mpg, type = "S")
+plot(mtcars$mpg, type = "n")
+```
+
+## Outras funções (alto nível) {#sec-tut-graphics-high}
+
+A função `plot()` é designada por *função gráfica de alto nível*, pois produz um gráfico completo. Para além de `plot()`, existem outras funções de alto nível que produzem outros tipos de gráficos. Algumas destas funções são automaticamente invocadas pela função `plot()` quando as variáveis fornecidas à função são de determinado tipo. Enumeram-se abaixo as funções de utilização mais comum:
+
+-   `plot()`: normalmente utilizada para produzir diagramas de dispersão (@sec-bivar-scatter), mas trata-se de uma função genérica que produz outros tipos de visualizações e representações adequadas para vários tipos de objetos conforme discutido em acima.
+
+-   `hist()`: função específica para produzir histogramas (@sec-quant-hist).
+
+-   `boxplot()`: função específica para diagramas de extremos e quartis (@sec-quant-disp).
+
+-   `barplot()`: função específica para elaborar gráficos de barras (@sec-quali-barplot).
+
+-   `mosaicplot()`: função específica para o gráfico em mosaico (@sec-bivar-mosaic).
+
+-   `stripchart()`: função para produzir diagramas de pontos (como por exemplo a @fig-quant-strip-mean, úteis para visualizar pequenos conjuntos de dados.
+
+-   `pie()`: função para elaborar gráficos circulares\] (@sec-quali-barplot).
+
+Nas secções que se seguem será discutida a utilização de alguns parâmetros comuns a todas as funções enumeradas acima. Noutros tutoriais será abordada a utilização de cada função específica mencionada acima.
+
+## A função `par()`
+
+A função `par()` serve para estabelecer de forma permanente ou consultar o valor de parâmetros a utilizar nos gráficos. Alguns parâmetros gráficos só podem ser modificados através de uma chamada a `par()` mas, na grande maioria, pode ser ajustados nas funções gráficas, tal como em `plot()`.
+
+Por exemplo, `bty` é um parâmetro gráfico que controla a aparência da caixa que envolve os gráficos (`bty = "l"` especifica uma caixa em forma de "L") e `ann = FALSE` suprime os rótulos dos eixos. Estes parâmetros podem ser especificados numa chamada a `par()` ou podem ser especificados na chamada a uma função gráfica de alto nível, tal como `plot()`. Atente no exemplo no código que se segue e que produz a @fig-tut-graphics-plot-cars-xy-par.
+
+```{r}
+#| label: fig-tut-graphics-plot-cars-xy-par
+#| fig-cap: Ajuste de parâmetros com `par()`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - O ajuste `ann = TRUE` afeta apenas este gráfico
+#|   - A chamada a `par()` afeta todos os gráficos
+
+par(bty = "l", ann = FALSE)
+  
+plot(cars$speed, cars$dist, ann = TRUE)
+plot(cars$speed, cars$dist)
+```
+
+Note que o ajuste realizados em `par()` afetam ambos os gráficos da @fig-tut-graphics-plot-cars-xy-par. No entanto, na @fig-tut-graphics-plot-cars-xy-par-1 um dos parâmetros, `ann`, foi redefinido, afetando apenas essa figura.
+
+::: callout-important
+Quando o parâmetro é especificado na chamada a `plot()` (ou outra função gráfica de alto nível) apenas afeta o gráfico que está a ser gerado. Por outro lado, se o parâmetro for estabelecido numa chamada a `par()` o valor definido será utilizado em todos os gráficos subsequentes.
+:::
+
+A função `par()` permite consultar o valor dos parâmetros, devolvendo uma lista de valores. Uma utilização frequente desta possibilidade é poder fazer alterações nos parâmetros para um gráfico específico e depois recuperar os valores por omissão. No código que se segue exemplifica-se essa possibilidade.
+
+```{r}
+p <- par(bty = "l", ann = FALSE) # <1>
+# ...                            # <2>
+par(p)                           # <3>
+
+```
+
+1.  Chamada a `par()`, guardando os valores prévios dos parâmetros modificados no objeto `p`.
+2.  Código para elaborar os gráficos desejados.
+3.  No final, restaura os valores dos parâmetros modificados.
+
+Há inúmeros parâmetros que podem ser modificados e que não serão referidos neste tutorial. Recomenda-se a leitura da documentação, por exemplo, executando `?par` na consola do R.
+
+## Títulos e rótulos
+
+Em geral, em todas as funções que produzem gráficos, tal como a função `plot()`, é necessário ajustar os títulos e os rótulos dos eixos, pois os valores por omissão do R podem não ser adequados. A forma de o fazer é comum às diversas funções que produzem gráficos.
+
+Para alterar os títulos e os rótulos dos eixos utilizam-se os argumentos descritos na @tbl-graphics-labels na chamada da função gráfica.
+
+| Argumento     | Elemento                                |
+|:--------------|:----------------------------------------|
+| `main =`      | Título principal (no topo do gráfico)   |
+| `sub =`       | Título secundário (ao fundo do gráfico) |
+| `xlab =`      | Rótulo do eixo horizontal               |
+| `ylab =`      | Rótulo do eixo vertical                 |
+| `ann = false` | Suprime títulos e rótulos               |
+
+: Configuração de títulos e rótulos {#tbl-graphics-labels .striped tbl-colwidths="\[30,70\]"}
+
+O código que se segue ilustra a utilização deste argumentos para configuração do gráfico apresentado na @fig-tut-graphics-plot-cars, que se apresenta novamente na @fig-tut-graphics-plot-cars-xy-ann.
+
+```{r}
+#| label: fig-tut-graphics-plot-cars-xy-ann
+#| fig-cap: Configuração de títulos e rótulos
+
+plot(
+  cars$speed, cars$dist,
+  main = "Distância de paragem vs. velocidade",
+  sub = "(elaborado a partir do conjunto cars)",
+  xlab = "Velocidade",
+  ylab = "Distância de paragem"
+)
+```
+
+## Eixos, escalas e caixa
+
+Salvo indicação em contrário, os gráficos abrangem o intervalo de valores das variáveis fornecidas adicionada de uma pequena margem e o número e posição das marcas da escala são determinadas automaticamente de forma a serem valores *redondos*. Os argumentos da @tbl-graphics-axes permitem modificar a forma como os eixos são desenhados.
+
+| Argumento | Elemento |
+|:-------------------------|:---------------------------------------------|
+| `axes = false` | Suprime a apresentação dos eixos e da caixa envolvente |
+| `bty = "n"` ou<br>`frame.plot = FALSE` | Supressão da caixa envolvente. Também se pode especificar um tipo de caixa envolvente diferente através de `bty`: `"o"` (por omissão), `"l"`, `"7"`, `"c"`, `"u"` ou `"]"`, sendo que a caixa imitará a letra maiúscula correspondente |
+| `xaxt = "n"` | Suprime a apresentação do eixo horizontal (vertical para `yaxt`) |
+| `xlim = c(x1, x2)` | Define os limites do eixo horizontal (vertical para `ylim`) sendo `x1` e `x2` os limites inferior e superior, respetivamente |
+| `xaxp = c(x1, x2, n)` | Define a posição das marcas no eixo horizontal (vertical para `yaxp`), sendo `x1` e `x2` as coordenadas da primeira e última marcas e `n` o número de intervalos desejado[^t040-graphics-1] |
+| `las =` | Especifica como a escala deve ser apresentada podendo tomar os valores 0 (paralela aos eixos), 1 (na horizontal), 2 (perpendicular aos eixos) ou 3 (na vertical) |
+| `xlog = true` | Para utilizar uma escala logarítmica no eixo horizontal (vertical para `ylog`). Alternativamente é possível especificar `log = "x"`, `log = "y"` ou `log = "xy"` para indicar o(s) eixo(s) que devem ter escala logarítmica |
+| `asp =` | Configura o rácio entre as escalas horizontal e vertical. Por exemplo, para representar um círculo é necessário `asp = 1` para evitar que este fique com um aspeto ovalizado |
+
+: Configuração dos eixos e escalas {#tbl-graphics-axes .striped tbl-colwidths="\[30,70\]"}
+
+[^t040-graphics-1]: Para eixos logarítmicos, o significado é diferente, deve consultar a documentação.
+
+O código que se segue produz os gráficos da @fig-tut-graphics-plot-cars-xy-axes onde se podem verificar os efeitos dos ajustes nos vários parâmetros.
+
+```{r}
+#| label: fig-tut-graphics-plot-cars-xy-axes
+#| fig-cap: Exemplos de ajustes nos eixos e escalas
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - Supressão dos eixos e caixa
+#|   - Supressão dos eixos
+#|   - Ajuste das escalas e caixa
+#|   - Escala vertical logarítmica
+
+plot(cars$speed, cars$dist, axes = FALSE)             # <1>
+plot(cars$speed, cars$dist, xaxt = "n", yaxt = "n")   # <2>
+plot(                                                         # <3>
+  cars$speed, cars$dist,                    
+  xlim = c(-5, 30),                                         
+  yaxp = c(20, 100, 5),
+  bty = "u"
+)
+plot(cars$speed, cars$dist, log = "y", frame.plot = FALSE, las = 1) # <4>
+```
+
+1.  @fig-tut-graphics-plot-cars-xy-axes-1: o argumento `axes = FALSE` suprime os eixos e a caixa envolvente.
+2.  @fig-tut-graphics-plot-cars-xy-axes-2: os eixos podem ser suprimidos individualmente com `xaxt = "n"` e `yaxt = "n"`.
+3.  @fig-tut-graphics-plot-cars-xy-axes-3: especificaram-se os limites do eixo horizontal com `xlim`, as marcas do eixo vertical com `yaxp` e uma caixa envolvente aberta com `bty = "u"`.
+4.  @fig-tut-graphics-plot-cars-xy-axes-4: o eixo vertical é logarítmica com `log = "y"`, ambas as escalas são apresentadas na horizontal com `las = 1` e foi omitida a caixa envolvente com `frame.plot = FALSE`.
+
+::: callout-note
+Os parâmetros utilizados nos gráficos apresentados neste tutorial podem não fazer grande sentido prático. De facto, apenas se está a explorar as potencialidades na parametrização dos gráficos do R.
+:::
+
+## Pontos
+
+O símbolo que representa cada ponto é determinado pelos parâmetros gráficos `pch` (símbolo), `cex` (tamanho) e `col` (cor). Os valores destes parâmetros podem ser fornecidos como um valor único, afetando todos os pontos, ou como um vetor de valores, afetando cada ponto individualmente e sendo *reciclado* como necessário (para relembrar a *regra da reciclagem* do R, ver a @sec-tut-data-vec-recycle).
+
+### Símbolo (`pch`)
+
+Geralmente, para especificar o símbolo a utilizar, utiliza-se um número inteiro entre 0 e 25, que corresponde a um dos símbolos definidos no R. Por omissão o símbolo utilizado é o 1 (círculo). Para consultar a lista de símbolos pode executar `?pch` na consola. Na @fig-tut-graphics-pch apresentam-se dois exemplos da utilização do parâmetro `pch`.
+
+```{r}
+#| label: fig-tut-graphics-pch
+#| fig-cap: Especificação do parâmetro `pch`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Apenas um símbolo para os pontos todos"
+#|   - "Vetor com 4 símbolos (reciclado)"
+
+plot(cars$speed, cars$dist, pch = 17)
+plot(cars$speed, cars$dist, pch = 1:4)
+```
+
+Note que, na @fig-tut-graphics-pch-2, o símbolo 1 é utilizado para as observações 1, 5, 9, ..., o símbolo 2 para as observações 2, 6, 10, ... e assim sucessivamente. Na prática, os símbolos devem ser associados a uma qualquer condição e o gráfico deve ter uma legenda (@sec-tut-graphics-legend).
+
+### Tamanho (`cex`)
+
+Por omissão, o valor do parâmetro `cex` é 1. O tamanho do símbolo é proporcional ao valor utilizado. As regras para a utilização de vetores de tamanhos são as mesmas que para os símbolos. A @fig-tut-graphics-cex mostra exemplos da utilização de `cex`.
+
+```{r}
+#| label: fig-tut-graphics-cex
+#| fig-cap: Especificação do parâmetro `cex`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Apenas um tamanho para os pontos todos"
+#|   - "Vetor com 3 tamanhos (reciclado)"
+
+plot(cars$speed, cars$dist, cex = 5.5)
+plot(cars$speed, cars$dist, cex = 1:3)
+```
+
+### Cores (`col`)
+
+O R dispõe de várias formas para especificar as cores a utilizar nos diversos elementos gráficos (ver @sec-tut-graphics-col). Para especificar a cor dos símbolos utilizam-se os parâmetros `col`, para o contorno dos símbolos, e `bg`[^t040-graphics-2] para o preenchimento, nos símbolos que o permitem.
+
+[^t040-graphics-2]: Existe um parâmetro gráfico com o mesmo nome que pode ser modificado com a função `par()` mas que tem um significado diferente (cor de fundo do gráfico).
+
+As cores podem ser identificadas por números inteiros, por códigos ou por nomes. Tal como para os parâmetros acima, podem ser fornecidos vetores de cores. O código que se segue produz a @fig-tut-graphics-col e permite ver alguns exemplos da utilização de `col`.
+
+```{r}
+#| label: fig-tut-graphics-col
+#| fig-cap: Especificação dos parâmetros `col` e `bg`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Apenas uma cor para os pontos todos"
+#|   - "Vetor com 3 cores (reciclado)"
+#|   - "Símbolo que não permite especificar preenchimento"
+#|   - "Símbolo que permite especificar preenchimento"
+
+plot(cars$speed, cars$dist, col = "blue")
+plot(cars$speed, cars$dist, col = 1:3)
+plot(cars$speed, cars$dist, pch = 15, col = "blue", bg = "lightblue")
+plot(cars$speed, cars$dist, pch = 22, col = "blue", bg = "lightblue")
+```
+
+Na @sec-tut-graphics-col serão abordadas com mais detalhe as diversas formas de utilização da cor nos diferentes elementos gráficos
+
+## Linhas
+
+A aparência das linhas é controlada pelos parâmetros `lty` (tipo), `lwd` (espessura) e `col` (cor). Relativamente à cor das linhas, esta é especificada da mesma forma que para os pontos. Discutem-se a seguir os outros dois parâmetros.
+
+### Tipo (`lty`)
+
+O R dispõe de um conjunto de linhas pré-definidas e permite definir outras. As linhas pré-definidas podem ser especificadas com um número entre 0 e 6, correspondendo, respetivamente aos tipos `"blank"`, `"solid"`, `"dashed"`, `"dotted"`, `"dotdash"`, `"longdash"` e `"twodash"`. Na @fig-tut-graphics-lty-lwd e código precedente estão exemplos da utilização de `lty`.
+
+### Espesura (`lwd`)
+
+O parâmetro `lwd` controla a espessura da linha e deve ser numérico. Por omissão o valor de `lwd` é 1. Na figura @fig-tut-graphics-lty-lwd-2 encontra-se um exemplo da especificação de `lwd`. Note que, no caso dos segmentos, o comprimento destes também é proporcional ao valor de `lwd`.
+
+```{r}
+#| label: fig-tut-graphics-lty-lwd
+#| fig-cap: Especificação do parâmetro `lty`
+#| layout-ncol: 2
+#| fig-subcap: 
+#|   - "Especificação de uma linha tracejada"
+#|   - "Especificação de uma linha tracejada mais espessa"
+
+plot(mtcars$mpg, type = "l", lty = "dashed")
+plot(mtcars$mpg, type = "l", lty = 2, lwd = 3)
+```
+
+## Margens {#sec-tut-graphics-margins}
+
+As margens das figuras, definidas como o espaço que vai desde o limite da figura até à caixa que envolve o gráfico, podem ser ajustadas através dos parâmetros `mai` e `mar`, recorrendo à função `par()`. As margens podem ser especificadas em polegadas (`mai`) ou, mais frequentemente, em linhas de texto com `mar`.
+
+Em ambos os casos é necessário fornecer um vetor com 4 valores, especificando as margens inferior, esquerda, superior e direita, respetivamente. Por omissão, o R estabelece `mar = c(5, 4, 4, 2) + 0.1`. Note que a margem direita é mais pequena, pois, por norma, está vazia. As outras devem ser suficientes para os títulos, subtítulos, escalas e rótulos dos eixos.
+
+As situações mais comuns em que é necessário alterar as margens são a colocação de um segundo eixo vertical ou de uma legenda do lado direito. Caso o gráfico não inclua algum dos elementos referidos acima, as margens podem ser ajustadas.
+
+A @fig-tut-graphics-mar contém exatamente o mesmo gráfico da @fig-tut-graphics-plot-cars. No entanto, especificaram-se margens muito pequenas (1.5 linhas) e vários elementos gráficos foram cortados ou seriam colocados fora da área útil. Para que as área das margens seja evidente utilizou-se um fundo cinzento (`bg = "gray95"`).
+
+```{r}
+#| label: fig-tut-graphics-mar
+#| fig-cap: Especificação das margens
+
+p <- par(bg = "gray95", mar = rep(1.5, 4))
+plot(cars)
+par(p)
+```
+
+## Funções gráficas de baixo nível {#sec-tut-graphics-low}
+
+No sistema de gráficos do R existem dois tipos de funções para colocar elementos gráficos numa figura:
+
+-   **Funções gráficas de alto nível**: são capazes de produzir um gráfico completo, tal como `plot()` ou as funções descritas na @sec-tut-graphics-high.
+
+-   **Funções gráficas de baixo nível**: este conjunto de funções acrescenta elementos a um gráfico já existente, por exemplo, pontos adicionais, linhas, anotações, etc.
+
+Algumas das funções de baixo nível mais utilizadas são:
+
+-   `points(x, y, ...)`: para adicionar pontos adicionais ao gráfico, sendo possível especificar símbolos, cores, etc.
+
+-   `lines(x, y, ...)`: para adicionar linhas a ligar as coordenadas especificadas, sendo possível especificar tipos, espessuras, cores, etc.
+
+-   `text(x, y, labels, ...)`: para adicionar anotações ao gráfico, especificando a posição, o texto em si, tamanho, cores, etc.
+
+-   `mtext(text)`: para colocar texto nas margens.
+
+-   `abline()`: trata-se de uma função para acrescentar linhas retas ao gráfico. A linha pode ser especificada de várias formas: `a =` e `b =` para a ordenada na origem e o declive, `v =` ou `h =` para linhas verticais e horizontais ou um objeto resultante de um modelo de regressão, `reg =` a partir dos quais se possam extrair os coeficientes da reta. Naturalmente, é possível especificar cores, espessuras, etc.
+
+-   `polygon(x, y)`: para adicionar um polígono fechado delimitado pelas coordenadas especificadas, sendo possível especificar cores, preenchimentos, etc.
+
+-   `title()`: para adicionar um título ou subtítulo ao gráfico, especificando cores, tamanhos, etc.
+
+-   `axis(side, ...)`: para adicionar um eixo completo num dos lados do gráfico à escolha. Normalmente é utilizado quando se especifica `axis = FALSE` na função `plot()`, para poder configurar o eixo.
+
+-   `box()`: para colocar uma caixa em torno do gráfico ou da figura, podendo especificar o tipo de linha, cores, etc.
+
+-   `legend()`: para adicionar uma legenda ao gráfico. Esta função será descrita com detalhe na @sec-tut-graphics-legend.
+
+O código que se segue produz a animação da @fig-tut-graphics-low-functions. Naturalmente, a figura final é confusa e não tem qualquer significado, apenas serve para ilustrar as potencialidades do R.
+
+```{r}
+#| label: fig-tut-graphics-low-functions
+#| fig-cap: Funções de baixo nível
+#| fig-keep: all
+#| fig-show: animate
+#| collapse: true
+#| out-extra: class="preview-image"
+
+# posição das marcas em metros
+at_m <- pretty(cars$dist * 0.3048)
+
+# alargar margem direita
+p <- par(mar = rep(5, 4, 4, 4))
+
+plot(cars, bty = "n", xlab = "Velocidade (mph)", ylab = "Distância (ft)") # <1>
+box(lty = "dotted", col = "gray") # <2>
+axis(4, at = at_m / 0.3048, labels = at_m) # <3>
+mtext("Distância (m)", side = 4, line = 3) # <4>
+points(1:26, 1:26, col = "red", pch = 5) # <5>
+text(1:26, 1:26, letters, cex = 0.75, pos = 1) # <6>
+lines(cars[10:30, ], lty = "dotted", col = "blue") # <7>
+abline(a = 30, b = 2, col = "orange1") # <8>
+abline(h = 100, col = "orange2") # <9>
+abline(v = 10:12, col = "orange3") # <10>
+abline(lm(dist ~ speed, data = cars), col = "purple", lty = "dotted") # <11>
+polygon(c(5, 10, 12, 7), c(80, 90, 100, 110), border = "darkred", col = "pink") # <12>
+text(8, 95, "um polígono", cex = 0.75) # <13>
+title(main = "Funções de baixo nível", col.main = "darkgreen") # <14>
+```
+
+1.  Um gráfico simples, suprimindo a caixa envolvente. Esta é a única chamada a uma função de alto nível, `plot()`.
+2.  Colocação de uma caixa envolvente com `box()`.
+3.  Colocação de um segundo eixo vertical com as distâncias em metros usando `axis()`. A posição das marcas de escala foram previamente calculadas com a função `pretty()`.
+4.  Adição de um rótulo ao segundo eixo vertical com a função `mtext()`
+5.  Adição de um conjunto de pontos, alguns fora da zona visível do gráfico, com a função `points()`.
+6.  Utilização da função `text()` para colocar texto junto aos pontos adicionados. A constante `letters` contém as 26 letras minúsculas.
+7.  Adição de linhas a ligar alguns pontos com a função `lines()`.
+8.  Colocação de uma linha reta especificando a ordenada na origem e o declive, com `abline()`.
+9.  Colocação de uma reta horizontal.
+10. Colocação de várias retas verticais.
+11. Colocação de uma linha de tendência calculada com `lm()`.
+12. Adição de um polígono arbitrário com `polygon()`.
+13. Colocação de texto sobre o polígono com `text()`.
+14. Adição de um título com `title()`.
+
+::: callout-note
+Os diversos elementos são adicionados ao gráfico na ordem em que aparecem no código e são sobrepostos, ocultando objetos anteriores na mesma posição. Deve certificar-se que especifica a ordem correta para o efeito desejado. Outra possibilidade é a utilização de cores com algum grau de transparência.
+:::
+
+## Cores {#sec-tut-graphics-col}
+
+Por norma, as funções gráficas aceitam o argumento `col` que especifica a cor do elemento a colocar no gráfico: pontos, linhas, texto, contornos ou preenchimentos. Ao longo das secções anteriores, especificaram-se desta forma cores, para diversos elementos gráficos.
+
+Para além de `col` existem mais 3 parâmetros gráficos que podem ser especificados na generalidade das funções ou numa chamada a `par()`:
+
+-   `col.axis`: cor a utilizar na escala dos eixos.
+-   `col.lab`: cor a utilizar nos rótulos dos eixos.
+-   `col.main`: cor a utilizar no título do gráfico.
+-   `col.sub`: cor a utilizar no subtítulo do gráfico.
+
+### Especificação de cores
+
+No R, as cores são especificadas utilizando o modelo RGB (***R**ed*, ***G**reen*, ***B**lue*) em que cada cor é descrita pelo nível de cada um das cores componentes primárias. Esse nível varia entre 0 e 1, que é depois ajustado a um valor entre 0 e 255 descrito por dois símbolos hexadecimais. Desta forma é possível especificar 255^3^ $\approx$ 16.6 milhões de cores diferentes.
+
+::: callout-note
+Um símbolo hexadecimal é um dos seguintes 16 carateres: `r 0:9`, `r LETTERS[1:6]`. No caso das cores do modelo RGB, os níveis de cada componente podem tomar os valores 00, 01, 02, ..., 0F, 10, 11, ..., FD, FE, FF, representando os níveis de 0 a 255.
+:::
+
+Por exemplo, se os 3 níveis forem iguais a 0 obtém-se a cor preta (`"#000000"`) e se forem iguais a 255, a branca (`"#FFFFFF"`).
+
+Adicionalmente é possível especificar o nível de transparência acrescentando mais dois símbolos hexadecimais. Tal como as componentes primárias, o nível de transparência vai desde 00 (totalmente transparente) a FF (totalmente opaco). Por exemplo, a cor `"#FF0000AA"` especifica a cor vermelha (`"#FF0000"`) com algum grau de transparência.
+
+Para obter uma cor arbitrária, por exemplo, 30% de vermelho, 40% de verde, 50% de azul e 60% opaco, poder-se-ia utilizar a função `rgb()`.
+
+```{r}
+rgb(0.3, 0.4, 0.5, 0.6)
+```
+
+Naturalmente, seria fastidioso relembrar e escrever códigos RGB sempre que se necessitasse de utilizar cores. Por esse motivo, foram definidos uma série de nomes, já utilizados nas secções anteriores, para que se possam especificar cores de forma expedita.
+
+Por exemplo, especificar `col = "#0000FF"` é o mesmo que especificar `col = "blue"`. Um outro exemplo, `col = "chocolate"` é o mesmo que `col = "#D2691E"`. Para obter a lista de nomes de cores que o R conhece pode utilizar-se a função `colors()`, que devolve uma lista de `r length(colors())` cores.
+
+Uma outra forma de especificar as cores a utilizar é através de um número inteiro. Nesse caso, o número identifica uma cor na paleta em uso. As cores da paleta em uso, pode ser obtidas com:
+
+```{r}
+palette()
+```
+
+Neste caso, a paleta em utilização tem 8 cores que podem ser referidas pelos inteiros de 1 a 8. A mesma função pode ser utilizada para especificar uma nova paleta. Para melhor compreender a utilização e manipulação de paletas, deve fazer `?palette`.
+
+::: callout-note
+O R tem configuradas várias paletas (pode obter a lista com `palette.pals()`) e, por omissão, utiliza a paleta `"R4"`. Caso se produzam vários gráficos para utilizar num mesmo material (por exemplo, um relatório) é importante escolher uma paleta adequada de forma a obter consistência.
+
+Para lá das paletas pré-configuradas, há várias funções e *packages* para construir paletas com determinadas propriedades gráficas. Há inúmeros recursos disponíveis sobre o tópico da cor caso queira aprofundar conhecimentos ou configurar paletas, por exemplo, em [Color Palette Finder](https://r-graph-gallery.com/color-palette-finder){target="_blank"}.
+:::
+
+Resumindo, para selecionar uma cor, há 3 formas diferentes:
+
+-   Pelo **nome**, por exemplo, `col = "gray62"`.
+-   Pelo **número** na paleta em uso, por exemplo, `col = 8`.
+-   Pelo **código hexadecimal**, por exemplo, `col = "#9E9E9E"`.
+
+No caso da paleta apresentada acima, os exemplos da lista especificam exatamente a mesma cor.
+
+## Legendas {#sec-tut-graphics-legend}
+
+Quando um gráfico contém informação múltipla e a interpretação não é óbvia, deve colocar-se uma legenda. Embora algumas funções de alto nível permitam especificar as características da legenda, tipicamente, esta é colocada com a função `legend()` depois de o gráfico estar desenhado.
+
+Para especificar uma legenda é necessário passar à função `legend()` os argumentos relevantes. Na @tbl-graphics-legend está uma lista não exaustiva dos principais argumentos da função. Para uma listagem completa pode fazer `?legend`.
+
+| Argumento | Elemento |
+|:--------------------|:--------------------------------------------------|
+| `x =`, `y =` | Coordenadas do ponto superior esquerdo da caixa que contém a legenda. Pode ser especificada uma posição relativa com `x =` a: `"bottomright"`, `"bottom"`, `"bottomleft"`, `"left"`, `"topleft"`, `"top"`, `"topright"`, `"right"` e `"center"` |
+| `legend =` | Vetor com as várias entradas de texto a colocar na legenda |
+| `fill =`, `border =` | Vetor de cores a utilizar no preenchimento e no bordo da caixa de cada entrada |
+| `col =` | Vetor de cores a utilizar nos símbolos de cada entrada |
+| `pch =`, `pt.cex =`, `lty =`, `lwd =` | Vetores que especificam os símbolos e as linhas para cada entrada |
+| `bty = "n"` | Para suprimir a caixa envolvente da legenda |
+| `ncol =` | Especifica o número de colunas da legenda |
+| `horiz = TRUE` | Para especificar uma legenda na horizontal |
+| `title =` | Para especificar um título para a legenda |
+| `inset =` | Para especificar a distância da legenda às margens, quando esta é colocada de forma relativa |
+| `xpd = TRUE` | Para permitir que a legenda ocupe as margens da figura |
+
+: Configuração de legendas {#tbl-graphics-legend .striped}
+
+Na @fig-tut-graphics-legend está o resultado do código abaixo, onde são ilustradas várias técnicas para a colocação de uma legenda.
+
+```{r}
+#| label: fig-tut-graphics-legend
+#| fig-cap: Configuração de legendas
+#| layout-ncol: 2
+#| fig-subcap: ""
+
+cyl <- ordered(mtcars$cyl)
+
+plot(
+  mtcars$disp, mtcars$mpg,
+  xlab = "Cilindrada (polegadas cúbicas)", ylab = "Consumo (milhas por galão)",
+  col = as.numeric(cyl), pch = as.numeric(cyl)
+)
+
+legend(
+  "topright",
+  legend = levels(cyl),
+  title = "Cilindros",
+  inset = 0.02,
+  col = 1:3,
+  pch = 1:3
+)
+
+# ----------
+
+cl <- c("steelblue", "darkgreen", "darkred")
+sz <- c(1, 1.25, 1.5)
+
+plot(
+  mtcars$disp, mtcars$mpg,
+  xlab = "Cilindrada (polegadas cúbicas)", ylab = "Consumo (milhas por galão)",
+  col = cl[cyl], cex = sz[cyl], pch = 19
+)
+
+legend(
+  "top",
+  legend = levels(cyl),
+  title = "Cilindros",
+  inset = 0.02,
+  horiz = TRUE,
+  col = cl,
+  pch = 19,
+  pt.cex = sz
+)
+
+# ----------
+
+x <- 0:20
+
+plot(x, x ^ 2, type = "o", pch = 15, col = "purple", ann = FALSE)
+points(x, x * 15, type = "o", pch = 16, col = "blue", lty = "dotted")
+
+legend(
+  0, 390,
+  c("Linear", "Quadrática"),
+  bty = "n",
+  pch = 16:15,
+  col = c("blue", "purple"),
+  lty = c("dotted", "solid")
+)
+
+# ----------
+
+par(mar = c(5, 4, 4, 5))
+
+plot(cyl, xlab = "Cilindros", col = 3:5)
+
+legend(
+  "right",
+  legend = levels(cyl),
+  title = "Cilindros",
+  inset = -0.15,
+  fill = 3:5,
+  xpd = TRUE
+)
+```
+
+Na @fig-tut-graphics-legend-1 colocou-se uma legenda em função do nível de uma variável categórica. Por simplicidade, utilizaram-se a cores 1 a 3 da paleta e os símbolos 1 a 3. Desta forma, os vetores de símbolos e de cores foram definidos com facilidade. Note-se que a variável `mtcars$cyl` é numérica, mas foi definida uma variável categórica, `cyl`. Quando se utiliza a função `as.numeric()` numa variável categórica obtém-se o nível como um inteiro entre 1 e o número de níveis. O código a seguir mostra as diferenças:
+
+```{r}
+mtcars$cyl
+cyl
+as.numeric(cyl)
+```
+
+A @fig-tut-graphics-legend-2 é semelhante, optou-se por variar o tamanho e a cor em função da mesma variável categórica mas definiram-se dois vetores com cores e com tamanhos a utilizar. Note-se que, sendo `cyl` uma variável categórica, utilizar `[cyl]` é equivalente a utilizar `[as.numeric(cyl)]`. Utilizou-se também `horiz = TRUE` para colocar a legenda na horizontal, resultado que poderia ser obtido com `ncol = 3`.
+
+Na @fig-tut-graphics-legend-3 ilustra-se como se pode representar pontos e linhas numa legenda. Neste caso, os vetores foram definidos *ad hoc*, uma vez que há apenas duas categorias.
+
+Por último, na @fig-tut-graphics-legend-4 a legenda (totalmente inútil) é colocada na margem. Note-se que foi necessário alargar a margem, recorrendo a `par()` e permitir que a legenda seja colocada na margem com `xpd = TRUE`. Neste caso utilizaram-se as cores 3 a 5 da paleta. O tamanho da margem e o ajuste da posição foram determinados por tentativa e erro, mas poderiam ter sido determinados programaticamente utilizando os resultados de `legend(..., plot = FALSE)`.
+
+
+## Ficheiros de imagens
+
+Embora o *RStudio* permita exportar os gráficos criados a partir da aba dos gráficos, ou copiar um gráfico para a área de transferência, não raras vezes, é útil criar esses ficheiros diretamente de forma programática. A forma de o fazer é utilizar os dispositivos (*devices*) gráficos do R.
+
+Estão definidos vários dispositivos que permitem criar ficheiros de imagens, como por exemplo, `pdf()`, `png()`, `jpeg()`, `bmp()`, `tiff()`, `postscript()` ou `svg()`.
+
+O código que se segue permitiria criar um ficheiro de imagem do tipo PNG com o nome *imagem.png* e com um tamanho de 480 por 300 pixeis.
+
+```{r}
+#| eval: false
+
+png("imagem.png", width = 480, height = 340)
+# ...
+# comandos gráficos 
+# ...
+dev.off()
+```
+
+Naturalmente, cada dispositivo permite especificar um conjunto de parâmetros relevantes para esse formato.

@@ -1,0 +1,44 @@
+digraph G {
+    graph [compound=true rankdir=TB ordering=out]
+    
+    node [shape=box style=rounded fontname="Lato" fontsize=10]
+    
+    subgraph cluster_scale {
+        shape = box
+        style=rounded
+        fontname="Lato"
+        fontsize=12
+        label="Escala"
+        
+        //node [style = "filled,rounded"]
+        //node [label="Nominal"]nom
+        //node [label="Ordinal"]ord
+        //node [label="Intervalo"]int
+        //node [label="Absoluta"]abs
+        
+        //abs -> int -> ord -> nom
+    }
+    
+    
+    subgraph xcluster_temp {
+        shape = box
+        style=rounded
+        fontname="Lato"
+        fontsize=12
+        label="Exemplo"
+        
+        //node [label="Paridade"]tnom
+        //node [label="Estado do tempo"]tord
+        //node [label="Temperatura ºC"]tint
+        //node [label="Temperatura ºK"]tabs
+        
+        //node [shape = "plaintext"]
+        node [label=<<b>Temperatura</b><br/>(escala absoluta)<br/><br/>300 ºK>]texabs
+        node [label=<<b>Temperatura</b><br/>(escala de intervalo)<br/><br/>26.85 ºC>]texint
+        node [label=<<b>Estado do tempo</b><br/>(escala ordinal)<br/><br/>tempo quente>]texord
+        node [label=<<b>Parilidade</b><br/>(escala nominal)<br/><br/>par>]texnom
+        
+        //tabs -> tint -> tord -> tnom
+        texabs -> texint -> texord -> texnom 
+    }
+}

@@ -1,0 +1,667 @@
+---
+metadata-files:
+  - _chapter.yml
+  
+listing:
+  id: probability-listing
+  include:
+    ecd-order: [8]
+---
+
+```{r}
+#| include: false
+#| cache: false
+
+source("R/chapters.R")
+library("openintro")
+```
+
+# Probabilidades {#sec-prob}
+
+Neste capítulo são apresentados os principais conceitos, frequentemente designados por *teoria da probabilidade* ou por *introdução à probabilidade*. Começam por ser apresentadas as definições mais elementares que, mais à frente, serão utilizadas para introduzir conceitos mais complexos e abstratos. Trata-se de uma leitura fundamental para compreender toda a teoria estatística.
+
+## Conceitos fundamentais {#sec-prob-concepts}
+
+A maior parte da estatística envolve, de uma ou outra forma, probabilidades. Embora todos tenhamos uma noção do que são probabilidades, pois estas estão associadas a decisões que tomamos diariamente, quando se pretende definir os conceitos de forma mais genérica e abstrata, surgem dificuldades. Esta secção apresenta os conceitos elementares associados às probabilidades.
+
+### Experiências aleatórias {#sec-prob-concepts-randexp}
+
+As probabilidades são sempre associadas a contextos de incerteza. Frequentemente, aparecem situações em que, perante as mesmas condições iniciais, o resultado de algo é incerto. Na Estatística estas situações são designadas por *experiências aleatórias*. Mais formalmente, para que se esteja perante uma experiência aleatória é necessário:
+
+-   Haver dois ou mais resultados possíveis.
+-   Haver incerteza sobre o resultado.
+
+Trivialmente, é possível enumerar exemplos clássicos de experiências aleatórias: lançar uma moeda, lançar um dado, selecionar, ao acaso, uma carta de um baralho ou uma bola de uma urna, etc.
+
+Numa análise mais superficial, em qualquer dos exemplos apontados, as duas condições enumeradas *parecem* estar reunidas. No entanto, numa análise mais profunda, em qualquer um dos exemplos, se fosse possível reunir as mesmas condições iniciais e repetir o procedimento exato, rapidamente se constata que teria que se obter sempre o mesmo resultado.
+
+Tome-se o exemplo do lançamento de uma moeda. Caso as condições iniciais do lançamento possam ser replicadas de forma exata, o resultado do lançamento será sempre o mesmo, pois o fenómeno apenas está sujeito às leis da física.
+
+No entanto, quando uma pessoa lança uma moeda à mão, é muito difícil, garantir ou controlar as condições iniciais de cada lançamento: velocidade, ângulo de saída, momento angular, distância ao solo, etc. Por este motivo, o resultado do lançamento de uma moeda por uma pessoa é considerado incerto.
+
+Em geral, sempre que o resultado de uma experiência é muito sensível às condições iniciais pode ser mais prático tratar o fenómeno como aleatório, como nos casos enumerados atrás (moeda, dado, cartas, urna e outros).
+
+::: callout-tip
+Uma forma de obter sequências aleatórias consiste precisamente em utilizar dispositivos muito sensíveis às condições iniciais. Por exemplo, o lançamento de um dado é um desses dispositivos, gerando sequências de resultados indistinguíveis de sequências verdadeiramente aleatórias.
+:::
+
+Na prática, independentemente da fonte da incerteza, quer advenha das condições iniciais, quer advenha do fenómeno em si, podemos aplicar o conceito de *experiência aleatória* de forma indistinta.
+
+### Espaços amostrais {#sec-prob-concepts-sspaces}
+
+Um *espaço amostral* tem uma definição muito simples: trata-se do conjunto de todos os resultados possíveis de uma experiência aleatória. Os espaços amostrais podem ser classificados em:
+
+-   Espaços amostrais **discretos**: o conjunto de resultados pode ser enumerado. Estes espaços amostrais podem ser finitos ou infinitos.
+
+    > Um exemplo de um espaço amostral **finito** são os resultados possíveis no lançamento de um dado, ou seja, o conjunto {1, 2, 3, 4, 5, 6}.
+
+    > Já um espaço amostral **infinito** pode ser exemplificado pelas sequências de resultados até obter *6* no dado, ou seja, {6, 16, 26, ..., 116, 126, ... 216, 226, ... 1116, 1126, ...}.
+
+-   Espaços amostrais **contínuos**: o conjunto de resultados é um valor num determinado intervalo real. Estes espaços amostrais são sempre infinitos, mesmo que se trate de intervalos fechados.
+
+    > Um exemplo de um espaço amostral contínuo pode ser o intervalo que decorre entre duas chegadas a uma fila de espera, que será um valor no intervalo \[0, +$\infty$\[.
+
+Por norma, o conjunto de resultados de um espaço amostral é designado pela letra grega $\Omega$.
+
+Note-se que na @sec-method-dtypes-nat fez-se uma distinção semelhante a propósito dos diferentes tipos de dados estatísticos. De facto, uma observação de uma variável estatística também é um elemento de entre um conjunto de valores possíveis.
+
+### Acontecimentos {#sec-prob-concepts-events}
+
+Apoiados nos dois conceitos anteriores podemos agora definir um *acontecimento*, como um subconjunto do espaço amostral.
+
+Geralmente, falamos de acontecimentos quando se pretende referir um subconjunto de resultados que têm alguma característica expressiva em comum. Por exemplo, no lançamento de um dado, podemos definir o acontecimento *obter um número par*, correspondendo ao conjunto {2, 4, 6}. No entanto, é possível definir um acontecimento que corresponda a um qualquer subconjunto arbitrário.
+
+Os acontecimentos costumam ser designados por letras maiúsculas, A, B, C, etc., e podem ser representados num *diagrama de Venn*, tal como na @fig-prob-venn, onde se representa o espaço amostral do lançamento de um dado e o acontecimento *obter um número primo*.
+
+```{r}
+#| label: fig-prob-venn
+#| fig-cap: Diagrama de Venn
+#| fig-width: 5
+#| echo: false
+
+ecd_venn(1, snames = "Primos")
+
+cx <- c(100, 500, 400, 200, 600, 900)
+cy <- c(400, 600, 450, 800, 500, 300)
+ecd_points(cx, cy)
+text(cx, cy, 1:6, pos = 4)
+```
+
+Quando se trata de conjuntos, tal como é o caso dos acontecimentos, o diagrama de Venn é uma excelente visualização, pois permite intuir facilmente sobre as regras da álgebra de conjuntos. Por exemplo, na @fig-prob-set-basics pode visualizar-se o resultado da aplicação de algumas regras algébricas sobre conjuntos.
+
+```{r}
+#| label: fig-prob-set-basics
+#| fig-cap: "Algumas operações com conjuntos"
+#| fig-subcap:
+#|   - "Reunião de A com B"
+#|   - "Interseção de A com B"
+#|   - "Complementar de A"
+#|   - "Complementar de A relativo a B"
+#| layout-ncol: 2
+#| echo: false
+#| out-extra: class="preview-image"
+
+ecd_venn("1-+-1")
+ecd_venn("11")
+ecd_venn("0", ilcs = 1)
+ecd_venn("01", ilcs = 1)
+```
+
+Em geral, qualquer regra que se aplique na álgebra de conjuntos também pode ser aplicada a acontecimentos para determinar os conjuntos resultantes das operações de reunião, interseção, etc., efetuadas sobre acontecimentos.
+
+Há alguns acontecimentos notáveis, cujas definições se apresentam:
+
+-   **Acontecimento certo**: é um acontecimento cujo conjunto de resultados inclui todos os elementos do espaço amostral.
+
+    > O acontecimento definido por *obter um ou mais pontos no lançamento de um dado* inclui todos os elementos do espaço amostral.
+
+-   **Acontecimento impossível**: é um acontecimento cujo conjunto de resultados é vazio.
+
+    > O acontecimento definido por *obter mais de 6 pontos no lançamento de um dado* não inclui qualquer elemento do espaço amostral.
+
+-   **Acontecimento simples** ou acontecimento elementar: é um acontecimento cujo conjunto de resultados é singular, i.e, contém apenas 1 resultado.
+
+    > O acontecimento definido por *obter 6 pontos no lançamento de um dado* é um exemplo, uma vez que há apenas 1 resultado favorável ao acontecimento.
+
+-   **Acontecimentos mutuamente exclusivos** ou acontecimentos disjuntos: são acontecimentos cujos conjuntos de resultados não têm elementos em comum, ou seja $A \cap B = \emptyset$.
+
+    > Um exemplo deste tipo de acontecimentos é *obter 2 ou menos pontos* e *obter 5 ou mais pontos* num lançamento do dado. Não há nenhum resultado que pertença aos dois conjuntos.
+
+-   **Acontecimentos complementares**: são acontecimentos mutuamente exclusivos em que o conjunto de resultados que resulta da reunião é igual ao espaço amostral, ou seja $A \cup \bar{A} = \Omega$. Para designar o complementar do acontecimento $A$, utiliza-se $\bar{A}$.
+
+    > Um exemplo deste tipo de acontecimentos é *obter um número par* e *obter um número ímpar* num lançamento do dado. Note-se que os acontecimentos são mutuamente exclusivos e a reunião é o espaço amostral.
+
+::: callout-tip
+Todos os acontecimentos complementares são mutuamente exclusivos. O contrário nem sempre é verdade.
+:::
+
+### Probabilidade {#sec-prob-concepts-probability}
+
+Na linguagem comum, o termo *probabilidade* está associado à maior ou menor possibilidade ou frequência com que algum acontecimento tenha ocorrido ou venha a ocorrer. De facto, no dicionário, *probabilidade* está definida, entre outras aceções, como a *frequência com que ocorre determinado acontecimento* [@infopedia-probabilidade].
+
+Embora esta definição sirva na linguagem comum, na definição matemática é necessário mais rigor e precisão. Assim, ao longo do tempo foram apresentadas e desenvolvidos definições e conceitos associados à probabilidade.
+
+#### Abordagem clássica {.unnumbered}
+
+Dado o espaço amostral de experiência aleatória em que todos os resultados têm a mesma probabilidade de ocorrência, a probabilidade de um acontecimento é definida como o rácio entre o número de resultados favoráveis a esse acontecimento e o número de resultados possíveis.
+
+Formalmente, se um espaço amostral for composto por $R_1$, $R_2$, ..., $R_n$ resultados diferentes e se um acontecimento $A$ for definido sobre esse espaço amostral, então
+
+$$P(A)=\frac{n_A}{n}$$
+
+sendo $n_A$ o número de elementos do espaço amostral pertencentes ao conjunto de resultados do acontecimento A.
+
+Embora esta definição de probabilidade tenha um âmbito limitado, só sendo aplicável quando os diferentes resultados são equiprováveis, não deixa de ser aplicável a inúmeros casos com interesse prático.
+
+::: callout-tip
+#### Aplicação da definição clássica
+
+Se, por exemplo, no lançamento de um dado, se pretender determinar a probabilidade de *obter um número ímpar*, podemos utilizar a definição clássica, admitindo que se trata de um dado perfeitamente equilibrado.
+
+Seja A o referido acontecimento. Então,
+
+$$P(A)=\frac{n_A}{n}=\frac{\#\{ 1, 3, 5\}}{\#\{ 1, 2, 3, 4, 5, 6\}} = \frac{3}{6} = \frac{1}{2} = 0.5$$
+:::
+
+#### Abordagem frequencista {.unnumbered}
+
+A maior limitação da abordagem clássica de probabilidade é ser aplicável apenas a espaços amostrais em que todos os resultados são equiprováveis. É fácil constatar que esta limitação é importante e inúmeras situações com interessa prático não poderiam ser tratadas. Por exemplo, na experiência do lançamento do dado, se não houver a certeza de se tratar de um dado perfeitamente equilibrado, a abordagem clássica não faria sentido.
+
+Caso a experiência aleatória em causa possa ser repetida um número arbitrário de vezes, aquela limitação pode ser contornada utilizando a abordagem frequencista de probabilidade. Assim, a probabilidade de um acontecimento $A$ pode ser calculada através do rácio entre o número de vezes que o acontecimento ocorre e o número de repetições, quando o número de repetições for arbitrariamente grande. Formalmente,
+
+$$P(A)=\lim_{n\to\infty}\frac{n_A}{n}$$ {#eq-prob-freq-def} em que $n$ é o número de vezes que se repete a experiência aleatória e $n_A$ o número de vezes que, na experiência, o acontecimento $A$ ocorreu. Note-se que, ao contrário da abordagem clássica, não se trata de uma probabilidade exata, mas de uma aproximação com base na frequência relativa do acontecimento. No entanto, a aplicação da *Lei dos grandes números* garante a convergência, quando o número de repetições é suficientemente grande.
+
+::: callout-note
+### Lei dos grandes números
+
+No contexto da abordagem frequencista de probabilidade, a *lei dos grandes números* (LGN) garante que, à medida que o número de repetições tende para infinito, a probabilidade de um qualquer acontecimento definido no respetivo espaço amostral, converge para a verdadeira probabilidade desse acontecimento.
+:::
+
+::: callout-important
+### A falácia do jogador
+
+Uma interpretação falaciosa da LGN é conhecida coma a *falácia do jogador*, por ser especialmente popular entre jogadores de jogos fortuna e azar. Nesta *versão* da LGN algumas pessoas acreditam que, depois de ter azar várias vezes, o jogo (cartas, dados, etc.) lhe está *em favor* e que terá certamente que ser *compensado* devido à LGN.
+
+Naturalmente, o facto de um acontecimento ter ou não ocorrido, não muda a probabilidade de ocorrência no futuro. Por exemplo, admita-se que uma moeda foi lançada 10 vezes, tendo sido obtidas 10 *caras*. A probabilidade de obter *cara* ou *coroa* no lançamento seguinte é a mesma dos anteriores, por hipótese, 0.5 cada face.
+
+A moeda não está *a dever* uma *coroa*, pelo simples facto de que se trata de um objeto de metal inanimado, não possuindo contabilidade organizada. Igualmente, não existe nenhuma entidade ou força conhecida encarregue de manter os registos e o equilíbrio.
+:::
+
+Na @fig-prob-freq-demo pode visualizar-se a convergência para a real probabilidade do acontecimento quando se utiliza a expressão @eq-prob-freq-def. No gráfico simula-se o resultado do lançamento de uma moeda `r (n <- 500)` vezes. Por hipótese, a probabilidade teórica de sair cara é igual a 0.5.
+
+```{r}
+#| label: fig-prob-freq-demo
+#| fig-cap: "Convergência na abordagem frequencista"
+#| echo: false
+
+set.seed(202506)
+#n <- 500
+f <- cumsum(sample(0:1, n, replace = TRUE)) / 1:n
+
+plot(
+  1:n, f, type = "l", col = 6,
+  xlab = "# lançamentos", ylab = "P(cara)"
+)
+abline(h = 0.5, col = 7, lty = "dashed")
+legend(
+  "topright",
+  legend = c("Prob. estimada", "Prob. teórica"),
+  lty = c("solid", "dashed"),
+  col = c(6, 7),
+  bty = "n", inset = 0.02
+)
+```
+
+Note-se que, no contexto da LGN, a convergência não é *monótona*, isto é, o valor da probabilidade estimada nem sempre se aproxima da probabilidade teórica à medida que o número de repetições aumenta. Como se pode ver na figura, há períodos em que o valor estimado se afasta do valor teórico. Aliás, em termos absolutos, a diferença entre o número de caras obtido e o número de caras teórico tende a aumentar. No entanto, a probabilidade tende a convergir para o valor teórico pois o número de lançamentos (denominador) aumenta mais rapidamente.
+
+#### Abordagem subjectiva {.unnumbered}
+
+As abordagens descritas anteriormente são objetivas, no sentido em que há uma forma unívoca de calcular uma probabilidade. No entanto, apenas se aplicam em circunstâncias particulares, não sendo universais.
+
+Para os subjetivistas, a probabilidade é um *grau de crença*, isto é, a probabilidade reflete a disposição de um indivíduo para acreditar na eventual ocorrência de um acontecimento. Este grau de crença pode variar de indivíduo para indivíduo e pode variar no tempo.
+
+Desta forma, é possível atribuir probabilidades a qualquer acontecimento, mesmo aqueles que não é possível observar. Por exemplo, a probabilidade de haver outras formas de vida inteligentes na nossa galáxia.
+
+Talvez a forma mais comum de interpretar a abordagem subjetiva seja imaginar uma situação em que, na ocorrência de um acontecimento, A, um agente racional recebe 1 unidade de uma qualquer utilidade (dinheiro, bens, etc.). Caso o acontecimento A não ocorra, recebe 0. O grau de crença em A é igual a $p$ se $p$ for o valor mínimo a que estaria disposto a vender aquela proposta (ou o valor máximo a que estaria disposto a comprar).
+
+Note-se que, interpretada desta forma, a probabilidade terá um conjunto de características semelhante à abordagem clássica ou à abordagem frequencista. Por exemplo, a probabilidade fica limitada ao intervalo entre 0 e 1.
+
+#### Abordagem axiomática {.unnumbered}
+
+Embora as abordagens apresentadas até agora tenham o seu âmbito de aplicação e sejam úteis em muitos contextos, noutros casos, há a necessidade de uma abordagem mais precisa. Assim, a abordagem axiomática define um conjunto de regras abstratas (axiomas) a que as probabilidades devem obedecer. Esta abordagem foi introduzida em 1933 por [Andrey Kolmogorov](https://en.wikipedia.org/wiki/Andrey_Kolmogorov){target="_blank"}, sendo também conhecida como axiomática de Kolmogorov. Apresentam-se de seguida os referidos axiomas.
+
+Considere-se um espaço amostral $\Omega$ e seja $P(A)$ a probabilidade de um qualquer acontecimento A.
+
+##### Axioma 1 {.unnumbered}
+
+$$P(A)\in\mathbb{R}, P(A)\geq 0$$ {#eq-prob-axiom1}
+
+O axioma 1 garante que a probabilidade é um número real positivo.
+
+##### Axioma 2 {.unnumbered}
+
+$$P(\Omega)=1$$ {#eq-prob-axiom2}
+
+O axioma 2, efetivamente, limita qualquer probabilidade a 1. Em conjunto com o axioma 1 podemos afirmar que, para qualquer acontecimento, A, $0 \leq P(A) \leq 1$.
+
+##### Axioma 3 {.unnumbered}
+
+Para quaisquer acontecimentos, A, B, C, ..., **mutuamente exclusivos**,
+
+$$P(A\cup B\cup C\cup\cdots)= P(A)+P(B)+P(C)+\cdots$$ {#eq-prob-axiom3}
+
+A partir destes 3 axiomas, as probabilidades passam a ter um conjunto de propriedades a que devem obedecer, não importando como são interpretadas, se de forma objetiva ou subjetiva. Na @sec-prob-prob-rules serão apresentadas algumas regras práticas de cálculo que podem ser facilmente demonstradas a partir destes axiomas.
+
+### Algumas regras de cálculo {#sec-prob-prob-rules}
+
+A partir dos axiomas enumerados anteriormente é possível deduzir uma série de regras para o cálculo de probabilidades.
+
+$$P(A)+P(\bar{A})=1$$ {#eq-prob-complement}
+
+A @eq-prob-complement pode ser facilmente deduzida a partir dos axiomas. Pela definição de complementaridade sabemos que $A\cup\bar{A}=\Omega$. Então, $P(A\cup\bar{A})=P(\Omega)$. Pelo axioma 1 sabemos que $P(\Omega)=1$ e, como $A$ e $\bar{A}$ são mutuamente exclusivos, pelo axioma 2, $P(A\cup\bar{A})=P(A)+P(\bar{A})$. Consequentemente, $P(A)+P(\bar{A})=1$.
+
+Sabemos também que o acontecimento impossível, $\emptyset$, e o acontecimento $\Omega$ são complementares. Logo podemos deduzir facilmente que
+
+$$P(\emptyset)=0$$ {#eq-prob-emptyset}
+
+Uma outra regra que pode ser deduzida seguindo um raciocínio semelhante é a regra geral da adição:
+
+$$P(A\cup B) = P(A) + P(B) - P(A\cap B)$$ {#eq-prob-add}
+
+A aplicação da @eq-prob-add pode ser visualizada na @fig-prob-venn-addition recorrendo à experiência aleatória do lançamento de um dado equilibrado. Definindo os acontecimentos A (número primo) e B (número par) é imediato constatar que $A\cup B = \lbrace 2,3,4,5,6\rbrace$ e que $P(A\cup B)=5/6$.
+
+```{r}
+#| label: fig-prob-venn-addition
+#| fig-cap: Aplicação da regra da adição (@eq-prob-add)
+#| fig-width: 5
+#| echo: false
+
+ecd_venn("1-+-1", snames = c("Primo (A)", "Par (B)"))
+
+cx <- c(500, 500, 250, 700, 300, 750)
+cy <- c(150, 500, 650, 450, 400, 550)
+ecd_points(cx, cy)
+text(cx, cy, 1:6, pos = 4)
+```
+
+Aplicando a regra da adição, obtém-se exatamente o mesmo resultado:
+
+$$
+\begin{align}
+  P(A\cup B) &= P(A) + P(B) - P(A\cap B)\\
+  &= P(\lbrace 2,3,5\rbrace) + P(\lbrace 2,4,6\rbrace) - P(\lbrace 2\rbrace)\\
+  &= 3/6 + 3/6 - 1/6\\
+  &= 5/6
+\end{align}
+$$
+
+### Distribuições de probabilidade {#sec-prob-concepts-pdist}
+
+No contexto de uma experiência aleatória, uma distribuição de probabilidade pode ser vista como uma função que descreve as probabilidades de cada um dos resultados do espaço amostral da experiência.
+
+Considere-se o caso da experiência aleatória que consiste no lançamento de uma moeda. O espaço amostral, $\Omega$, é o conjunto {*cara*, *coroa*}. A distribuição de probabilidade pode ser descrita por um vetor de probabilidades correspondentes a cada resultado, por exemplo, {0.5, 0.5}. O que a distribuição de probabilidade transmite é $P(cara)=0.5$ e $P(coroa)=0.5$.
+
+Na prática, quando se trata de espaços amostrais discretos, é comum definir a distribuição de probabilidade com recurso a uma tabela. Por exemplo, na experiência aleatória que consiste no lançamento de um dado equilibrado, a distribuição de probabilidade poderia ser definida como na @tbl-prob-distr1.
+
+|               |     |     |     |     |     |     |
+|:--------------|:---:|:---:|:---:|:---:|:---:|:---:|
+| Resultado     |  1  |  2  |  3  |  4  |  5  |  6  |
+| Probabilidade | 1/6 | 1/6 | 1/6 | 1/6 | 1/6 | 1/6 |
+
+: Distribuição de probabilidade no lançamento de um dado equilibrado {#tbl-prob-distr1}
+
+Em vez de enumerar os resultados do espaço amostral, pode definir-se uma distribuição de probabilidade a partir de um conjunto de acontecimentos. Por exemplo no caso do dado, caso apenas interessasse o facto de o resultado ser *par* ou *ímpar*, a distribuição poderia ser definida pela @tbl-prob-distr2.
+
+|               |       |         |
+|:--------------|:-----:|:-------:|
+| Resultado     | *par* | *ímpar* |
+| Probabilidade |  1/2  |   1/2   |
+
+: Distribuição de probabilidade alternativa no lançamento de um dado equilibrado {#tbl-prob-distr2}
+
+No caso de espaços amostrais contínuos a definição de uma distribuição de probabilidade é feita através de uma função densidade de probabilidade. Este tópico será abordado num capítulo posterior.
+
+Independentemente de como a distribuição de probabilidade é definida, de forma a respeitar os axiomas definidos anteriormente, as seguintes propriedadedes terão que ser respeitadas:
+
+-   O conjunto de resultados ou acontecimentos, $A_1$, $A_2$, $\cdots$, $A_n$ é mutuamente exclusivo.
+-   $0\leq P(A_i)\leq 1$, para qualquer resultado, $A_i$.
+-   $\sum_{i=1}^n{A_i}=1$, ou seja, a soma de todas as probabilidades deve ser 1, que pode ser assegurado se $A_1\cup A_2\cup\cdots = \Omega$.
+
+Como se pode verificar nos exemplos acima, todas as distribuições apresentadas respeitam estas 3 propriedades.
+
+## Probabilidades condicionais e independência {#sec-prob-conditional}
+
+Considerem-se os dados do conjunto `HairEyeColor` que já tinham sido usados na @sec-bivar-cat. Reproduz-se novamente a tabela de contingência contendo o número de alunos por cada categoria de quanto à cor dos olhos e quanto à cor do cabelo (@tbl-prob-hair-eye).
+
+```{r}
+#| label: tbl-prob-hair-eye
+#| tbl-cap: "Tabela de contingência para a cor dos olhos e do cabelo"
+#| echo: false
+#| html-table-processing: none
+#| file: assets/tbl-hair-eye.R
+```
+
+```{r}
+#| echo: false
+
+# auxiliary calculations
+tot <- sum(t)
+
+otot <- rowSums(t)
+op <- format(otot / tot, digits = 3)
+
+ctot <- colSums(t)
+cp <- format(ctot / tot, digits = 3)
+
+pt <- format(prop.table(t), digits = 1)
+
+t_blue_or_black <- otot["Blue"] + ctot["Black"] - t["Blue", "Black"]
+p_blue_or_black <- format(t_blue_or_black / tot, digits = 3)
+p_blue_given_black <- format(t["Blue", "Black"] / ctot["Black"], digits = 3)
+
+t_blue_and_black_indep <- otot["Blue"] * ctot["Black"] / tot ^ 2
+p_blue_and_black_indep <- format(t_blue_and_black_indep, digits = 2)
+```
+
+Considere-se agora uma experiência aleatória que consiste em selecionar um aluno ao acaso entre os `r tot` participantes do estudo. O espaço amostral desta experiência tem `r tot` resultados possíveis -- um para cada aluno.
+
+Naquele espaço amostral é possível definir um conjunto de acontecimentos relativos às cores dos olhos e do cabelo do aluno selecionado. Assim, relativamente à cor dos olhos podemos definir `r length(dimnames(t)$Olhos)` acontecimentos (`r dimnames(t)$Olhos`) e relativamente à cor do cabelo podemos definir mais `r length(dimnames(t)$Cabelo)` acontecimentos (`r dimnames(t)$Cabelo`).
+
+Nos exemplos apresentados, não se vai utilizar o acontecimento *Brown*, pois tanto se poderia referir à cor dos olhos, como à cor do cabelo, o que seria confuso.
+
+### Probabilidades marginais {#sec-prob-conditional-margin}
+
+Para qualquer destes acontecimentos é fácil calcular as probabilidades de ocorrência, bastando aplicar a definição clássica de probabilidade, admitindo que todos os alunos têm a mesma probabilidade de serem selecionados (1/`r tot`).
+
+Por exemplo a probabilidade de selecionar um aluno com olhos azuis (*Blue*) é
+
+$$P(Blue)=\frac{`r otot["Blue"]`}{`r tot`} \approx `r op["Blue"]`$$
+
+Já a probabilidade de selecionar um aluno de cabelo preto (*Black*) será
+
+$$P(Black)=\frac{`r ctot["Black"]`}{`r tot`} \approx `r cp["Black"]`$$
+
+As probabilidades calculadas designam-se por *probabilidades marginais*, pois representam a probabilidade de um acontecimento sem considerar outros acontecimentos.
+
+::: callout-important
+### Probabilidades marginais
+
+Uma probabilidade marginal diz respeito a um acontecimento, não considerando outros acontecimentos, também podem ser designadas por *probabilidades simples*. A designação *marginal* advém do facto de, tipicamente, serem anotadas nas margens das tabelas semelhantes à @tbl-prob-hair-eye, representado as probabilidades dos acontecimentos nas linhas ou nas colunas.
+
+O conjunto de acontecimentos relativos à cor do olhos (ou à cor do cabelo) forma aquilo a que se poderia designar por *distribuição de probabilidade marginal*, possuindo todas as propriedades enumeradas na @sec-prob-concepts-pdist.
+:::
+
+### Probabilidades conjuntas e reunião {#sec-prob-conditional-conj}
+
+Quando se dispõe de uma tabela de contingência semelhante à @tbl-prob-hair-eye é simples calcular probabilidades conjuntas. Por exemplo a probabilidade de selecionar uma aluno de olhos azuis **e** de cabelo preto é
+
+$$P(Blue\cap Black)=\frac{`r t["Blue", "Black"]`}{`r tot`} \approx `r pt["Blue", "Black"]`$$
+
+Já para calcular probabilidades resultantes da reunião de acontecimentos, pode ser usada a regra da adição (@eq-prob-add). Por exemplo, a probabilidade de selecionar um aluno de olhos azuis **ou** de cabelo preto é
+
+$$
+\begin{align}
+  P(Blue\cup Black)&=P(Blue)+P(Black)-P(Blue\cap Black)\\
+  &=\frac{`r otot["Blue"]`}{`r tot`} +
+  \frac{`r ctot["Black"]`}{`r tot`} -
+  \frac{`r t["Blue", "Black"]`}{`r tot`}\\
+  &=\frac{`r t_blue_or_black`}{`r tot`} \approx `r p_blue_or_black`
+\end{align}
+$$
+
+::: callout-tip
+Nunca é demais salientar, pois é causa de confusão frequente, que o conjunto $Blue\cup Black$ inclui todos os alunos que tenham olhos azuis ou que tenham cabelo preto, podendo, deste modo, incluir alunos que tenham as duas características, ou seja, que pertençam ao conjunto $Blue\cap Black$.
+:::
+
+### Probabilidades condicionais {#sec-prob-conditional-cond}
+
+Admita-se agora que se pretende calcular a probabilidade de ocorrência de um acontecimento, subordinada à ocorrência de um outro qualquer acontecimento. Por exemplo, a probabilidade de selecionar um aluno de olhos azuis, admitindo que o aluno selecionado (ou a selecionar) tem cabelo preto.
+
+Dada a @tbl-prob-hair-eye, o cálculo daquela probabilidade é intuitivo: admitimos que o aluno tem cabelo preto, logo, será um dos `r ctot["Black"]` alunos que partilham essa característica. Desses alunos, vamos selecionar um ao acaso, sabendo que há `r t["Blue", "Black"]` alunos com olhos azuis nesse grupo. Logo, a probabilidade de selecionar um aluno de olhos azuis entre os alunos de cabelo preto terá que ser `r t["Blue", "Black"]`/`r ctot["Black"]`.
+
+Em geral, se tivermos 2 acontecimentos, A e B, a probabilidade de ocorrer A condicionada pela ocorrência de B deve ser escrita como
+
+$$P(A|B)$$
+
+Podemos designar A como o *acontecimento de interesse* e B como *condição*. Assim, estamos interessados na probabilidade do *acontecimento de interesse* (A) dada uma determinada *condição* (B).
+
+::: callout-tip
+Quando estamos perante a notação $P(A|B)$ lê-se *probabilidade de A dado B* ou *probabilidade de A sabendo que B* ou, simplesmente, *probabilidade de A condicionada por B*. Ou seja, o acontecimento B já ocorreu (ou admite-se que irá ocorrer) e queremos calcular a probabilidade de A nesse pressuposto.
+:::
+
+No exemplo acima, na presença da @tbl-prob-hair-eye, foi intuitivo calcular $P(Blue|Black)$. Em geral, é possível calcular qualquer probabilidade condicionada utilizando a expressão @eq-prob-condicional:
+
+$$P(A|B)=\frac{P(A\cap B)}{P(B)}$$ {#eq-prob-condicional}
+
+Aplicando a expressão ao cálculo de $P(Blue|Black)$ podemos obter o mesmo resultado de outra forma:
+
+$$
+\begin{align}
+  P(Blue|Black) &= \frac{P(Blue\cap Black)}{P(Black)}\\
+  &=\frac{`r t["Blue", "Black"]`/`r tot`}{`r ctot["Black"]`/`r tot`}
+  =\frac{`r t["Blue", "Black"]`}{`r ctot["Black"]`}
+  \approx `r p_blue_given_black`
+\end{align}
+$$
+
+### Independência {#sec-prob-conditional-indep}
+
+O conceito de independência já foi mencionado na @sec-collect-var-rel no contexto do estudo das relações entre variáveis estatísticas. No entanto, não foi apresentada uma definição formal de independência estatística, o que será feito nesta secção.
+
+> Dois acontecimentos dizem-se *independentes* quando a ocorrência de qualquer um deles não altera a probabilidade de ocorrência do outro. 
+
+A definição acima implica que, para acontecimentos independentes,
+
+$$P(A|B)=P(A)$$ {#eq-prob-indep-def1}
+$$P(B|A)=P(B)$$ {#eq-prob-indep-def2}
+
+que, atendendo à @eq-prob-condicional, implica que
+
+$$P(A\cap B)=P(A)\times P(B)$$ {#eq-prob-indep-join}
+
+Intuitivamente, podemos verificar a @eq-prob-indep-join através de um exemplo. Considere-se que se vai lançar uma moeda e um dado. Seja o acontecimento A *obter cara na moeda* e o acontecimento B *obter 6 no dado*. Por hipótese, podemos considerar $P(A)=1/2$ e $P(B)=1/6$. Naturalmente, os acontecimentos são independentes, pois não é conhecida qualquer forma de a moeda e o dado se influenciam mutuamente.
+
+Qual deverá ser a probabilidade $P(A\cap B)$? Na moeda irá ocorrer *cara* em 1/2 dos lançamentos. Nesses lançamentos ir-se-á obter a face 6 em 1/6 dos lançamentos, ou seja, 1/6 de 1/2 ou, de outra forma, 1/6 $\times$ 1/2 ou 1/12.
+
+Note que, iniciar o raciocínio com o dado, produz o mesmo resultado, uma vez que a multiplicação é comutativa e, portanto, $P(A\cap B)=P(B\cap A)$.
+
+As expressões -@eq-prob-indep-def1, -@eq-prob-indep-def2 e -@eq-prob-indep-join podem ser utilizadas para determinar se dois acontecimentos são independentes. Por exemplo, considere-se novamente a @tbl-prob-hair-eye e os acontecimentos *ter olhos azuis* (*Blue*) e *ter cabelo preto* (*Black*). Serão estes acontecimentos independentes?
+
+Sabemos que $P(Blue)=`r otot["Blue"]`/`r tot`$ e que $P(Black)=`r ctot["Black"]`/`r tot`$. Logo, se os acontecimentos forem independentes, a probabilidade conjunta deveria ser
+
+$$P(Blue\cap Black)=P(Blue)\times P(Black)=\frac{`r otot["Blue"]`}{`r tot`}\times\frac{`r ctot["Black"]`}{`r tot`}\approx `r p_blue_and_black_indep`$$
+
+No entanto, já se viu que a probabilidade conjunta pode ser retirada diretamente da @tbl-prob-hair-eye e é igual a $`r t["Blue", "Black"]`/`r tot` \approx `r pt["Blue", "Black"]`$. Logo, os acontecimentos A e B **não são** independentes[^sec-prob-1].
+
+[^sec-prob-1]: Esta conclusão é válida ao considerar a experiência aleatória que consiste em escolher ao acaso um dos alunos do estudo. Se aquele conjunto de alunos fosse uma amostra aleatória e se o objetivo fosse *inferir* sobre a independência na população o procedimento seria insuficiente, pois seria necessário considerar a variabilidade amostral.
+
+A prova pode ser feita recorrendo a qualquer uma das três expressões, pois, qualquer uma delas, é condição suficiente para a independência. Por exemplo, cálculos anteriores já demonstraram que $P(Blue|Black)\neq P(Blue)$, o que, por si só, seria suficiente para provar que os acontecimentos não são independentes.
+
+::: {.callout-important}
+Para verificar se dois acontecimentos são independentes, basta provar que uma das equações -@eq-prob-indep-def1, -@eq-prob-indep-def2 e -@eq-prob-indep-join é verdadeira. As referidas equações, ou são todas verdadeiras, ou são todas falsas, não sendo necessário testar as três.
+:::
+
+A @eq-prob-indep-join pode ser generalizada a mais do que 2 acontecimentos, ou seja, se houver $n$ acontecimentos independentes, então
+
+$$P(A_1\cap A_2\cap \cdots\cap A_n)=P(A_1)\times P(A_2)\times\cdots\times P(A_n)$$ {#eq-prob-indep-join-mult}
+
+Esta expressão é bastante útil para calcular a probabilidade conjunta de uma série de acontecimentos independentes. Por exemplo, pode ser utilizada para determinar a probabilidade de obter 10 *caras* seguidas no lançamento de uma moeda. Se $A_i$ representar o acontecimento *obter cara no lançamento $i$*, então,
+
+$$
+\begin{align}
+P(A_1\cap A_2\cap \cdots\cap A_{10})&=P(A_1)\times P(A_2)\times\cdots\times P(A_{10})\\
+&=\frac{1}{2}\times\frac{1}{2}\times\cdots\times\frac{1}{2}\\
+&=\left(\frac{1}{2}\right)^{10}=\frac{1}{1024}\approx `r format(1 / 1024, digits = 3)`
+\end{align}
+$$
+
+## Teorema de Bayes {#sec-prob-bayes-theorem}
+
+Em alguns cenários, são conhecidas as probabilidades de um acontecimento ocorrer sob determinadas condições mas pretende-se saber a probabilidade de, tendo o evento ocorrido, se ter verificado a referida condição.
+
+```{r}
+#| echo: false
+
+p_inf <- 0.02
+p_pos_inf <- 0.64
+p_neg_ninf <- 0.997
+
+p_ninf <- 1 - p_inf
+p_neg_inf <- 1 - p_pos_inf
+p_pos_ninf <- 1 - p_neg_ninf
+
+p_pos_and_inf <- p_inf * p_pos_inf
+p_neg_and_inf <- p_inf * p_neg_inf
+p_pos_and_ninf <- p_ninf * p_pos_ninf
+p_neg_and_ninf <- p_ninf * p_neg_ninf
+
+p_inf_neg <- p_neg_and_inf / (p_neg_and_inf + p_neg_and_ninf)
+vpp <- p_pos_and_inf / (p_pos_and_inf + p_pos_and_ninf)
+vpn <- 1 - p_inf_neg
+```
+
+Um exemplo clássico da aplicação do teorema de Bayes está relacionado com os testes médicos. Por exemplo, num estudo de 2022 [@covid19] reporta dados sobre os testes rápidos de antigénios para o vírus SARS-CoV-2, causador da doença designada por COVID-19. O estudo reporta que, em pessoas sem sintomas, suspeitas de terem estado em contacto com um infetado, os testes identificavam corretamente `r p_pos_inf*100`% dos indivíduos infetados. Para o mesmo grupo, os testes identificam corretamente `r p_neg_ninf*100`% dos indivíduos não infetados.
+
+Admitindo que, em determinada fase, os infetados eram `r p_inf*100`% da população, há interesse em determinar qual a probabilidade de, um indivíduo que apresentasse um teste negativo, estar infetado pelo vírus.
+
+Considerem-se os acontecimentos:
+
+* $I$: estar infetado, com $P(I)=`r p_inf`$.
+* $\oplus$: testar positivo, com $P(\oplus|I)=`r p_pos_inf`$ (no caso dos infetados, um *resultado correto* é testar positivo).
+* $\ominus$: testar negativo, com $P(\ominus|\bar{I})=`r p_neg_ninf`$ (no caso dos não infetados, um *resultado correto* é testar negativo).
+
+Como os acontecimentos $\oplus$ e $\ominus$ são complementares, então, $P(\ominus|I)=1-P(\oplus|I)=`r p_neg_inf`$ e $P(\oplus|\bar{I})=1-P(\ominus|\bar{I})=`r p_pos_ninf`$.
+
+
+::: {.callout-note}
+Nas ciências da saúde a probabilidade de um teste dar positivo, caso o indivíduo tenha uma dada doença ou condição clínica, é designada por **sensibilidade**. O acontecimento complementar, isto e, um teste negativo em indivíduos doentes é designado por **falso negativo**.
+
+Paralelamente, a probabilidade de um teste dar negativo, caso o indivíduo não tenha a doença ou condição clínica, é designada por **especificidade**. Já o acontecimento complementar, isto e, um teste positivo em indivíduos não doentes é designado por **falso positivo**.
+
+Quanto mais altos forem os valores de sensibilidade e especificidade e, consequentemente, quanto mais baixas forem as probabilidades de obter falsos negativos e falsos positivos, mais preciso é o teste.
+:::
+
+Podemos facilmente calcular a probabilidade de interesse, $P(I|\ominus)$, recorrendo à @eq-prob-condicional.
+
+$$
+\begin{align}
+  P(I|\ominus) &= \frac{P(I\cap\ominus)}{P(\ominus)}
+  = \frac{P(I\cap\ominus)}{P(I\cap\ominus)+P(\bar{I}\cap\ominus)} \\
+  &= \frac{P(\ominus|I)\times P(I)}{P(\ominus|I)\times P(I)+P(\ominus|\bar{I})\times P(\bar{I})}
+\end{align}
+$$
+
+Depois do desenvolvimento todas as probabilidades da fração são conhecidas, podendo ser calculado o resultado.
+
+$$
+P(I|\ominus)=\frac{`r p_neg_inf`\times`r p_inf`}{`r p_neg_inf`\times`r p_inf`+`r p_neg_ninf`\times`r p_ninf`} =
+\frac{`r p_neg_and_inf`}{`r p_neg_and_inf`+`r p_neg_and_ninf`} \approx
+`r format(p_inf_neg, digits = 2)`
+$$
+
+Neste caso, a probabilidade de um indivíduo que testou negativo estar infetado é pequena, cerca de `r format(p_inf_neg * 100, digits = 2)`%. O resultado faz sentido, uma vez que a incidência da doença é muito baixa e o teste tem elevada especificidade.
+
+::: {.callout-note}
+Ainda no âmbito das ciências da saúde o tipo de cálculo que se acabou de efetuar é muito relevante pois, embora a sensibilidade e especificidade do teste sejam importantes, o verdadeiro *valor preditivo* do teste também depende da prevalência da doença.
+
+Podemos então falar no **valor preditivo positivo** (VPP), isto é, a probabilidade de o indivíduo estar doente quando o teste dá positivo, e no **valor preditivo negativo** (VPN), que é a probabilidade de o indivíduo não estar doente quando o teste dá negativo.
+
+Mantendo os valores de sensibilidade e de especificidade constantes, à medida que a prevalência da doença aumenta, o VPP aumenta e o VPN diminui.
+
+No exemplo desta secção, o VPN é cerca de `r format(vpn * 100, digits = 3)`% e o VPP cerca de `r format(vpp * 100, digits = 3)`%. Os cálculos para chegar a estes resultados são semelhantes aos apresentados, ficando como exercício para o leitor.
+:::
+
+### Diagrama de árvore {#sec-prob-bayes-tree}
+
+Uma forma particularmente intuitiva de visualizar este tipo de situações é utilizando o *diagrama de árvore*. Neste diagrama, a ramificação principal da árvore é utilizada para colocar as probabilidades dos acontecimentos condicionantes e, na ramificação secundária são colocadas as probabilidades condicionadas. Na terminação de cada ramo podem ser colocadas as probabilidades conjuntas.
+
+A @fig-prob-tree-example ilustra a aplicação do diagrama de árvore ao exemplo que se tem vindo a tratar.
+
+```{r}
+#| label: fig-prob-tree-example
+#| fig-cap: Diagrama de árvore
+#| echo: false
+
+treeDiag(
+  main = c("Condição", "Teste"),
+  p1 = c(p_inf, p_ninf),
+  p2 = list(c(p_pos_inf, p_neg_inf), c(p_pos_ninf, p_neg_ninf)),
+  out1 = c("Infetado", "Não Infetado"),
+  out2 = c("Positivo", "Negativo"),
+  col.main = 6,
+  textwd = 0.22, solwd = 0.15,
+  digits = 5
+)
+
+box()
+```
+
+### Generalização {#sec-prob-bayes-general}
+
+No caso analisado havia apenas dois acontecimentos condicionantes. No entanto, é possível aplicar a mesma lógica a qualquer número de acontecimentos, isto é, o teorema de Bayes pode ser ser generalizado. Considere-se:
+
+* Um conjunto de acontecimentos mutuamente exclusivos, $A_1$, $A_2$, ... $A_n$ em que $\sum_i A_i = 1$ e para os quais se conhecem as probabilidades.
+
+* Um acontecimento, $B$, para o qual se conhecem as probabilidades de ocorrência condicionais a cada $A_i$, ou seja, $P(B|A_i)$.
+
+Nestas condições, sabe-se que
+
+$$
+\begin{align}
+  P(B)&=P(A_1\cap B) + P(A_2\cap B) +\cdots+P(A_n\cap B)\\
+  &=P(A_1|B)\times P(A_1)+P(A_2|B)\times P(A_2)+\cdots+P(A_n|B)\times P(A_n)
+\end{align}
+$$ {#eq-prob-bayes-total}
+
+Aplicando as equações -@eq-prob-condicional e -@eq-prob-bayes-total, para qualquer acontecimento $A_k$, com $k\in\lbrace 1, 2,\cdots,n\rbrace$, podemos determinar $P(A_k|B)$:
+
+$$
+\begin{align}
+  P(A_k|B) &= \frac{P(B|A_k)\times P(A_k)}{P(B)}\\
+  &= \frac{P(B|A_k)\times P(A_k)}{P(A_1|B)\times P(A_1)+P(A_2|B)\times P(A_2)+\cdots+P(A_n|B)\times P(A_n)}\\
+  &=\frac{P(B|A_k)\times P(A_k)}{\sum_{i=1}^n P(A_i|B)\times P(A_i)}
+\end{align}
+$$ {#eq-prob-bayes}
+
+A aplicação da @eq-prob-bayes nas condições enunciadas é conhecida como o Teorema de Bayes. O diagrama de Venn da @fig-prob-bayes-venn permite uma possível visualização do significado dos vários conjuntos.
+
+```{r}
+#| label: fig-prob-bayes-venn
+#| fig-cap: Visualização do teorema de Bayes
+#| fig-width: 5
+#| echo: false
+
+ecd_venn(1, snames = "B", omega.inside = FALSE)
+
+cx <- c(300, 900, 1000, 1000, 300, 0, 0)
+cy <- c(0, 0, 250, 800, 1000, 700, 200)
+
+segments(cx, cy, 450, 450, col = 9)
+cx <- c(cx, cx[1])
+cy <- c(cy, cy[1])
+for (i in 1:7)
+  text(
+    min(max(mean(c(cx[i] , cx[i + 1])), 50), 950),
+    min(max(mean(c(cy[i] , cy[i + 1])), 50), 950),
+    bquote(A[.(i)])
+  )
+```
+
+Como se pode verificar, os conjuntos $A_1$, $A_2$, ... $A_n$ são mutuamente exclusivos e preenchem a totalidade do espaço amostral. O conjunto $B$ interseta os vários conjuntos com probabilidades diferentes.
+
+Fundamentalmente, o teorema de Bayes permite atualizar o *grau de crença* na ocorrência de um determinado evento, $A_k$, na presença de um facto novo, neste caso, a ocorrência de $B$. Para uma melhor compreensão deste importante e interessante tópico da Estatística, recomenda-se a visualização do vídeo da @fig-prob-bayes-video.
+
+::: {#fig-prob-bayes-video}
+{{< video https://youtu.be/HZGCoVF3YvM?si=pirvsRLeBcoDM9mz >}}
+
+Vídeo sobre a interpretação do teorema de Bayes (em inglês)
+:::
+
+
+
+## Contagem {#sec-prob-counting}
+
+{{< include _tutorial-section.qmd >}}
+
+::: {#probability-listing}
+:::

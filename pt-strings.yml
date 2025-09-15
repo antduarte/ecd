@@ -1,0 +1,6 @@
+# Improved portuguese translations
+repo-action-links-edit: "Editar a página" #"Editar essa página"
+repo-action-links-source: "Ver o código-fonte" #"Ver o código fonte"
+repo-action-links-issue: "Reportar problema" #"Criar uma issue"
+
+crossref-sec-prefix: "Secção"

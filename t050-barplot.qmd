@@ -1,0 +1,271 @@
+---
+description: >
+  Construção de tabelas de contingência e gráficos de barras no R, para uma ou duas variáveis categóricas.
+date: 2025-04-14
+ecd-order: 5
+other-links:
+  - text: OpenIntro (datasets)
+    href: https://www.openintro.org/data/
+---
+
+# Gráfico de Barras {#sec-tut-barplot}
+
+Neste tutorial aborda-se a construção de gráficos de barras para uma ou duas variáveis categóricas utilizando os gráficos base do R. Como os gráficos de barras são construídos a partir de tabelas de contingência, a secção inclui a elaboração destas tabelas.
+
+
+## Introdução
+
+Os dados utilizados estão disponíveis e descritos em [OpenIntro](https://www.openintro.org/data/index.php?data=immigration){target="_blank"}. Trata-se de um conjunto de dados sobre imigração obtidos num inquérito realizado no estado da Florida, nos EUA, em 2012.
+
+Vamos começar por ler os dados e fazer uma pequena exploração inicial.
+
+```{r}
+im <- read.csv("https://www.openintro.org/data/csv/immigration.csv")
+summary(im)
+head(im)
+```
+
+Como se pode verificar, ambas as variáveis foram lidas como texto, sendo uma boa oportunidade para aplicar as técnicas apresentadas em @sec-data-categorical para informar o R da natureza categórica das variáveis.
+
+```{r}
+im$response <- factor(im$response)
+im$political <- factor(im$political)
+```
+
+Note-se que o mesmo resultado poderia ser obtido especificando `stringsAsFactors = TRUE` ao ler o ficheiro, tal como no código que se segue.
+
+```{r}
+#| eval: false
+
+im <- read.csv(
+  "https://www.openintro.org/data/csv/immigration.csv",
+  stringsAsFactors = TRUE
+)
+```
+
+Podemos agora verificar se os dados estão corretamente codificados:
+
+```{r}
+summary(im)
+```
+
+A variável `response` regista a resposta à questão do inquérito sobre que tratamento dar aos trabalhadores ilegais nos EUA. A variável `political` indica qual a ideologia política do respondente. Trata-se portanto de duas variáveis nominais (eventualmente poder-se-ia ordenar a ideologia do mais à esquerda para o mais à direita, se tal fosse relevante).
+
+
+## Tabela de contingência {#sec-tut-barplot-table}
+
+Tal como é referido no @sec-quali, o gráfico de barras é o gráfico mais adequado para descrever dados categóricos. Tal como descrito no @sec-tut-graphics, a função `plot()` produz gráficos de barras quando lhe é passada uma variável categórica. No entanto, para maior flexibilidade, existe a função `barplot()` que aceita uma tabela de contingência com a informação sobre as barras a representar. Caso essa informação não exista, no caso mais simples, a pode ser obtida através de contagem das observações em cada categoria, ou seja, elaborando uma tabela de contingência com a função `table()`. Para a variável `response`:
+
+```{r}
+t_res <- table(im$response)
+t_res
+```
+
+Note-se que o objeto `t_res` é um vetor numérico com nomes atribuídos a cada elemento. Estes nomes serão utilizados para anotar o gráfico.
+
+A função `prop.table()` pode ser utilizada para calcular proporções a partir das contagens:
+
+```{r}
+pt_res <- prop.table(t_res)
+pt_res
+```
+
+
+## Barras simples {#sec-tut-barplot-simple}
+
+Dispondo agora da informação sobre as barras, podemos invocar a função `barplot()` que produz a @fig-tut-barplot-simple.
+
+```{r}
+#| label: fig-tut-barplot-simple
+#| fig-cap: Gráfico de barras
+
+barplot(t_res)
+```
+
+O primeiro e principal argumento da função `barplot()` é `height`, que deve ser um vetor numérico, como na @fig-tut-barplot-simple, ou uma matriz, no caso de barras sobrepostas ou barras agrupadas (secções -@sec-tut-barplot-stacked, -@sec-tut-barplot-stacked-norm e -@sec-tut-barplot-beside). Este vetor deve conter a altura das barras a representar e pode conter valores negativos, o que origina barras abaixo do eixo base.
+
+Naturalmente, os elementos gráficos do gráfico de barras, como cores, linhas, anotações, etc., podem ser ajustados como necessário. Para além dos parâmetros gráficos comuns a todos os gráficos, a função `barplot()` pode ser configurada com os parâmetros da tabela @tbl-tut-barplot-args.
+
+| Argumento | Elemento |
+|:--------------------|:--------------------------------------------------|
+| `width =` | Vetor com a largura das barras. Por omissão, todas iguais a 1 unidade |
+| `space =` | Especifica o espaço entre as barras. Por omissão, 0.2 unidades |
+| `horiz = TRUE` | Para desenhar um gráfico com barras horizontais |
+| `col =`, `border =` | Para especificar a cor das barras e dos contornos das mesmas |
+| `plot = FALSE` | O gráfico não é desenhado e a função apenas devolve a posição das barras, o que é útil para acrescentar elementos gráficos posteriormente |
+| `offset =` | Distância entre as barras e o eixo base (0 por omissão) |
+| `add = TRUE` | Para desenhar as barras num gráfico já existente |
+
+: Configuração de gráficos de barras {#tbl-tut-barplot-args .striped}
+
+O código que se segue produz a @fig-tut-barplot-simple-custom e ilustra algumas das configurações que se podem realizar com a função `barplot()`.
+
+```{r}
+#| label: fig-tut-barplot-simple-custom
+#| fig-cap: Gráfico de barras com alguns ajuste
+
+par(mar = c(5, 9, 4, 2)) # alargar a margem esquerda
+
+barplot(
+  sort(pt_res) * 100,
+  main = "Gráfico de Barras", xlab = "percentagem",
+  col = "deepskyblue", border = "blue",
+  horiz = TRUE, las = 1
+)
+```
+
+
+## Barras sobrepostas {#sec-tut-barplot-stacked}
+
+O gráfico de barras sobrepostas utiliza-se quando se pretende representar as contagens cruzadas de duas variáveis. O processo é em tudo semelhante ao do gráfico de barras simples, mas é necessária uma tabela de contingência de dupla entrada. A tabela de contingência pode ser obtida com a função `table()`, passando as duas variáveis a cruzar, tal como no código que se segue.
+
+```{r}
+t_res_pol <- table(im$response, im$political)
+t_pol_res <- t(t_res_pol) # transposição da tabela
+t_res_pol
+```
+
+Caso se passe uma tabela de contingência de dupla entrada à função `barplot()` esta irá devolver um dos gráficos da @fig-tut-barplot-stacked, dependendo da ordem das variáveis (cada coluna da tabela de contingência corresponde a uma barra). Note que a função `t()` transpõe a tabela de contingência. Alternativamente, poderia ser trocada a ordem das variáveis na função `table()`.
+
+```{r}
+#| label: fig-tut-barplot-stacked
+#| fig-cap: "Gráfico de barras sobrepostas"
+#| layout-ncol: 2
+#| fig-subcap:
+#|   - "Categorias `political` no eixo"
+#|   - "Categorias `response` no eixo"
+
+barplot(t_res_pol)
+barplot(t_pol_res)
+```
+
+Por norma, este gráfico necessita de uma legenda, o que pode ser especificado com `legend.text = TRUE` (ou um vetor de entradas para colocar na legenda). Por omissão, a legenda é colocada no topo direito, sobrepondo-se muitas vezes à última barra (ordenar os totais por ordem decrescente pode resolver o problema mas não faz sentido para categorias ordinais, por exemplo), pelo que deve ser configurada utilizando os parâmetros descritos na @sec-tut-graphics-legend.
+
+Para especificar a configuração da legenda há duas alternativas:
+
+* Fazer o gráfico sem legenda e acrescentar depois uma legenda com `legend()`.
+* Especificar `legend.text = TRUE` e passar uma lista de configurações no argumento `args.legend`.
+
+O código que se segue ilustra ambas as técnicas, e os resultados podem ser visualizados na @fig-tut-barplot-stacked-legend.
+
+```{r}
+#| label: fig-tut-barplot-stacked-legend
+#| fig-cap: "Gráfico de barras sobrepostas com legenda"
+#| layout-ncol: 2
+#| fig-subcap:
+#|   - "Sem configurações adicionais"
+#|   - "Ordenação das colunas"
+#|   - "Com configurações via `args.legend`"
+#|   - "Com legenda especificada autonomamente"
+
+cl <- palette.colors(4, palette = "Set 3") # criar vetor de 4 cores
+  
+barplot(t_res_pol, col = cl, legend.text = TRUE)
+
+barplot(
+  t_res_pol[, order(colSums(t_res_pol), decreasing = TRUE)],
+  col = cl, legend.text = TRUE
+)
+
+par(mar = c(5, 4, 4, 11))
+barplot(
+  t_res_pol,
+  col = cl,
+  legend.text = TRUE,
+  args.legend = list(
+    x = "right",
+    title = "Response",
+    fill = cl,
+    inset = -0.5
+  )
+)
+
+par(mar = c(7.5, 7, 4, 2))
+barplot(t_res_pol, col = cl, horiz = TRUE, las = 1)
+legend(
+  "bottom",
+  row.names(t_res_pol),
+  title = "Response",
+  fill = cl,
+  ncol = 2,
+  inset = - 0.5,
+  xpd = TRUE
+)
+```
+
+Na @fig-tut-barplot-stacked-legend-1 não se fizeram quaisquer configurações, resultando numa legenda sobreposta com uma das barras o que é inaceitável.
+
+Na @fig-tut-barplot-stacked-legend-2 apenas se ordenaram as barras por ordem decrescente dos totais da colunas da tabela de contingência. Como a última barra é mais pequena, a legenda já não sobrepõe com a barra.
+
+Na @fig-tut-barplot-stacked-legend-3 configurou-se a legenda utilizando o argumento `args.legend`. Tal como referido na @sec-tut-graphics-legend, é necessário aumentar a margem onde se coloca a legenda.
+
+Por fim, na @fig-tut-barplot-stacked-legend-4, a legenda foi colocada com a função `legend()`. Neste caso, como as barras estão na horizontal, faz mais sentido colocar a legenda ao fundo ou no topo.
+
+
+## Barras sobrepostas normalizadas {#sec-tut-barplot-stacked-norm}
+
+Para elaborar um gráfico de barras sobrepostas normalizadas, é necessário acrescentar um passo intermédio ao procedimento descrito na @sec-tut-barplot-stacked: calcular as proporções normalizadas.
+
+As proporções normalizadas não são mais do que a frequência de uma determinada célula dividida pela frequência da coluna e podem ser obtidas facilmente com a função `prop.table`, como se ilustra no código abaixo.
+
+```{r}
+npt_res_pol <- prop.table(t_res_pol, margin = 2)
+npt_res_pol
+```
+
+Ao especificar `margin = 2`, estamos a indicar que as proporções devem ser calculadas sobre o total das colunas.
+
+::: {.callout-note}
+Na função `prop.table()`, o argumento `margin` tem o seguinte significado:
+
+* `margin = 1`: calcula proporções sobre os totais das linhas.
+* `margin = 2`: calcula proporções sobre os totais das colunas, sendo o que se pretende no caso dos gráficos de barras sobrepostas normalizadas.
+* `margin = NULL`, por omissão: calcula proporções sobre o total da tabela.
+:::
+
+Efetuado este passo adicional, estamos em condições de fazer o gráfico com a função `barplot()`. Na @fig-tut-barplot-stacked-norm pode visualizar-se a versão normalizada da @fig-tut-barplot-stacked-legend-3, produzida com o código que se segue.
+
+```{r}
+#| label: fig-tut-barplot-stacked-norm
+#| fig-cap: Gráfico de barras sobrepostas normalizadas
+
+par(mar = c(5, 4, 4, 11))
+barplot(
+  npt_res_pol,
+  col = cl,
+  legend.text = TRUE,
+  args.legend = list(
+    x = "right",
+    title = "Response",
+    fill = cl,
+    inset = -0.5
+  )
+)
+```
+
+
+## Barras agrupadas {#sec-tut-barplot-beside}
+
+Em vez de sobrepor as barras, estas podem ser agrupadas e colocadas lado a lado. Para obter um gráfico deste tipo, basta passar o argumento `beside = TRUE` à função `barplot()`, sendo tudo o resto idêntico.
+
+O código que se segue produz a versão agrupada da @fig-tut-barplot-stacked-legend-3 e o resultado pode ser visualizado na @fig-tut-barplot-beside.
+
+```{r}
+#| label: fig-tut-barplot-beside
+#| fig-cap: Gráfico de barras agrupadas
+#| out-extra: class="preview-image"
+
+par(mar = c(5, 4, 4, 11))
+barplot(
+  t_res_pol,
+  col = cl,
+  beside = TRUE,
+  legend.text = TRUE,
+  args.legend = list(
+    x = "right",
+    title = "Response",
+    fill = cl,
+    inset = -0.5
+  )
+)
+```

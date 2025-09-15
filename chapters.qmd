@@ -1,0 +1,13 @@
+---
+listing: 
+  id: chapter-listings
+  contents: c[0-9][0-9][0-9]*.qmd
+  sort: "filename"
+  image-placeholder: images/Rlogo.png
+  date-format: "MMMM, YYYY"
+---
+
+# Capítulos {.unnumbered}
+
+::: {#tutorial-listings}
+:::

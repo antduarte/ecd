@@ -1,0 +1,2336 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>4&nbsp; Dados Quantitativos – Estatística e Ciência de Dados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./c050-bivariate.html" rel="next">
+<link href="./c030-qualitative.html" rel="prev">
+<link href="./images/favicon96.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-quant-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-quant-listing'] = new List('listing-quant-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-YY4SMMTB2W"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-YY4SMMTB2W', { 'anonymize_ip': true});
+</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="4&nbsp; Dados Quantitativos – Estatística e Ciência de Dados">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://pages.ipb.pt/~aduarte/ecd/images/cover.png">
+<meta property="og:site_name" content="Estatística e Ciência de Dados">
+<meta property="og:image:height" content="2250">
+<meta property="og:image:width" content="1410">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c040-quantitative.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Procurar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estatística e Ciência de Dados</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/antduarte/ecd/" title="Código fonte" class="quarto-navigation-tool px-1" aria-label="Código fonte"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo de leitor">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Procurar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nota Prévia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./chapters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c010-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Metodologia e Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c020-collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c030-qualitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c040-quantitative.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c050-bivariate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c060-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutoriais</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t010-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ferramentas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t020-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introdução ao R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t030-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Dados no R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t040-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t050-barplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Gráfico de Barras</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t060-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Histogramas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t070-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Diagramas de Extremos e Quartis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t080-counting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Técnicas de Contagem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliografia</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#sec-quant-org" id="toc-sec-quant-org" class="nav-link active" data-scroll-target="#sec-quant-org"><span class="header-section-number">4.1</span> Organização dos dados</a>
+  <ul class="collapse">
+  <li><a href="#sec-quant-org-des" id="toc-sec-quant-org-des" class="nav-link" data-scroll-target="#sec-quant-org-des"><span class="header-section-number">4.1.1</span> Dados desagrupados</a></li>
+  <li><a href="#sec-quant-org-cgroup" id="toc-sec-quant-org-cgroup" class="nav-link" data-scroll-target="#sec-quant-org-cgroup"><span class="header-section-number">4.1.2</span> Dados contínuos agrupados</a></li>
+  <li><a href="#sec-quant-org-dgroup" id="toc-sec-quant-org-dgroup" class="nav-link" data-scroll-target="#sec-quant-org-dgroup"><span class="header-section-number">4.1.3</span> Dados discretos agrupados</a></li>
+  </ul></li>
+  <li><a href="#sec-quant-freq" id="toc-sec-quant-freq" class="nav-link" data-scroll-target="#sec-quant-freq"><span class="header-section-number">4.2</span> Representação de frequências</a>
+  <ul class="collapse">
+  <li><a href="#definição-das-classes" id="toc-definição-das-classes" class="nav-link" data-scroll-target="#definição-das-classes"><span class="header-section-number">4.2.1</span> Definição das classes</a></li>
+  <li><a href="#sec-quant-hist" id="toc-sec-quant-hist" class="nav-link" data-scroll-target="#sec-quant-hist"><span class="header-section-number">4.2.2</span> Análise do histograma</a></li>
+  </ul></li>
+  <li><a href="#localização-e-dispersão" id="toc-localização-e-dispersão" class="nav-link" data-scroll-target="#localização-e-dispersão"><span class="header-section-number">4.3</span> Localização e dispersão</a>
+  <ul class="collapse">
+  <li><a href="#sec-quant-local" id="toc-sec-quant-local" class="nav-link" data-scroll-target="#sec-quant-local"><span class="header-section-number">4.3.1</span> Localização</a></li>
+  <li><a href="#sec-quant-disp" id="toc-sec-quant-disp" class="nav-link" data-scroll-target="#sec-quant-disp"><span class="header-section-number">4.3.2</span> Dispersão</a></li>
+  <li><a href="#sec-quant-z-score" id="toc-sec-quant-z-score" class="nav-link" data-scroll-target="#sec-quant-z-score"><span class="header-section-number">4.3.3</span> Observações incomuns e valor Z</a></li>
+  </ul></li>
+  <li><a href="#estatísticas-robustas" id="toc-estatísticas-robustas" class="nav-link" data-scroll-target="#estatísticas-robustas"><span class="header-section-number">4.4</span> Estatísticas robustas</a></li>
+  <li><a href="#tutoriais" id="toc-tutoriais" class="nav-link" data-scroll-target="#tutoriais">Tutoriais</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c040-quantitative.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c040-quantitative.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c040-quantitative.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-quant" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Quando a variável a descrever é de natureza quantitativa o campo de possibilidades de análise é muito maior.</p>
+<p>Esta secção começa por discutir a organização dos dados. Segue-se depois a apresentação das formas mais comuns de representação gráfica e o cálculo e interpretação de estatísticas numéricas.</p>
+<section id="sec-quant-org" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="sec-quant-org"><span class="header-section-number">4.1</span> Organização dos dados</h2>
+<p>Antes de avançar para os métodos propriamente ditos, é necessário considerar como os dados estão organizados e, em caso de necessidade, organizar os mesmos.</p>
+<p>Há três possibilidades para a organização dos dados: dados desagrupados, dados discretos agrupados e dados contínuos agrupados.</p>
+<section id="sec-quant-org-des" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="sec-quant-org-des"><span class="header-section-number">4.1.1</span> Dados desagrupados</h3>
+<p>Quando se diz que os dados estão desagrupados, significa que ainda não sofreram qualquer tratamento, ou seja, são os dados em bruto, tal como recolhidos, possivelmente depois de serem corrigidas eventuais inconsistências. Por exemplo, o conjunto de dados <code>cars</code> apresenta a variável <code>dist</code> com distância de paragem para um conjunto de carros (em <em>pés</em> ou <em>feet</em>, 1&nbsp;ft = 30.48&nbsp;cm). Estes dados estão desagrupados:</p>
+<p>2, 10, 4, 22, 16, 10, 18, 26, 34, 17, 28, 14, 20, 24, 28, 26, 34, 34, 46, 26, 36, 60, 80, 20, 26, 54, 32, 40, 32, 40, 50, 42, 56, 76, 84, 36, 46, 68, 32, 48, 52, 56, 64, 66, 54, 70, 92, 93, 120, 85</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quando se faz análise no computador, o ideal é ter os dados o menos tratados possível, na forma de dados desagrupados. É sempre possível agrupar os dados mas, nem sempre é possível desagrupar, uma vez que, ao agrupar, pode ser perdida informação.</p>
+</div>
+</div>
+</section>
+<section id="sec-quant-org-cgroup" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="sec-quant-org-cgroup"><span class="header-section-number">4.1.2</span> Dados contínuos agrupados</h3>
+<p>Os dados desagrupados apresentados acima são difíceis de apreender, pois trata-se de uma lista de números com alguma extensão. A forma mais comum de sumariar os dados é construir uma <em>tabela de frequências</em>, vagamente semelhantes às tabelas de contingência apresentadas na <a href="c030-qualitative.html#sec-quali-tcont" class="quarto-xref"><span>Secção 3.1</span></a>.</p>
+<p>Numa tabela de frequências o intervalo de valores que a variável abrange é dividido em sub-intervalos, denominados por <em>células</em> ou <em>classes</em> utilizando um critério apropriado, dependente do objetivo. Por exemplo, poder-se-iam resumir as distâncias de paragem numa tabela semelhante à <a href="#tbl-quant-cgroup" class="quarto-xref">Tabela&nbsp;<span>4.1</span></a>.</p>
+<div class="cell">
+<div id="tbl-quant-cgroup" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-quant-cgroup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;4.1: Tabela de frequências para a distância de paragem
+</figcaption>
+<div aria-describedby="tbl-quant-cgroup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Frequência
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Frequência Acumulada
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: center;" data-quarto-table-cell-role="th">Classe</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Absoluta</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Relativa (%)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Absoluta</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Relativa (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">0<sup>+</sup> — 20</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">20</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20<sup>+</sup> — 40</td>
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">28</td>
+<td style="text-align: center;">56</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">40<sup>+</sup> — 60</td>
+<td style="text-align: center;">11</td>
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">39</td>
+<td style="text-align: center;">78</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">60<sup>+</sup> — 80</td>
+<td style="text-align: center;">6</td>
+<td style="text-align: center;">12</td>
+<td style="text-align: center;">45</td>
+<td style="text-align: center;">90</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">80<sup>+</sup> — 100</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">49</td>
+<td style="text-align: center;">98</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">100<sup>+</sup> — 120</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">50</td>
+<td style="text-align: center;">100</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center; font-weight: bold;">Total</td>
+<td style="text-align: center; font-weight: bold;">50</td>
+<td style="text-align: center; font-weight: bold;">100</td>
+<td style="text-align: center; font-weight: bold;"></td>
+<td style="text-align: center; font-weight: bold;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Na <a href="#tbl-quant-cgroup" class="quarto-xref">Tabela&nbsp;<span>4.1</span></a>, para lá das frequências absolutas e relativas (<span class="math inline">\(f_k\)</span> e <span class="math inline">\(f'_k\)</span>), apresentam-se ainda as frequências acumuladas absolutas e relativas (<span class="math inline">\(F_k\)</span> e <span class="math inline">\(F'_k\)</span>). As frequências acumuladas permitem ter a noção de quais os conjunto de células com frequências importantes ou insignificantes.</p>
+<div class="callout callout-style-simple callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo das frequências
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se <span class="math inline">\(f_k\)</span> representar a frequência absoluta da classe <span class="math inline">\(k\)</span> e <span class="math inline">\(n\)</span> for o total de observações, ou seja, <span class="math inline">\(n=\sum_k f_k\)</span>, então:</p>
+<ul>
+<li><p>Freqência relativa: <span class="math inline">\(f'_k = \frac{f_k}{n}\)</span></p></li>
+<li><p>Frequência absoluta acumulada: <span class="math inline">\(F_k = \sum_{i=1}^{k}f_i\)</span></p></li>
+<li><p>Frequência relativa acumulada: <span class="math inline">\(F'_k = \sum_{i=1}^{k}f'_i = \frac{F_k}{n}\)</span></p></li>
+</ul>
+</div>
+</div>
+<p>Note-se que foram tomadas várias decisões, mais ou menos arbitrárias, na construção da tabela de frequências:</p>
+<ul>
+<li>Número de células: <span class="math inline">\(K=\)</span> 6.</li>
+<li>Células iguais com uma amplitude <span class="math inline">\(a_k=\)</span> 20 unidades.</li>
+<li>Limite inferior da primeira célula: 0.</li>
+<li>Limite superior da última célula: 120.</li>
+<li>Limite superior fechado (inclui valores iguais ao limite).</li>
+</ul>
+<p>Desta forma, as células abrangem desde o mínimo (2) até ao máximo (120). Naturalmente, desde que as células incluam todas as observações, podem ser definidas arbitrariamente, podendo ter amplitudes iguais ou diferentes (pouco usual). Voltar-se-á a este assunto mais à frente.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ao agrupar os dados, é perdida informação. Se apenas se conhecer a tabela de frequências, é impossível reconstituir os dados originais, apenas os podemos aproximar.</p>
+</div>
+</div>
+</section>
+<section id="sec-quant-org-dgroup" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="sec-quant-org-dgroup"><span class="header-section-number">4.1.3</span> Dados discretos agrupados</h3>
+<p>Quando os dados são de natureza discreta ou são dados contínuos que sofreram arredondamento, podemos agrupar os dados sem perder informação. Os dados a seguir (gerados ao acaso) representam as idades dos alunos de uma turma com 35 alunos.</p>
+<p>21, 20, 20, 19, 22, 20, 21, 20, 20, 19, 17, 22, 20, 22, 23, 21, 23, 19, 22, 19, 20, 19, 19, 18, 20, 23, 20, 22, 19, 20, 20, 20, 23, 19, 20</p>
+<p>Os dados poderiam ser sumariados com uma tabela semelhante à <a href="#tbl-quant-dgroup" class="quarto-xref">Tabela&nbsp;<span>4.2</span></a>.</p>
+<div class="cell">
+<div id="tbl-quant-dgroup" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-quant-dgroup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;4.2: Tabela de frequências a idade
+</figcaption>
+<div aria-describedby="tbl-quant-dgroup-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: center; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Frequência
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Frequência Acumulada
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: center;" data-quarto-table-cell-role="th">Idade</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Absoluta</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Relativa (%)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Absoluta</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Relativa (%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">17</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">18</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2.9</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">5.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">19</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">22.9</td>
+<td style="text-align: center;">10</td>
+<td style="text-align: center;">28.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">20</td>
+<td style="text-align: center;">13</td>
+<td style="text-align: center;">37.1</td>
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">65.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">21</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">8.6</td>
+<td style="text-align: center;">26</td>
+<td style="text-align: center;">74.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">22</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">14.3</td>
+<td style="text-align: center;">31</td>
+<td style="text-align: center;">88.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">23</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">11.4</td>
+<td style="text-align: center;">35</td>
+<td style="text-align: center;">100.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center; font-weight: bold;">Total</td>
+<td style="text-align: center; font-weight: bold;">35</td>
+<td style="text-align: center; font-weight: bold;">100.0</td>
+<td style="text-align: center; font-weight: bold;"></td>
+<td style="text-align: center; font-weight: bold;"></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>A diferença para os dados contínuos está na existência de um conjunto restrito de valores discretos. Para construir a tabela de frequências, em vez de definir células como anteriormente, neste caso, cada célula corresponde a um dos valores.</p>
+<p>Note-se que estes tipo de dados tem semelhanças com as variáveis ordinais, no sentido em que se trata de um conjunto de valores ordenados. De facto, a forma mais assertiva de representar graficamente esta informação, seria através de um gráfico de barras como o da <a href="#fig-quant-bars" class="quarto-xref">Figura&nbsp;<span>4.1</span></a>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-bars" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-bars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-bars-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-bars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.1: Gráfico de barras para a <em>idade</em>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quando se agrupam dados discretos desta forma, não há perda de informação (exceto a ordem das observações, caso fosse relevante). É equivalente ter dados desagrupados ou agrupados desta forma.</p>
+</div>
+</div>
+<p>Para não sobrecarregar este texto, considera-se que temos à disposição dados desagrupados. Quando se está perante dados agrupados em classes, como na <a href="#sec-quant-org-cgroup" class="quarto-xref"><span>Secção 4.1.2</span></a> ou na <a href="#sec-quant-org-dgroup" class="quarto-xref"><span>Secção 4.1.3</span></a>, eventualmente provenientes de uma fonte secundária, há expressões para calcular diversas estatísticas a partir da tabela de frequências que podem ser obtidas de qualquer bom livro de estatística, como <span class="citation" data-cites="guimaraes2010e">Guimarães &amp; Cabral (<a href="references.html#ref-guimaraes2010e" role="doc-biblioref">2010</a>)</span>, por exemplo.</p>
+</section>
+</section>
+<section id="sec-quant-freq" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="sec-quant-freq"><span class="header-section-number">4.2</span> Representação de frequências</h2>
+<p>Quando se está perante dados desagrupados, um procedimento exploratório comum é a construção de uma tabela de frequências e sua representação gráfica. A forma mais comum de o fazer é através de um <em>histograma</em>.</p>
+<p>À semelhança do gráfico de barras, o histograma representa cada classe com uma barra, cuja altura é proporcional à frequência da classe. A figura <a href="#fig-quant-hist" class="quarto-xref">Figura&nbsp;<span>4.2</span></a> representa graficamente a <a href="#tbl-quant-cgroup" class="quarto-xref">Tabela&nbsp;<span>4.1</span></a>, que contém as frequências das distâncias de paragem de um conjunto de carros.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-hist" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-1.png" class="preview-image img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.2: Histograma para a <em>distância de paragem</em>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note-se que há diferenças muito importantes para o gráfico de barras:</p>
+<ul>
+<li>O eixo horizontal é numérico, no gráfico de barras eram categorias.</li>
+<li>Não há separação entre as barras, o que reforça a ideia de continuidade.</li>
+</ul>
+<section id="definição-das-classes" class="level3" data-number="4.2.1">
+<h3 data-number="4.2.1" class="anchored" data-anchor-id="definição-das-classes"><span class="header-section-number">4.2.1</span> Definição das classes</h3>
+<p>Para elaborar um histograma é necessário decidir o número de classes, <span class="math inline">\(K\)</span>, a amplitude de cada classe, <span class="math inline">\(a_k\)</span>, e onde se localiza cada classe (limites inferior e superior).</p>
+<p>A decisão mais importante é o número de classes. O histograma deve ter um número de classes equilibrado tendo em atenção o seguinte:</p>
+<ul>
+<li>Um número de classes muito pequeno produz uma visualização pouco informativa.</li>
+<li>Um número de classes muito grande produz uma visualização confusa com demasiados detalhes irrelevantes.</li>
+</ul>
+<p>A <a href="#fig-quant-hist-nclass" class="quarto-xref">Figura&nbsp;<span>4.3</span></a> mostra algumas variantes ao histograma apresentado anteriormente para ilustrar esta questão. Na variante <a href="#fig-quant-hist-nclass-1" class="quarto-xref"><span>4.3 (a)</span></a> o número de classes é claramente escasso e a análise do gráfico não fornece grande informação. Já na variante <a href="#fig-quant-hist-nclass-4" class="quarto-xref"><span>4.3 (d)</span></a> o número de classes é claramente exagerado, havendo muitas classes com uma ou nenhuma observação e demasiados detalhes que dificultam a análise.</p>
+<p>As figuras <a href="#fig-quant-hist-nclass-2" class="quarto-xref"><span>4.3 (b)</span></a>, <a href="#fig-quant-hist-nclass-3" class="quarto-xref"><span>4.3 (c)</span></a>, <a href="#fig-quant-hist-nclass-4" class="quarto-xref"><span>4.3 (d)</span></a> e <a href="#fig-quant-hist-nclass-5" class="quarto-xref"><span>4.3 (e)</span></a> implementam diversos métodos conhecidos para determinar o número de classes e produzem resultados aceitáveis.</p>
+<div id="fig-quant-hist-nclass" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-1.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Número escasso
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-2.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Scott
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-3.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) R, por omissão
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-4.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Sturges
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-5" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-5.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) Freedman-Diaconis
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-nclass" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-nclass-6" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-nclass-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-nclass-6.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-nclass" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-nclass-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) Número exagerado
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-nclass-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.3: Efeito do número de classes no histograma
+</figcaption>
+</figure>
+</div>
+<p>Em todos os casos, o limite inferior da primeira classe é 0 (em vez do mínimo, que é 2) e o limite superior é 120 (que coincide com o máximo). Esta estratégia produz resultados esteticamente mais agradáveis e permite julgar mais facilmente os limites das classes.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O R tenta sempre alinhar os limites das classes com os intervalos do eixo horizontal, alterando ligeiramente o número de classes recomendado pelos vários métodos que implementa (Sturges (por omissão), Scott e Freedman-Diaconis) para fazer aquele alinhamento. Trata-se de promover um equilíbrio entre questões teóricas, questões práticas e questões estéticas, sempre importantes na visualização de dados.</p>
+</div>
+</div>
+</section>
+<section id="sec-quant-hist" class="level3" data-number="4.2.2">
+<h3 data-number="4.2.2" class="anchored" data-anchor-id="sec-quant-hist"><span class="header-section-number">4.2.2</span> Análise do histograma</h3>
+<p>Um histograma permite uma perspetiva rápida sobre a forma como os dados estão distribuídos, sendo muito bom para julgar 3 aspetos: o tipo de moda, a simetria e a presença de observações incomuns.</p>
+<section id="tipo-de-moda" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="tipo-de-moda">Tipo de moda</h4>
+<p>Em estatística, a <em>moda</em> é o valor (ou vizinhança de um valor) onde a concentração (densidade) de observações é máxima. Perante dados discretos é fácil de determinar a moda, bastando verificar qual o valor mais frequente. No caso de dados contínuos é necessário fazer uma estimativa por outros métodos, uma vez que, por definição, a ocorrência de valores iguais é improvável, ocorrendo quase sempre devido ao arredondamento das medições.</p>
+<p>Como a determinação de uma estimativa exata da moda tem um interesse limitado, o histograma pode ser utilizado para ter uma ideia do tipo de moda que os dados apresentam. Desta forma, são de notar 4 casos:</p>
+<ul>
+<li><p>Distribuição <strong>unimodal</strong>: tal como o nome indica, há apenas uma moda, ou seja, o histograma apresenta um único pico proeminente, sendo o caso da <a href="#fig-quant-hist-mode-1" class="quarto-xref">Figura&nbsp;<span>4.4 (a)</span></a>. É uma das situações mais frequentes.</p></li>
+<li><p>Distribuição <strong>bimodal</strong>: neste caso já há duas modas, ou seja, o histograma apresenta dois picos proeminentes, sendo o caso da <a href="#fig-quant-hist-mode-2" class="quarto-xref">Figura&nbsp;<span>4.4 (b)</span></a>.</p></li>
+<li><p>Distribuição <strong>multimodal</strong>: trata-se de uma generalização dos conceitos anteriores às situações em que há mais do que dois dois picos proeminentes no histograma, sendo o caso da <a href="#fig-quant-hist-mode-3" class="quarto-xref">Figura&nbsp;<span>4.4 (c)</span></a>. O facto de haver mais do que uma moda levanta a questão da causa, que pode dever-se a uma qualquer característica dos dados com interesse.</p></li>
+<li><p>Distribuição <strong>uniforme</strong>: neste caso não é possível identificar qualquer pico proeminente, tendo todas as barras do histograma uma altura semelhante, como no caso da <a href="#fig-quant-hist-mode-4" class="quarto-xref">Figura&nbsp;<span>4.4 (d)</span></a>.</p></li>
+</ul>
+<div id="fig-quant-hist-mode" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-mode-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-mode" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-mode-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-mode-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-mode-1.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-mode" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-mode-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Unimodal
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-mode" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-mode-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-mode-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-mode-2.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-mode" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-mode-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Bimodal
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-mode" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-mode-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-mode-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-mode-3.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-mode" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-mode-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Multimodal
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-mode" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-mode-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-mode-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-mode-4.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-mode" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-mode-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Uniforme, sem moda
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-mode-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.4: Diferentes tipos de moda
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para ajudar a visualizar o tipo de moda, deve imaginar-se uma curva suave sobre o histograma, tal como as apresentadas na <a href="#fig-quant-hist-mode" class="quarto-xref">Figura&nbsp;<span>4.4</span></a>. Uma boa forma de uma fazer é imaginar uma corda flexível repousada sobre as barras.</p>
+</div>
+</div>
+</section>
+<section id="simetria" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="simetria">Simetria</h4>
+<p>Um outro aspeto que o histograma permite avaliar é a simetria da distribuição dos dados em torno dos valores centrais. Neste caso, há 3 situações:</p>
+<ul>
+<li><p>Distribuição <strong>assimétrica à esquerda</strong>: o histograma apresenta uma cauda esquerda mais prolongada, tal como na <a href="#fig-quant-hist-skew-1" class="quarto-xref">Figura&nbsp;<span>4.5 (a)</span></a>.</p></li>
+<li><p>Distribuição <strong>assimétrica à direita</strong>: naturalmente é o oposto da anterior, apresentando o histograma uma cauda direita mais prolongada, tal como na <a href="#fig-quant-hist-skew-2" class="quarto-xref">Figura&nbsp;<span>4.5 (b)</span></a>.</p></li>
+<li><p>Distribuição <strong>simétrica</strong>: neste caso, os dados distribuem-se de forma aproximadamente simétrica em torno dos valores centrais, tal como é o caso da <a href="#fig-quant-hist-skew-3" class="quarto-xref">Figura&nbsp;<span>4.5 (c)</span></a>. Note-se que existem quase sempre pequenas assimetrias.</p></li>
+</ul>
+<div class="cell" data-layout="[[50,50],[-25,50,-25]]">
+<div id="fig-quant-hist-skew" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-skew-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-skew" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-skew-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-skew-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-skew-1.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-skew" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-skew-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Assimétrica à esquerda
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-skew" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-skew-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-skew-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-skew-2.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-skew" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-skew-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Assimétrica à direita
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-skew" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-skew-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-skew-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-skew-3.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-skew" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-skew-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Simétrica
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-figure-spacer quarto-layout-cell" style="flex-basis: 25.0%;justify-content: flex-start;">
+<p>&nbsp;</p>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-skew-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.5: Caracterização quanto à simetria
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A assimetria diz-se à esquerda ou à direita conforme a cauda mais prolongada esteja desse mesmo lado. Não tem nada que enganar!</p>
+</div>
+</div>
+</section>
+<section id="observações-incomuns" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="observações-incomuns">Observações incomuns</h4>
+<p>Outra característica que pode ser identificada no histograma é a presença de observações incomuns, vulgarmente designadas no termo inglês <em>outliers</em>.</p>
+<p>Um observação (ou conjunto de observações) é incomum quando se diferenciam de forma bastante evidente das restantes. Na <a href="#fig-quant-hist-out" class="quarto-xref">Figura&nbsp;<span>4.6</span></a> mostram-se um exemplo da situação, sendo evidente a presença de algumas observações na cauda direita, claramente destacadas do conjunto principal.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-hist-out" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-out-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-out-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-out-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.6: Histograma com observações incomuns
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A identificação de observações fora do comum é importante por variadas razões:</p>
+<ul>
+<li><p><strong>Deteção de erros</strong>: uma das origens das observações incomuns são erros de medição ou de registo dos dados, sobretudo quando envolve processos manuais. A identificação destas observações é uma oportunidade para confirmar ou não que os valores estão corretos.</p></li>
+<li><p><strong>Deteção de assimetrias extremas</strong>: caso se confirme que não há erros, os valores incomuns podem indicar assimetrias extremas nos dados e levar à escolha de métodos adequados para lidar com elas, melhorando a qualidade da análise estatística.</p></li>
+<li><p><strong>Deteção de características interessantes</strong>: os valores incomuns podem revelar características desconhecidas da população que poderá ser interessante estudar.</p></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O humorista <a href="https://pt.wikipedia.org/wiki/Nuno_Markl" target="_blank">Nuno Markl</a> tem um programa de rádio e <em>podcast</em> intitulado <a href="https://radiocomercial.pt/podcasts/o-homem-que-mordeu-o-cao/" target="_blank">O Homem que Mordeu o Cão</a>, onde relata histórias bizarras que vão ocorrendo pelo mundo. De facto, quando o cão morde o homem é banal. A história é muito mais incomum e interessante quando acontece o contrário.</p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="localização-e-dispersão" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="localização-e-dispersão"><span class="header-section-number">4.3</span> Localização e dispersão</h2>
+<p>Nas secções anteriores mencionaram-se os conceitos de <em>centro</em>, <em>cauda</em>, <em>intervalo</em>, etc., de maneira mais ou menos informal. Nesta secção serão formalizados esses conceitos com definições mais precisas.</p>
+<p>Ao descrever um conjunto de dados é comum apresentar estatísticas de localização (por exemplo, a média) e estatísticas de dispersão (por exemplo, a amplitude dos dados). De facto, trata-se de dois parâmetros de grande importância na compreensão das distribuições dos dados.</p>
+<section id="sec-quant-local" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="sec-quant-local"><span class="header-section-number">4.3.1</span> Localização</h3>
+<p>Quando se apresentam estatísticas de <em>localização</em>, o termo refere-se ao valor à volta do qual os dados se distribuem, ou seja, onde estão <em>localizados</em>. Há várias formas de expressar a localização sendo as mais comuns a <em>média</em>, a <em>mediana</em> e a <em>moda</em> (já abordada na <a href="#sec-quant-hist" class="quarto-xref"><span>Secção 4.2.2</span></a>).</p>
+<section id="média" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="média">Média</h4>
+<p>A <em>média</em> de um conjunto de dados desagrupados, normalmente denotada por <span class="math inline">\(\bar{x}\)</span>, pode ser calculada através da expressão:</p>
+<p><span id="eq-xbar"><span class="math display">\[\bar{x} = \frac{\sum_i x_i}{n} \tag{4.1}\]</span></span></p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>É necessário distinguir a <em>média populacional</em>, denotado por <span class="math inline">\(\mu\)</span>, da média amostral, denotada por <span class="math inline">\(\bar{x}\)</span>:</p>
+<ul>
+<li><p>A <strong>média populacional</strong>, <span class="math inline">\(\mu\)</span>, é uma constante definida para a população, normalmente desconhecida. Apenas pode ser calculada se se conhecer a população.</p></li>
+<li><p>A <strong>média amostral</strong>, <span class="math inline">\(\bar{x}\)</span>, é calculada a partir de uma amostra, e pode ser tomada como uma <em>estimativa</em> da média populacional. Quando se descrevem dados, o termo <em>média</em>, quase sempre, se refere à média amostral.</p></li>
+</ul>
+</div>
+</div>
+<p>Daquela definição resulta que a média é um valor localizado no centro dos dados que tem algumas propriedades interessantes:</p>
+<ul>
+<li><p>A soma de todas as diferenças para a média é sempre 0, ou seja, <span class="math inline">\(\sum_i (x_i-\bar{x}) = 0\)</span>.</p></li>
+<li><p>A soma do quadrado de todas as diferenças para uma constante <span class="math inline">\(c\)</span>, <span class="math inline">\(\sum_i (x_i-c)^2\)</span>, é mínima quando <span class="math inline">\(c = \bar{x}\)</span>.</p></li>
+</ul>
+<p>Esta propriedades fazem da média o “centro de gravidade” de um conjunto de dados, sendo a medida de localização mais utilizada para descrever dados. Na <a href="#fig-quant-strip-mean" class="quarto-xref">Figura&nbsp;<span>4.7</span></a> pode visualizar-se a média do conjunto de dados utilizado anteriormente, juntamente com as observações da variável.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-strip-mean" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-strip-mean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-strip-mean-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-strip-mean-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.7: Visualização da média
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Devido à propriedades enunciadas acima, note-se como soma das distâncias dos pontos à média é igual à esquerda e à direita, sendo mais pequenas e em maior número à esquerda e maiores mas em menor número à direita, pois a distribuição é ligeiramente assimétrica à direita.</p>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo da média
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Utilizando os dados da distância de paragem apresentados na <a href="#sec-quant-org-des" class="quarto-xref"><span>Secção 4.1.1</span></a> o cálculo da média é feito da seguinte forma:</p>
+<p><span class="math display">\[\bar{x} = \frac{2+10+4+22+\cdots+85}{50} = 42.98\]</span></p>
+</div>
+</div>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo da média (dados agrupados)
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uma outra situação que ocorre com alguma frequência é ter uma situação de dados discretos agrupados, como no exemplo <a href="#sec-quant-org-dgroup" class="quarto-xref"><span>Secção 4.1.3</span></a>. Neste caso, o cálculo da média pode ser feito a partir da tabela de frequências (<a href="#tbl-quant-dgroup" class="quarto-xref">Tabela&nbsp;<span>4.2</span></a>) através da expressão</p>
+<p><span id="eq-xbar-dgroup"><span class="math display">\[\bar{x}=\frac{\sum_k{x_k f_k}}{n}=\sum_k{x_k f'_k} \tag{4.2}\]</span></span></p>
+<p><span class="math display">\[\bar{x} = \frac{17\times1+18\times1+19\times8+\cdots+23\times4}{50} = 20.343\]</span> Multiplicar as idades pelo número de ocorrências é equivalente a somar uma idade o número de vezes que ela ocorre, pelo que a <a href="#eq-xbar-dgroup" class="quarto-xref">Equação&nbsp;<span>4.2</span></a>, para dados discretos agrupados, é equivalente à expressão <a href="#eq-xbar" class="quarto-xref">Equação&nbsp;<span>4.1</span></a> para dados desagrupados.</p>
+<p>No caso de dados contínuos agrupados, como foi visto, o agrupamento implica perda de informação, logo, não é possível calcular a média de forma equivalente à situação de dados desagrupados. Uma forma de estimar um valor aproximado para a média é utilizar a <a href="#eq-xbar-dgroup" class="quarto-xref">Equação&nbsp;<span>4.2</span></a> substituindo <span class="math inline">\(x_k\)</span> pelos pontos centrais de cada classe. No caso da <a href="#tbl-quant-cgroup" class="quarto-xref">Tabela&nbsp;<span>4.1</span></a>, ficaria:</p>
+<p><span class="math display">\[\bar{x} = \frac{10\times10+30\times18+50\times11+\cdots+110\times1}{50} = 41.6\]</span></p>
+<p>Como pode verificar, o valor difere ligeiramente do calculado anteriormente pela expressão <a href="#eq-xbar" class="quarto-xref">Equação&nbsp;<span>4.1</span></a>, que foi 42.98. Daí ser sempre preferível ter os dados desagrupados e efetuar os cálculos a partir destes.</p>
+</div>
+</div>
+</section>
+<section id="mediana" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="mediana">Mediana</h4>
+<p>Uma outra medida de localização comum é a <em>mediana.</em> A <em>mediana</em> tem uma definição muito simples, sendo o valor central, depois dos dados ordenados (ou, no caso de um número par de observações, a média dos dois valores centrais).</p>
+<p>Para calcular a mediana, o procedimento é então:</p>
+<ol type="1">
+<li>Ordenar os dados</li>
+<li>Determinar o valor central (número ímpar de observações) ou a média dos dois valores centrais (número par de observações).</li>
+</ol>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo da mediana
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li><p>Considere-se a seguinte amostra: 54, 51, 50, 47, 57, 49, 53 (número ímpar de observações)</p>
+<p>Num primeiro passo, devem ordenar-se as observações: 47, 49, 50, <span class="text-danger"><strong> 51 </strong></span>, 53, 54, 57</p>
+<p>A mediana é o valor central, ou seja, 51.</p></li>
+<li><p>Considere-se agora a seguinte amostra: 50, 50, 48, 41, 57, 51, 55, 58 (número par de observações)</p>
+<p>Num primeiro passo devem, ordenar-se as observações: 41, 48, 50, <span class="text-danger"><strong> 50 </strong></span>, <span class="text-danger"><strong> 51 </strong></span>, 55, 57, 58</p>
+<p>A mediana é a média dos dois valores centrais, ou seja, <span class="math inline">\(\frac{50 + 51}{2} =\)</span> 50.5.</p></li>
+</ol>
+</div>
+</div>
+</section>
+<section id="quantis" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="quantis">Quantis</h4>
+<p>A mediana é um caso particular de um <em>quantil</em>, sendo o <em>quantil</em> <span class="math inline">\(Q_p\)</span> definido como o ponto da distribuição abaixo do qual se situa uma proporção de observações igual a <span class="math inline">\(p\)</span>.</p>
+<p>Logo, a mediana é o quantil <span class="math inline">\(Q_{\frac{1}{2}}\)</span>.</p>
+<p>De facto, é comum o valor de <span class="math inline">\(p\)</span> ser definido como uma fração, <span class="math inline">\(p=\frac{k}{q}\)</span>. Dependendo do valor de <span class="math inline">\(q\)</span>, os quantis têm nomes mais específicos:</p>
+<ul>
+<li><strong>Quartis</strong> para <span class="math inline">\(q=4\)</span>: dividem os dados em quatro partes com, aproximadamente, o mesmo número de observações.</li>
+<li><strong>Decis</strong> para <span class="math inline">\(q=10\)</span>: dividem os dados em 10 partes.</li>
+<li><strong>Percentis</strong> para <span class="math inline">\(q=100\)</span>: dividem os dados em 100 partes.</li>
+</ul>
+<p>No caso dos quartis, teremos os quartis <span class="math inline">\(Q_0\)</span> (mínimo), <span class="math inline">\(Q_1\)</span> (1.º quartil), <span class="math inline">\(Q_2\)</span> (2.º quartil ou mediana), <span class="math inline">\(Q_3\)</span> (3.º quartil) e <span class="math inline">\(Q_4\)</span> (máximo). Estas estatísticas irão ser utilizadas mais à frente.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para não haver confusão entre quantil e quartil, ambos notados com <span class="math inline">\(Q\)</span>, adota-se o seguinte critério:</p>
+<ul>
+<li><p>se <span class="math inline">\(Q\)</span> for seguido de uma fração ou proporção, é um quantil, por exemplo, <span class="math inline">\(Q\frac{1}{20}\)</span> ou <span class="math inline">\(Q_{0.95}\)</span>.</p></li>
+<li><p>Caso seja seguido de um inteiro entre 0 e 4 será um quartil, por exemplo, <span class="math inline">\(Q_3\)</span>.</p></li>
+</ul>
+</div>
+</div>
+<p>Para calcular o quantil <span class="math inline">\(Q_p\)</span> utiliza-se a seguinte expressão:</p>
+<p><span id="eq-quantile"><span class="math display">\[ Q_p = x_{\lfloor h \rfloor} + ( h - \lfloor h \rfloor)( x_{\lceil h \rceil} - x_{\lfloor h \rfloor}) \tag{4.3}\]</span></span></p>
+<p>com</p>
+<p><span id="eq-quantile-h"><span class="math display">\[h = (n-1) p + 1 \tag{4.4}\]</span></span></p>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo de um quantil
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Considere-se novamente a amostra: 54, 51, 50, 47, 57, 49, 53</p>
+<p>Começamos por ordenar as observações: 47, 49, 50, 51, 53, 54, 57</p>
+<p>Calcule-se agora o 3.º quartil, ou seja, <span class="math inline">\(p=0.75\)</span>.</p>
+<p>Através da <a href="#eq-quantile-h" class="quarto-xref">Equação&nbsp;<span>4.4</span></a>, calcule-se, <span class="math inline">\(h = (7 - 1) * 0.75 + 1 = 5.5\)</span>, <span class="math inline">\(\lfloor h \rfloor = 5\)</span> e <span class="math inline">\(\lceil h \rceil = 6\)</span>, sendo <span class="math inline">\(x_{\lfloor h \rfloor}=x_{5} = 53\)</span> e <span class="math inline">\(x_{\lceil h \rceil}=x_{6} = 54\)</span>.</p>
+<p>Podemos agora calcular <span class="math inline">\(Q_3\)</span> utilizando a <a href="#eq-quantile" class="quarto-xref">Equação&nbsp;<span>4.3</span></a>:</p>
+<p><span class="math display">\[Q_3 = 53 + (5.5 - 5) * (54 - 53) = 53.5\]</span></p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-quant-disp" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="sec-quant-disp"><span class="header-section-number">4.3.2</span> Dispersão</h3>
+<p>A <em>dispersão</em> de um conjunto de dados refere-se à variabilidade. Dados com pouca variabilidade estão concentrados num intervalo pequeno e dados com muita variabilidade dispersam-se por um grande intervalo. Naturalmente, os termos <em>grande</em> e <em>pequeno</em> são relativos e devem ser interpretadas no contexto dos dados.</p>
+<p>Vão-se analisar algumas medidas de dispersão: a amplitude amostral, a amplitude interquartis, o desvio padrão e a variância.</p>
+<section id="amplitude" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amplitude">Amplitude</h4>
+<p>A <em>amplitude amostral</em> é simplesmente a diferença entre a observação máxima e a observação mínima.</p>
+<p><span id="eq-range"><span class="math display">\[A = x_{max}-x_{min} \tag{4.5}\]</span></span></p>
+<p>Se a amplitude é pequena, os dados estão concentrados tendo pouca dispersão e, se a amplitude for grande, estão mais dispersos.</p>
+<p>Por exemplo no caso das distâncias de paragem da <a href="#sec-quant-org-des" class="quarto-xref"><span>Secção 4.1.1</span></a> o valor mínimo é <span class="math inline">\(x_{min}=2\)</span> e o máximo é <span class="math inline">\(x_{max}=120\)</span>. Logo, <span class="math inline">\(A = x_{max}-x_{min} = 120-2 = 118\)</span>.</p>
+<p>A amplitude é uma medida que é muito afetada por valores atípicos nos extremos. No exemplo acima, caso a observação máxima (120) fosse eliminada, o máximo desta amostra seria 93, reduzindo a amplitude consideravelmente.</p>
+</section>
+<section id="amplitude-interquartis" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amplitude-interquartis">Amplitude interquartis</h4>
+<p>A <em>amplitude interquartis</em> é definida como a diferença entre o terceiro e o primeiro quartis.</p>
+<p><span id="eq-iqr"><span class="math display">\[AIQ=Q_3-Q_1 \tag{4.6}\]</span></span></p>
+<p>Por esse motivo, já não é tão afetada por valores extremos. No exemplo que tem vindo a ser seguido (distâncias de paragem) o primeiro quartil é <span class="math inline">\(Q_1 = 26\)</span>, o terceiro quartil é <span class="math inline">\(Q_3 = 56\)</span> resultado numa amplitude interquartis <span class="math inline">\(AIQ = 30\)</span>.</p>
+</section>
+<section id="sec-quant-boxplot" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="sec-quant-boxplot">Diagrama de extremos e quartis</h4>
+<p>O <em>diagrama de extremos e quartis</em>, vulgarmente designado em inglês por <em>box plot</em>, serve para representar algumas das estatísticas já apresentadas (mínimo, máximo, quartis, mediana). É um diagrama bastante útil e que fornece um resumo visual dos dados.</p>
+<p>Na <a href="#fig-quant-boxplot" class="quarto-xref">Figura&nbsp;<span>4.8</span></a> apresenta-se o diagrama de extremos e quartis para as distâncias de paragem e a figura <a href="#fig-quant-boxplot-desc" class="quarto-xref">Figura&nbsp;<span>4.9</span></a> mostra o significado dos vários componentes do diagrama. Os diagramas foram colocados na horizontal por uma questão prática, mas podem ser representados na vertical, transpondo os eixos.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-boxplot" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-boxplot-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-boxplot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.8: Diagrama de extremos e quartis (<em>box plot</em>) para a <em>distância de paragem</em>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-boxplot-desc" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-boxplot-desc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-boxplot-desc-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-boxplot-desc-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.9: Componentes do diagrama de extremos e quartis
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>No diagrama, a caixa representa a amplitude interquartis e contém, aproximadamente, 50% das observações da amostra, estando as 25% mais pequenas à esquerda da caixa e as 25% maiores à direita da caixa.</p>
+<p>A partir do diagrama obtém-se uma ideia precisa do centro, da variabilidade, de eventuais observações incomuns e da assimetria da distribuição, sendo uma boa representação para comparar vários grupos de observações.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Por regra, os extremos do diagrama podem ir até à observação mais extrema que não ultrapasse <span class="math inline">\(r\)</span> vezes a amplitude interquartis. Na implementação do R, por omissão, é utilizado <span class="math inline">\(r = 1.5\)</span>. Neste caso, sendo <span class="math inline">\(Q_1 = 26\)</span>, <span class="math inline">\(Q_3 = 56\)</span> e <span class="math inline">\(AIQ = 30\)</span> os extremos poder-se-iam estender até <span class="math inline">\(26 - 1.5 \times 30 = -19\)</span>, à esquerda, e até <span class="math inline">\(56 + 1.5 \times 30 = 101\)</span>, à direita. Todas as observações inferiores a -19 ou superiores a 101 seriam representadas com pontos, fora dos extremos (observações incomuns).</p>
+</div>
+</div>
+</section>
+<section id="variância-e-desvio-padrão" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="variância-e-desvio-padrão">Variância e desvio padrão</h4>
+<p>As últimas medidas de dispersão que se apresentam são a <em>variância</em> e <em>desvio padrão</em>.</p>
+<p>Referiu-se a propósito da média que quando se fazia <span class="math inline">\(c = \bar{x}\)</span> a soma <span class="math inline">\(\sum_i (x_i-c)^2\)</span> era mínima. De facto, nessa situação, aquela soma é conhecida por <em>soma dos desvios quadráticos</em> ou <em>SDQ</em>.</p>
+<p><span id="eq-ssq"><span class="math display">\[SDQ = \sum_i (x_i-\bar{x})^2 \tag{4.7}\]</span></span></p>
+<p>Dividindo aquela soma pelo número de observações menos 1 obtém-se uma medida de dispersão denominada <em>variância amostral</em> e notada por <span class="math inline">\(s^2\)</span>.</p>
+<p><span id="eq-variance"><span class="math display">\[s^2 = \frac{\sum_i (x_i-\bar{x})^2}{n-1} \tag{4.8}\]</span></span></p>
+<p>Esta estatística é uma forma de medir a dispersão, pois quanto mais dispersas estiverem as observações, mais afastadas estarão da média, implicando valores elevados de variância.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Tal como no caso da média, existe a variância amostral, <span class="math inline">\(s^2\)</span> e a variância populacional, notada com <span class="math inline">\(\sigma^2\)</span>. A relação entre as duas é exatamente a mesma referida para a média: por norma, a variância populacional é uma constante desconhecida que pode ser estimada através da variância amostral. Caso se esteja perante uma população, a expressão é ligeiramente diferente, sendo</p>
+<p><span id="eq-variance-pop"><span class="math display">\[\sigma^2 = \frac{\sum_i (x_i-\mu)^2}{n} \tag{4.9}\]</span></span></p>
+</div>
+</div>
+<p>Alternativamente, trabalhando a <a href="#eq-variance" class="quarto-xref">Equação&nbsp;<span>4.8</span></a>, a variância pode ser calculada através da seguinte expressão equivalente:</p>
+<p><span id="eq-variance-alt"><span class="math display">\[s^2 = \frac{\sum_i x_i^2-n\bar{x}^2}{n-1} \tag{4.10}\]</span></span></p>
+<p>Por norma, a expressão <a href="#eq-variance-alt" class="quarto-xref">Equação&nbsp;<span>4.10</span></a> é mais prática para efetuar cálculos manuais.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Propriedades da variância
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><p>A variância nunca é negativa. No mínimo, se todas as observações forem iguais, ou seja, se não houver dispersão, a variância é zero.</p></li>
+<li><p>As unidades de medida da variância são as unidades de medida da variável ao quadrado. Por exemplo, se a variável em causa for a idade, em <em>anos</em>, a variância é expressa em <em>anos<sup>2</sup></em>.</p></li>
+</ul>
+</div>
+</div>
+<p>Esta última propriedade torna os valores da variância pouco intuitivos, devido à estranheza das dimensões. Por esse motivo, em alternativa à variância podemos expressar a dispersão em termos do <em>desvio padrão</em> que, simplesmente, é definido como a raiz quadrada da variância e é expresso nas mesmas unidades da variável.</p>
+<p><span id="eq-sdev"><span class="math display">\[s = \sqrt{s^2} \tag{4.11}\]</span></span></p>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo da variância e do desvio padrão
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Considere-se novamente amostra: 50, 50, 48, 41, 57, 51, 55, 58</p>
+<p>Para calcular a variância é necessário calcular previamente a média, <span class="math inline">\(\bar{x}= 51.25\)</span>.</p>
+<p>Podemos também calcular</p>
+<p><span class="math display">\[\sum_i x_i^2 = 50^2+50^2+48^2+41^2+57^2+51^2+55^2+58^2 = 21224\]</span> Agora estamos em condições de calcular a variância e o desvio padrão:</p>
+<p><span class="math display">\[s^2 = \frac{21224 - 8 \times 51.25^2}{7} \approx 30.214\]</span></p>
+<p><span class="math display">\[s = \sqrt{30.214} \approx 5.497\]</span></p>
+</div>
+</div>
+<p>Uma outra vantagem do desvio padrão está numa propriedade derivada da desigualdade de <a href="https://en.wikipedia.org/wiki/Pafnuty_Chebyshev" target="_blank">Chebyshev</a>: se definirmos um intervalo à volta da média com uma meia amplitude 3 desvios padrão, temos a garantia de encontrar a quase totalidade das observações dentro desse intervalo<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>Na <a href="#fig-quant-strip-six-sigma" class="quarto-xref">Figura&nbsp;<span>4.10</span></a> pode visualizar-se esta propriedade para o exemplo das distâncias de paragem que se tem vindo a tratar.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-quant-strip-six-sigma" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-strip-six-sigma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-strip-six-sigma-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-strip-six-sigma-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.10: Significado do desvio padrão
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Neste caso, a totalidade das observações está dentro do intervalo de 3 desvios padrão em torno da média (nem sempre acontece, mas, geralmente, a quase totalidade vai estar). Note-se que, mesmo reduzindo o intervalo para 2 desvios padrão em torno da média, apenas 1 observação está fora do intervalo.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Na prática, esta propriedade permite inferir que, para qualquer variável, observações afastadas da média mais de 2 desvios padrão, são raras e, afastadas mais de 3 desvios padrão, são muito raras. Dever-se-á ter esta constatação sempre presente durante a análise estatística.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="sec-quant-z-score" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="sec-quant-z-score"><span class="header-section-number">4.3.3</span> Observações incomuns e valor Z</h3>
+<p>Decorre das propriedades do desvio padrão referidas no final da <a href="#sec-quant-disp" class="quarto-xref"><span>Secção 4.3.2</span></a> que a distância entre uma observação e a média, no contexto do valor do desvio padrão permite avaliar quão incomum é a observação.</p>
+<p>Uma forma eficiente de avaliar a distância de uma observação à média é através do cálculo do seu <em>valor Z</em>, uma operação designada por <em>padronização</em> ou <em>normalização</em> (embora a <em>normalização</em> possa significar outros conceitos). O valor Z de uma observação, <span class="math inline">\(x\)</span> pode ser calculado com</p>
+<p><span class="math display">\[z = \frac{x-\bar{x}}{s}\]</span></p>
+<p>O valor Z é adimensional e indica de forma expedita quantos desvios padrão a observação está acima da média (<span class="math inline">\(z\)</span> positivo) ou abaixo da média (<span class="math inline">\(z\)</span> negativo). Embora, quer o histograma, quer o diagrama de extremos e quartis permitam detetar observações incomuns, os valores Z são mais uma ferramenta ao dispor do analista.</p>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Cálculo de um valor Z
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Considere-se a primeira observação das distâncias de paragem, <span class="math inline">\(x_1 = 2\)</span>. Relembre-se que <span class="math inline">\(\bar{x} = 42.98\)</span> e <span class="math inline">\(s = 25.77\)</span>. O valor z será:</p>
+<p><span class="math display">\[z_1 = \frac{2 - 42.98}{25.77} = -1.59\]</span></p>
+<p>Esta valor significa que a observação está -1.59 desvios padrão abaixo da média (<a href="#fig-quant-z-scores" class="quarto-xref">Figura&nbsp;<span>4.11</span></a>).</p>
+</div>
+</div>
+<p>Note-se que a padronização não altera a distância relativa entre as observações. Se a padronização for aplicada a toda a distribuição, os dados padronizados terão média igual a 0 e desvio padrão igual a 1. Tal pode ser facilmente demonstrado introduzindo a transformação nas equações <a href="#eq-xbar" class="quarto-xref"><span>4.1</span></a> e <a href="#eq-variance" class="quarto-xref"><span>4.8</span></a>. A <a href="#fig-quant-z-scores" class="quarto-xref">Figura&nbsp;<span>4.11</span></a> ilustra este ponto, utilizando o exemplo das distâncias de paragem.</p>
+<div class="cell">
+<div id="fig-quant-z-scores" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-z-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<div id="fig-quant-z-scores-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-z-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-z-scores-1.png" class="img-fluid figure-img" data-ref-parent="fig-quant-z-scores" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-z-scores-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Dados originais
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div id="fig-quant-z-scores-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-z-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-z-scores-2.png" class="img-fluid figure-img" data-ref-parent="fig-quant-z-scores" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-z-scores-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Valores Z
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-z-scores-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.11: Distribuição dos valores Z
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Regra geral, uma observação cujo valor Z, em termos absolutos, seja superior a 3, ou seja, <span class="math inline">\(|z| &gt; 3\)</span>, é incomum. Tais observações são raras e podem indicar erros nos dados ou características interessantes da distribuição, tal como referido na <a href="#sec-quant-hist" class="quarto-xref"><span>Secção 4.2.2</span></a>.</p>
+<p>Da mesma forma, valores Z absolutos entre 2 e 3, são também algo incomuns e devem merecer um segundo olhar do analista.</p>
+</div>
+</div>
+</section>
+</section>
+<section id="estatísticas-robustas" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="estatísticas-robustas"><span class="header-section-number">4.4</span> Estatísticas robustas</h2>
+<p>As estatísticas calculadas a partir dos dados devem possuir algumas propriedades que as torne adequadas à análise que se pretende efetuar. Uma dessas propriedades é a <em>robustez</em>. A robustez consiste na propriedade do valor da estatística não ser muito afetado por observações incomuns.</p>
+<p>Dos estimadores descritos nas secções anteriores, a mediana e a amplitude interquartis são estatísticas robustas. Já a média e o desvio padrão (ou variância) não são estatísticas robustas.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Classificação quanto à <em>robustez</em>:</p>
+<ul>
+<li><strong>Robustas</strong>: mediana, amplitude interquartis.</li>
+<li><strong>Não robustas</strong>: média, desvio padrão (ou variância).</li>
+</ul>
+</div>
+</div>
+<p>Considere-se novamente o conjunto de dados relativo às distâncias de paragem. Para se ilustrar a questão da robustez, vão calcular-se as quatro estatísticas mencionadas, em 4 cenários diferentes:</p>
+<ol type="1">
+<li>Dados originais.</li>
+<li>Dados originais mais 1 observação igual a 172 (aproximadamente, o máximo dos dados originais mais 2 desvios padrão)</li>
+<li>Dados originais mais 1 observação igual a 223 (máximo mais 4 desvios padrão)</li>
+<li>Dados originais mais 1 observação igual a 275 (máximo mais 6 desvios padrão)</li>
+</ol>
+<p>A <a href="#tbl-quant-robustness" class="quarto-xref">Tabela&nbsp;<span>4.3</span></a> mostra o resultado dos cálculos para os cenários enumerados.</p>
+<div class="cell">
+<div id="tbl-quant-robustness" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-quant-robustness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;4.3: Avaliação da robustez de algumas estatísticas
+</figcaption>
+<div aria-describedby="tbl-quant-robustness-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class="do-not-create-environment cell caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th" style="text-align: left; empty-cells: hide; border-bottom: hidden;"></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Estatísticas não robustas
+</div></th>
+<th colspan="2" data-quarto-table-cell-role="th" style="text-align: center; border-bottom: hidden; padding-bottom: 0; padding-left: 3px; padding-right: 3px;"><div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; ">
+Estatísticas robustas
+</div></th>
+</tr>
+<tr class="even">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Média</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Desvio padrão</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">Mediana</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">AIQ</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left; min-width: 15em;">Cenário 1 (dados originais)</td>
+<td style="text-align: center;">42.98</td>
+<td style="text-align: center;">25.77</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">30</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 15em;">Cenário 2 (dados e 172)</td>
+<td style="text-align: center;">45.51</td>
+<td style="text-align: center;">31.26</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">32</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left; min-width: 15em;">Cenário 3 (dados e 223)</td>
+<td style="text-align: center;">46.51</td>
+<td style="text-align: center;">35.86</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">32</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; min-width: 15em;">Cenário 4 (dados e 275)</td>
+<td style="text-align: center;">47.53</td>
+<td style="text-align: center;">41.31</td>
+<td style="text-align: center;">36</td>
+<td style="text-align: center;">32</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Como pode verificar, as estatísticas robustas (mediana e AIQ), ou não se alteram, ou apenas se alteram ligeiramente. Já as estatísticas não robustas são muito sensíveis a observações extremas, mesmo que, como é o caso, seja apenas 1 observação.</p>
+<p>Isto não quer dizer que as estatísticas não robustas são de evitar, pois possuem outras propriedades desejáveis. A média e o desvio padrão são estatísticas importantes com inúmeras aplicações práticas. Simplesmente, não são robustas, o que as torna pouco adequadas quando a robustez for uma propriedade importante.</p>
+<p>Tipicamente, se os dados puderem conter observações extremas, devem valorizar-se estatísticas robustas. Por exemplo, se quisermos avaliar o <em>rendimento típico</em> das famílias, a estatística mais adequada é a mediana, pois a média é afetada pelas observações extremas que ocorrem na cauda direita desta distribuição. Há sempre famílias com rendimentos atípicos muito elevados que vão fazer com que o valor da média tenha pouco significado.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se tiver 10 pessoas em que 9 têm um rendimento igual a 10 e a última tem um rendimento igual a 100, a mediana é 10 e a média é 19. Claramente, a média não é representativa do <em>rendimento típico</em>.</p>
+</div>
+</div>
+<section id="média-mediana-e-simetria" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="média-mediana-e-simetria">Média, mediana e simetria</h4>
+<p>Uma consequência do que foi afirmado acima acerca da média e da mediana está expresso na <a href="#fig-quant-hist-robust" class="quarto-xref">Figura&nbsp;<span>4.12</span></a>. A figura recupera os dados da <a href="#fig-quant-hist-skew" class="quarto-xref">Figura&nbsp;<span>4.5</span></a> e acrescenta a posição da média e da mediana. Acrescentou-se igualmente uma linha de densidade estimada (como o conceito de densidade ainda não foi apresentado, deve entendê-la como um sinónimo de concentração de observações numa vizinhança).</p>
+<div id="fig-quant-hist-robust" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-quant-hist-robust-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-robust" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-robust-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-robust-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-robust-1.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-robust" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-robust-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Assimétrica à esquerda
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-robust" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-robust-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-robust-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-robust-2.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-robust" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-robust-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Assimétrica à direita
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-robust" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-robust-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-robust-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-robust-3.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-robust" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-robust-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Simétrica
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-quant-hist-robust" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-quant-hist-robust-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-quant-hist-robust-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c040-quantitative_files/figure-html/fig-quant-hist-robust-4.png" class="img-fluid figure-img" data-ref-parent="fig-quant-hist-robust" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-quant-hist-robust-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Legenda
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-quant-hist-robust-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4.12: Média, mediana e simetria
+</figcaption>
+</figure>
+</div>
+<p>Os gráficos ilustram como se posicionam média e mediana, em termos relativos, quando a distribuição é assimétrica. Enquanto que numa distribuição aproximadamente simétrica, moda, mediana e média estão sensivelmente no mesmo ponto (<a href="#fig-quant-hist-robust-3" class="quarto-xref">Figura&nbsp;<span>4.12 (c)</span></a>), numa distribuição assimétrica as 3 estatísticas tomam valores diferentes. Numa distribuição assimétrica à esquerda, a média é menor que a mediana, e esta é menor que a moda (<a href="#fig-quant-hist-robust-1" class="quarto-xref">Figura&nbsp;<span>4.12 (a)</span></a>). Numa distribuição assimétrica à direita acontece o oposto: a média é maior que a mediana, que por sua vez é maior que a moda (<a href="#fig-quant-hist-robust-2" class="quarto-xref">Figura&nbsp;<span>4.12 (b)</span></a>).</p>
+<p>Com o aumento da assimetria, as estatísticas menos robustas deslizam em direção a uma das caudas, dependendo da assimetria.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Geralmente:</p>
+<ul>
+<li>Em distribuições aproximadamente simétricas: moda <span class="math inline">\(\approx\)</span> mediana <span class="math inline">\(\approx\)</span> média.</li>
+<li>Em distribuições assimétricas à esquerda: moda &gt; mediana &gt; média.</li>
+<li>Em distribuições assimétricas à direita: moda &lt; mediana &lt; média.</li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+<section id="tutoriais" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="tutoriais">Tutoriais</h2>
+<p>Depois de ler este capítulo pode verificar como são implementados estes conceitos no ambiente computacional R. Os tutoriais listados abaixo estão diretamente relacionados com este capítulo.</p>
+<div id="listing-quant-listing" class="quarto-listing quarto-listing-container-table">
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+Tutorial
+</th>
+
+<th>
+Descrição
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-date-sort="1744585200000" data-listing-file-modified-sort="1752697415617" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="28" data-listing-word-count-sort="5508" data-listing-title-sort="Gráficos" data-listing-filename-sort="t040-graphics.qmd">
+<td>
+<a href="./t040-graphics.html" class="title listing-title">Gráficos</a>
+</td>
+<td>
+<span class="listing-description">Noções fundamentais sobre a elaboração de gráficos no R. </span>
+</td>
+
+</tr>
+
+<tr data-index="1" data-listing-date-sort="1746486000000" data-listing-file-modified-sort="1752697038335" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="6" data-listing-word-count-sort="1059" data-listing-title-sort="Histogramas" data-listing-filename-sort="t060-histogram.qmd">
+<td>
+<a href="./t060-histogram.html" class="title listing-title">Histogramas</a>
+</td>
+<td>
+<span class="listing-description">Construção e configuração de histogramas no R. </span>
+</td>
+
+</tr>
+
+<tr data-index="2" data-listing-date-sort="1746658800000" data-listing-file-modified-sort="1752697139368" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="5" data-listing-word-count-sort="908" data-listing-title-sort="Diagramas de Extremos e Quartis" data-listing-filename-sort="t070-boxplot.qmd">
+<td>
+<a href="./t070-boxplot.html" class="title listing-title">Diagramas de Extremos e Quartis</a>
+</td>
+<td>
+<span class="listing-description">Construção e configuração de diagramas de extremos e quartis no R. </span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">Nenhum item correspondente</div>
+</div>
+
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-os4" class="csl-entry" role="listitem">
+Diez, D., Çetinkaya-Rundel, M., &amp; Barr, C. (2019). <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</a>
+</div>
+<div id="ref-covid19" class="csl-entry" role="listitem">
+Dinnes, J., Sharma, P., Berhane, S., Wyk, S. S. van, Nyaaba, N., Domen, J., Taylor, M., Cunningham, J., Davenport, C., Dittrich, S., Emperador, D., Hooft, L., Leeflang, M. M. G., McInnes, M. D. F., Spijker, R., Verbakel, Y., J, Takwoingi, Y., Taylor-Phillips, S., Van den Bruel, A., &amp; Deeks, J. J. (2022). Rapid, point‐of‐care antigen tests for diagnosis of SARS‐CoV‐2 infection. <em>Cochrane Database of Systematic Reviews</em>, <em>7</em>. <a href="https://doi.org/10.1002/14651858.CD013705.pub3">https://doi.org/10.1002/14651858.CD013705.pub3</a>
+</div>
+<div id="ref-guimaraes2010e" class="csl-entry" role="listitem">
+Guimarães, R. C., &amp; Cabral, J. S. (2010). <em>Estatística</em>. Verlag Dashöfer Portugal.
+</div>
+<div id="ref-hyndman-fpp" class="csl-entry" role="listitem">
+Hyndman, R. J., &amp; Athanasopoulos, G. (2021). <em>Forecasting: principles and practice</em> (3rd edition). OTexts. <a href="https://otexts.com/fpp3/">https://otexts.com/fpp3/</a>
+</div>
+<div id="ref-lit-digest-blunder" class="csl-entry" role="listitem">
+Lusinchi, D. (2012). <span>«President»</span> Landon and the 1936 Literary Digest Poll: Were Automobile and Telephone Owners to Blame? <em>Social Science History</em>, <em>36</em>(1), 23–54. <a href="https://doi.org/10.1017/S014555320001035X">https://doi.org/10.1017/S014555320001035X</a>
+</div>
+<div id="ref-mann2010is" class="csl-entry" role="listitem">
+Mann, P. S. (2010). <em>Introductory Statistics</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-infopedia-probabilidade" class="csl-entry" role="listitem">
+Porto Editora. (2025). <em>Porto Editora – no Dicionário infopédia da Língua Portuguesa [em linha]</em>. <a href="https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade">https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade</a>
+</div>
+<div id="ref-rstudio" class="csl-entry" role="listitem">
+Posit team. (2024). <em>RStudio: Integrated Development Environment for R</em>. Posit Software, PBC. <a href="http://www.posit.co/">http://www.posit.co/</a>
+</div>
+<div id="ref-baseR" class="csl-entry" role="listitem">
+R Core Team. (2024). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>
+</div>
+<div id="ref-sapo-voluntary" class="csl-entry" role="listitem">
+Sapo.pt. (2025). <em>Pergunta do dia</em>. <a href="http://www.sapo.pt">http://www.sapo.pt</a>
+</div>
+<div id="ref-r4ds2016" class="csl-entry" role="listitem">
+Wickham, H., &amp; Grolemund, G. (2016). <em>R for Data Science: Import, Tidy, Transform, Visualize, and Model Data</em>. O’Reilly Media. <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz/</a>
+</div>
+<div id="ref-wilson2005mammal" class="csl-entry" role="listitem">
+Wilson, D. E., &amp; Reeder, D. A. M. (2005). <em>Mammal Species of the World: A Taxonomic and Geographic Reference</em>. Johns Hopkins University Press. <a href="https://www.departments.bucknell.edu/biology/resources/msw3/">https://www.departments.bucknell.edu/biology/resources/msw3/</a>
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Num intervalo centrado na média, com uma meia amplitude de 3 desvios padrão, é garantido encontrar <span class="math inline">\(8/9 \approx 88.9\%\)</span> da distribuição dentro do intervalo. Na prática, está demonstrado que este limite é, em geral, muito conservador, havendo inúmeros casos em que a proporção de observações dentro do intervalo é muito próxima de 100%.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/pages\.ipb\.pt\/~aduarte\/ecd\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./c030-qualitative.html" class="pagination-link" aria-label="Dados Qualitativos">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./c050-bivariate.html" class="pagination-link" aria-label="Dados Bivariados">
+        <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c040-quantitative.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c040-quantitative.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></div></div></footer></body></html>

@@ -1,0 +1,69 @@
+[
+  {
+    "listing": "/chapters.html",
+    "items": [
+      "/c010-method.html",
+      "/c020-collect.html",
+      "/c030-qualitative.html",
+      "/c040-quantitative.html",
+      "/c050-bivariate.html",
+      "/c060-probability.html"
+    ]
+  },
+  {
+    "listing": "/c010-method.html",
+    "items": [
+      "/t010-tools.html",
+      "/t020-basics.html",
+      "/t030-data.html"
+    ]
+  },
+  {
+    "listing": "/c020-collect.html",
+    "items": [
+      "/t030-data.html"
+    ]
+  },
+  {
+    "listing": "/c030-qualitative.html",
+    "items": [
+      "/t040-graphics.html",
+      "/t050-barplot.html"
+    ]
+  },
+  {
+    "listing": "/c040-quantitative.html",
+    "items": [
+      "/t040-graphics.html",
+      "/t060-histogram.html",
+      "/t070-boxplot.html"
+    ]
+  },
+  {
+    "listing": "/c050-bivariate.html",
+    "items": [
+      "/t040-graphics.html",
+      "/t050-barplot.html",
+      "/t070-boxplot.html"
+    ]
+  },
+  {
+    "listing": "/c060-probability.html",
+    "items": [
+      "/t080-counting.html"
+    ]
+  },
+  {
+    "listing": "/tutorials.html",
+    "items": [
+      "/t010-tools.html",
+      "/t020-basics.html",
+      "/t030-data.html",
+      "/t040-graphics.html",
+      "/t050-barplot.html",
+      "/t060-histogram.html",
+      "/t070-boxplot.html",
+      "/t080-counting.html"
+    ]
+  }
+]

@@ -1,0 +1,1085 @@
+---
+metadata-files:
+  - _chapter.yml
+  
+listing:
+  id: quant-listing
+  include:
+    ecd-order: [4, 6, 7]
+---
+
+```{r}
+#| include: false
+
+source("R/chapters.R")
+```
+
+# Dados Quantitativos {#sec-quant}
+
+Quando a variável a descrever é de natureza quantitativa o campo de possibilidades de análise é muito maior.
+
+Esta secção começa por discutir a organização dos dados. Segue-se depois a apresentação das formas mais comuns de representação gráfica e o cálculo e interpretação de estatísticas numéricas.
+
+## Organização dos dados {#sec-quant-org}
+
+Antes de avançar para os métodos propriamente ditos, é necessário considerar como os dados estão organizados e, em caso de necessidade, organizar os mesmos.
+
+Há três possibilidades para a organização dos dados: dados desagrupados, dados discretos agrupados e dados contínuos agrupados.
+
+### Dados desagrupados {#sec-quant-org-des}
+
+Quando se diz que os dados estão desagrupados, significa que ainda não sofreram qualquer tratamento, ou seja, são os dados em bruto, tal como recolhidos, possivelmente depois de serem corrigidas eventuais inconsistências. Por exemplo, o conjunto de dados `cars` apresenta a variável `dist` com distância de paragem para um conjunto de carros (em *pés* ou *feet*, 1 ft = 30.48 cm). Estes dados estão desagrupados:
+
+`r cars$dist`
+
+::: callout-important
+Quando se faz análise no computador, o ideal é ter os dados o menos tratados possível, na forma de dados desagrupados. É sempre possível agrupar os dados mas, nem sempre é possível desagrupar, uma vez que, ao agrupar, pode ser perdida informação.
+:::
+
+### Dados contínuos agrupados {#sec-quant-org-cgroup}
+
+Os dados desagrupados apresentados acima são difíceis de apreender, pois trata-se de uma lista de números com alguma extensão. A forma mais comum de sumariar os dados é construir uma *tabela de frequências*, vagamente semelhantes às tabelas de contingência apresentadas na @sec-quali-tcont.
+
+Numa tabela de frequências o intervalo de valores que a variável abrange é dividido em sub-intervalos, denominados por *células* ou *classes* utilizando um critério apropriado, dependente do objetivo. Por exemplo, poder-se-iam resumir as distâncias de paragem numa tabela semelhante à @tbl-quant-cgroup.
+
+```{r}
+#| label: tbl-quant-cgroup
+#| tbl-cap: "Tabela de frequências para a distância de paragem"
+#| echo: false
+
+# extract data
+h <- hist(cars$dist, plot = FALSE)
+li <- h$breaks[-length(h$breaks)]
+ls <- h$breaks[-1]
+n <- sum(h$counts)
+ak <- ls[1] - li[1] # all equal
+dt <- data.frame(
+  class = c(paste0(li, "<sup>+</sup> &mdash; ", ls), "Total"),
+  fa = c(h$counts, n),
+  fr = c(h$counts / n * 100, 100),
+  cfa = c(cumsum(h$counts), NA),
+  cfr = c(cumsum(h$counts / n * 100), NA)
+  )
+
+cnames <- c(
+  "Classe",
+  "Absoluta",
+  "Relativa (%)",
+  "Absoluta",
+  "Relativa (%)"
+  )
+
+options(knitr.kable.NA = '')
+
+# make table
+kbl(dt, col.names = cnames, digits = 1, escape = FALSE, align = "c") |>
+  add_header_above(c(" " = 1, "Frequência" = 2, "Frequência Acumulada" = 2)) |>
+  row_spec(
+    nrow(dt),
+    bold = TRUE
+  )
+```
+
+Na @tbl-quant-cgroup, para lá das frequências absolutas e relativas ($f_k$ e $f'_k$), apresentam-se ainda as frequências acumuladas absolutas e relativas ($F_k$ e $F'_k$). As frequências acumuladas permitem ter a noção de quais os conjunto de células com frequências importantes ou insignificantes.
+
+::: {.callout-note appearance="simple"}
+# Cálculo das frequências
+
+Se $f_k$ representar a frequência absoluta da classe $k$ e $n$ for o total de observações, ou seja, $n=\sum_k f_k$, então:
+
+-   Freqência relativa: $f'_k = \frac{f_k}{n}$
+
+-   Frequência absoluta acumulada: $F_k = \sum_{i=1}^{k}f_i$
+
+-   Frequência relativa acumulada: $F'_k = \sum_{i=1}^{k}f'_i = \frac{F_k}{n}$
+:::
+
+Note-se que foram tomadas várias decisões, mais ou menos arbitrárias, na construção da tabela de frequências:
+
+-   Número de células: $K=$ `r length(h$counts)`.
+-   Células iguais com uma amplitude $a_k=$ `r ak` unidades.
+-   Limite inferior da primeira célula: `r li[1]`.
+-   Limite superior da última célula: `r ls[length(h$counts)]`.
+-   Limite superior fechado (inclui valores iguais ao limite).
+
+Desta forma, as células abrangem desde o mínimo (`r min(cars$dist)`) até ao máximo (`r max(cars$dist)`). Naturalmente, desde que as células incluam todas as observações, podem ser definidas arbitrariamente, podendo ter amplitudes iguais ou diferentes (pouco usual). Voltar-se-á a este assunto mais à frente.
+
+::: callout-important
+Ao agrupar os dados, é perdida informação. Se apenas se conhecer a tabela de frequências, é impossível reconstituir os dados originais, apenas os podemos aproximar.
+:::
+
+### Dados discretos agrupados {#sec-quant-org-dgroup}
+
+```{r}
+#| include: false
+set.seed(202503)
+age <- round(rnorm(35, 20, 1.5))
+```
+
+Quando os dados são de natureza discreta ou são dados contínuos que sofreram arredondamento, podemos agrupar os dados sem perder informação. Os dados a seguir (gerados ao acaso) representam as idades dos alunos de uma turma com `r length(age)` alunos.
+
+`r age`
+
+Os dados poderiam ser sumariados com uma tabela semelhante à @tbl-quant-dgroup.
+
+```{r}
+#| label: tbl-quant-dgroup
+#| tbl-cap: "Tabela de frequências a idade"
+#| echo: false
+
+# extract data
+t <- table(age)
+n <- sum(t)
+dt <- data.frame(
+  class = c(names(t), "Total"),
+  fa = c(t, n),
+  fr = c(t / n * 100, 100),
+  cfa = c(cumsum(t), NA),
+  cfr = c(cumsum(t) / n * 100, NA)
+  )
+row.names(dt) <- NULL
+
+cnames <- c(
+  "Idade",
+  "Absoluta",
+  "Relativa (%)",
+  "Absoluta",
+  "Relativa (%)"
+  )
+
+options(knitr.kable.NA = '')
+
+# make table
+kbl(dt, col.names = cnames, digits = 1, escape = FALSE, align = "c") |>
+  add_header_above(c(" " = 1, "Frequência" = 2, "Frequência Acumulada" = 2)) |>
+  row_spec(
+    nrow(dt),
+    bold = TRUE
+  )
+```
+
+A diferença para os dados contínuos está na existência de um conjunto restrito de valores discretos. Para construir a tabela de frequências, em vez de definir células como anteriormente, neste caso, cada célula corresponde a um dos valores.
+
+Note-se que estes tipo de dados tem semelhanças com as variáveis ordinais, no sentido em que se trata de um conjunto de valores ordenados. De facto, a forma mais assertiva de representar graficamente esta informação, seria através de um gráfico de barras como o da @fig-quant-bars.
+
+```{r}
+#| label: fig-quant-bars
+#| fig-cap: "Gráfico de barras para a *idade*"
+#| echo: false
+
+# one color
+ecd_barplot(
+  t,
+  xlab = "Idade",
+  ylab = "Frequência"
+  )
+```
+
+::: callout-important
+Quando se agrupam dados discretos desta forma, não há perda de informação (exceto a ordem das observações, caso fosse relevante). É equivalente ter dados desagrupados ou agrupados desta forma.
+:::
+
+Para não sobrecarregar este texto, considera-se que temos à disposição dados desagrupados. Quando se está perante dados agrupados em classes, como na @sec-quant-org-cgroup ou na @sec-quant-org-dgroup, eventualmente provenientes de uma fonte secundária, há expressões para calcular diversas estatísticas a partir da tabela de frequências que podem ser obtidas de qualquer bom livro de estatística, como @guimaraes2010e, por exemplo.
+
+## Representação de frequências {#sec-quant-freq}
+
+Quando se está perante dados desagrupados, um procedimento exploratório comum é a construção de uma tabela de frequências e sua representação gráfica. A forma mais comum de o fazer é através de um *histograma*.
+
+À semelhança do gráfico de barras, o histograma representa cada classe com uma barra, cuja altura é proporcional à frequência da classe. A figura @fig-quant-hist representa graficamente a @tbl-quant-cgroup, que contém as frequências das distâncias de paragem de um conjunto de carros.
+
+```{r}
+#| label: fig-quant-hist
+#| fig-cap: "Histograma para a *distância de paragem*"
+#| echo: false
+#| out-extra: class="preview-image"
+
+lnames <- c("Distância de paragem (ft)", "Frequência")
+
+ecd_hist(
+  cars$dist, 
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+```
+
+Note-se que há diferenças muito importantes para o gráfico de barras:
+
+-   O eixo horizontal é numérico, no gráfico de barras eram categorias.
+-   Não há separação entre as barras, o que reforça a ideia de continuidade.
+
+### Definição das classes
+
+Para elaborar um histograma é necessário decidir o número de classes, $K$, a amplitude de cada classe, $a_k$, e onde se localiza cada classe (limites inferior e superior).
+
+A decisão mais importante é o número de classes. O histograma deve ter um número de classes equilibrado tendo em atenção o seguinte:
+
+-   Um número de classes muito pequeno produz uma visualização pouco informativa.
+-   Um número de classes muito grande produz uma visualização confusa com demasiados detalhes irrelevantes.
+
+A @fig-quant-hist-nclass mostra algumas variantes ao histograma apresentado anteriormente para ilustrar esta questão. Na variante [-@fig-quant-hist-nclass-1] o número de classes é claramente escasso e a análise do gráfico não fornece grande informação. Já na variante [-@fig-quant-hist-nclass-4] o número de classes é claramente exagerado, havendo muitas classes com uma ou nenhuma observação e demasiados detalhes que dificultam a análise.
+
+As figuras [-@fig-quant-hist-nclass-2], [-@fig-quant-hist-nclass-3], [-@fig-quant-hist-nclass-4] e [-@fig-quant-hist-nclass-5] implementam diversos métodos conhecidos para determinar o número de classes e produzem resultados aceitáveis.
+
+```{r}
+#| label: fig-quant-hist-nclass
+#| fig-cap: "Efeito do número de classes no histograma"
+#| fig-subcap:
+#|   - "Número escasso"
+#|   - "Scott"
+#|   - "R, por omissão"
+#|   - "Sturges"
+#|   - "Freedman-Diaconis"
+#|   - "Número exagerado"
+#| layout-ncol: 2
+#| echo: false
+
+par(mar = c(4, 4, 2, 2) + 0.1)
+
+ecd_hist(
+  cars$dist,
+  breaks = seq(0, 120, , length.out = 3),
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+
+
+ecd_hist(
+  cars$dist,
+  breaks = seq(0, 120, length.out = nclass.scott(cars$dist) + 1),
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+
+ecd_hist(
+  cars$dist, 
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+
+ecd_hist(
+  cars$dist,
+  breaks = seq(0, 120, length.out = nclass.Sturges(cars$dist) + 1),
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+
+ecd_hist(
+  cars$dist,
+  breaks = seq(0, 120, length.out = nclass.FD(cars$dist) + 1),
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+
+ecd_hist(
+  cars$dist,
+  breaks = seq(0, 120, length.out = 31),
+  main = "",
+  xlab = lnames[1],
+  ylab = lnames[2]
+  )
+```
+
+Em todos os casos, o limite inferior da primeira classe é 0 (em vez do mínimo, que é `r min(cars$dist)`) e o limite superior é 120 (que coincide com o máximo). Esta estratégia produz resultados esteticamente mais agradáveis e permite julgar mais facilmente os limites das classes.
+
+::: callout-note
+O R tenta sempre alinhar os limites das classes com os intervalos do eixo horizontal, alterando ligeiramente o número de classes recomendado pelos vários métodos que implementa (Sturges (por omissão), Scott e Freedman-Diaconis) para fazer aquele alinhamento. Trata-se de promover um equilíbrio entre questões teóricas, questões práticas e questões estéticas, sempre importantes na visualização de dados.
+:::
+
+### Análise do histograma {#sec-quant-hist}
+
+Um histograma permite uma perspetiva rápida sobre a forma como os dados estão distribuídos, sendo muito bom para julgar 3 aspetos: o tipo de moda, a simetria e a presença de observações incomuns.
+
+#### Tipo de moda {.unnumbered}
+
+Em estatística, a *moda* é o valor (ou vizinhança de um valor) onde a concentração (densidade) de observações é máxima. Perante dados discretos é fácil de determinar a moda, bastando verificar qual o valor mais frequente. No caso de dados contínuos é necessário fazer uma estimativa por outros métodos, uma vez que, por definição, a ocorrência de valores iguais é improvável, ocorrendo quase sempre devido ao arredondamento das medições.
+
+Como a determinação de uma estimativa exata da moda tem um interesse limitado, o histograma pode ser utilizado para ter uma ideia do tipo de moda que os dados apresentam. Desta forma, são de notar 4 casos:
+
+-   Distribuição **unimodal**: tal como o nome indica, há apenas uma moda, ou seja, o histograma apresenta um único pico proeminente, sendo o caso da @fig-quant-hist-mode-1. É uma das situações mais frequentes.
+
+-   Distribuição **bimodal**: neste caso já há duas modas, ou seja, o histograma apresenta dois picos proeminentes, sendo o caso da @fig-quant-hist-mode-2.
+
+-   Distribuição **multimodal**: trata-se de uma generalização dos conceitos anteriores às situações em que há mais do que dois dois picos proeminentes no histograma, sendo o caso da @fig-quant-hist-mode-3. O facto de haver mais do que uma moda levanta a questão da causa, que pode dever-se a uma qualquer característica dos dados com interesse.
+
+-   Distribuição **uniforme**: neste caso não é possível identificar qualquer pico proeminente, tendo todas as barras do histograma uma altura semelhante, como no caso da @fig-quant-hist-mode-4.
+
+```{r}
+#| label: fig-quant-hist-mode
+#| fig-cap: "Diferentes tipos de moda"
+#| fig-subcap:
+#|   - "Unimodal"
+#|   - "Bimodal"
+#|   - "Multimodal"
+#|   - "Uniforme, sem moda"
+#| layout-ncol: 2
+#| echo: false
+
+n <- 250
+mi <- 0
+mx <- 10
+set.seed(202503)
+
+# special hist
+special_hist <- function(x, density = TRUE) {
+  h <- ecd_hist(x, plot = FALSE, warn.unused = FALSE)
+  d <- density(x, bw = "SJ-dpi")
+  ymax <- max(h$density, d$y)
+  
+  h <- ecd_hist(x, axes = FALSE, xlab = "", ylab = "", main = "", breaks = 0:10, freq = FALSE, ylim = c(0, ymax))
+  axis(1, at = h$breaks)
+  if (density) {
+      d <- density(x, bw = "SJ-dpi")
+      d$y <- d$y + max(h$density) - max(d$y) # looks better
+      lines(d, lwd = 10, col = palette.colors(alpha = 0.7)[8])
+  }
+}
+
+par(mar = c(2, 3.5, 2, 2) + 0.1)
+
+# unimodal
+x <- rnorm(n, 5, 2)
+x <- x[x >= mi & x <= mx]
+special_hist(x)
+
+# bimodal
+x <- c(
+  rnorm(n / 2, 3, 1.5),
+  rnorm(n / 2, 8, 1)
+  )
+x <- x[which(x >= mi & x <= mx)]
+special_hist(x)
+
+# multimodal
+x <- c(
+  rnorm(n / 3, 1.5, 0.75),
+  rnorm(n / 3, 4.5, 0.5),
+  rnorm(n / 3, 7.5, 0.75)
+  )
+x <- x[which(x >= mi & x <= mx)]
+special_hist(x)
+
+
+# uniform
+x <- runif(n) * 10
+special_hist(x)
+```
+
+::: callout-tip
+Para ajudar a visualizar o tipo de moda, deve imaginar-se uma curva suave sobre o histograma, tal como as apresentadas na @fig-quant-hist-mode. Uma boa forma de uma fazer é imaginar uma corda flexível repousada sobre as barras.
+:::
+
+#### Simetria {.unnumbered}
+
+Um outro aspeto que o histograma permite avaliar é a simetria da distribuição dos dados em torno dos valores centrais. Neste caso, há 3 situações:
+
+-   Distribuição **assimétrica à esquerda**: o histograma apresenta uma cauda esquerda mais prolongada, tal como na @fig-quant-hist-skew-1.
+
+-   Distribuição **assimétrica à direita**: naturalmente é o oposto da anterior, apresentando o histograma uma cauda direita mais prolongada, tal como na @fig-quant-hist-skew-2.
+
+-   Distribuição **simétrica**: neste caso, os dados distribuem-se de forma aproximadamente simétrica em torno dos valores centrais, tal como é o caso da @fig-quant-hist-skew-3. Note-se que existem quase sempre pequenas assimetrias.
+
+```{r}
+#| label: fig-quant-hist-skew
+#| fig-cap: "Caracterização quanto à simetria"
+#| fig-subcap:
+#|   - "Assimétrica à esquerda"
+#|   - "Assimétrica à direita"
+#|   - "Simétrica"
+#| layout: [[50, 50], [-25, 50, -25]]
+#| echo: false
+
+par(mar = c(2, 3.5, 2, 2) + 0.1)
+
+set.seed(202503)
+
+# left
+xlef <- 10 - rlnorm(n, 1, 0.6)
+xlef <- xlef[xlef >= mi & xlef <= mx]
+special_hist(xlef, density = FALSE)
+
+# right
+xrig <- rlnorm(n, 1, 0.6)
+xrig <- xrig[which(xrig >= mi & xrig <= mx)]
+special_hist(xrig, density = FALSE)
+
+# simetric
+xsim <- rnorm(n, 5, 2)
+xsim <- xsim[which(xsim >= mi & xsim <= mx)]
+special_hist(xsim, density = FALSE)
+```
+
+::: callout-tip
+A assimetria diz-se à esquerda ou à direita conforme a cauda mais prolongada esteja desse mesmo lado. Não tem nada que enganar!
+:::
+
+#### Observações incomuns {.unnumbered}
+
+Outra característica que pode ser identificada no histograma é a presença de observações incomuns, vulgarmente designadas no termo inglês *outliers*.
+
+Um observação (ou conjunto de observações) é incomum quando se diferenciam de forma bastante evidente das restantes. Na @fig-quant-hist-out mostram-se um exemplo da situação, sendo evidente a presença de algumas observações na cauda direita, claramente destacadas do conjunto principal.
+
+```{r}
+#| label: fig-quant-hist-out
+#| fig-cap: "Histograma com observações incomuns"
+#| echo: false
+
+x <- c(rnorm(n - 5, 3, 1), rnorm(5, 9, 0.5))
+x <- x[x >= mi & x <= mx]
+ecd_hist(
+  x,
+  main = "",
+  xlab = "x",
+  ylab = "Frequência"
+  )
+```
+
+A identificação de observações fora do comum é importante por variadas razões:
+
+-   **Deteção de erros**: uma das origens das observações incomuns são erros de medição ou de registo dos dados, sobretudo quando envolve processos manuais. A identificação destas observações é uma oportunidade para confirmar ou não que os valores estão corretos.
+
+-   **Deteção de assimetrias extremas**: caso se confirme que não há erros, os valores incomuns podem indicar assimetrias extremas nos dados e levar à escolha de métodos adequados para lidar com elas, melhorando a qualidade da análise estatística.
+
+-   **Deteção de características interessantes**: os valores incomuns podem revelar características desconhecidas da população que poderá ser interessante estudar.
+
+::: callout-tip
+O humorista [Nuno Markl](https://pt.wikipedia.org/wiki/Nuno_Markl){target="_blank"} tem um programa de rádio e *podcast* intitulado [O Homem que Mordeu o Cão](https://radiocomercial.pt/podcasts/o-homem-que-mordeu-o-cao/){target="_blank"}, onde relata histórias bizarras que vão ocorrendo pelo mundo. De facto, quando o cão morde o homem é banal. A história é muito mais incomum e interessante quando acontece o contrário.
+:::
+
+## Localização e dispersão
+
+Nas secções anteriores mencionaram-se os conceitos de *centro*, *cauda*, *intervalo*, etc., de maneira mais ou menos informal. Nesta secção serão formalizados esses conceitos com definições mais precisas.
+
+Ao descrever um conjunto de dados é comum apresentar estatísticas de localização (por exemplo, a média) e estatísticas de dispersão (por exemplo, a amplitude dos dados). De facto, trata-se de dois parâmetros de grande importância na compreensão das distribuições dos dados.
+
+### Localização {#sec-quant-local}
+
+Quando se apresentam estatísticas de *localização*, o termo refere-se ao valor à volta do qual os dados se distribuem, ou seja, onde estão *localizados*. Há várias formas de expressar a localização sendo as mais comuns a *média*, a *mediana* e a *moda* (já abordada na @sec-quant-hist).
+
+#### Média {.unnumbered}
+
+A *média* de um conjunto de dados desagrupados, normalmente denotada por $\bar{x}$, pode ser calculada através da expressão:
+
+$$\bar{x} = \frac{\sum_i x_i}{n}$$ {#eq-xbar}
+
+::: callout-important
+É necessário distinguir a *média populacional*, denotado por $\mu$, da média amostral, denotada por $\bar{x}$:
+
+-   A **média populacional**, $\mu$, é uma constante definida para a população, normalmente desconhecida. Apenas pode ser calculada se se conhecer a população.
+
+-   A **média amostral**, $\bar{x}$, é calculada a partir de uma amostra, e pode ser tomada como uma *estimativa* da média populacional. Quando se descrevem dados, o termo *média*, quase sempre, se refere à média amostral.
+:::
+
+Daquela definição resulta que a média é um valor localizado no centro dos dados que tem algumas propriedades interessantes:
+
+-   A soma de todas as diferenças para a média é sempre 0, ou seja, $\sum_i (x_i-\bar{x}) = 0$.
+
+-   A soma do quadrado de todas as diferenças para uma constante $c$, $\sum_i (x_i-c)^2$, é mínima quando $c = \bar{x}$.
+
+Esta propriedades fazem da média o "centro de gravidade" de um conjunto de dados, sendo a medida de localização mais utilizada para descrever dados. Na @fig-quant-strip-mean pode visualizar-se a média do conjunto de dados utilizado anteriormente, juntamente com as observações da variável.
+
+```{r}
+#| label: fig-quant-strip-mean
+#| fig-cap: "Visualização da média"
+#| echo: false
+#| fig-height: 2.1
+
+par(mar = c(5, 1, 1, 1))
+
+stripchart(
+  cars$dist,
+  xlab = lnames[1],
+  method = "stack",
+  at = 0.75, offset = 0.4,
+  pch = 21,
+  col = 6,
+  bg = 3,
+  cex = 1.5,
+  frame.plot = FALSE
+  )
+abline(h = 0.6)
+m <- mean(cars$dist)
+abline(v = m, col = 7, lty = "dotted")
+points(m, 0.2, pch = 17, cex = 2, col = 7)
+text(m, 1.9, bquote(bar(x) == .(m)), pos = 4, col = 7, cex = 0.8)
+```
+
+Devido à propriedades enunciadas acima, note-se como soma das distâncias dos pontos à média é igual à esquerda e à direita, sendo mais pequenas e em maior número à esquerda e maiores mas em menor número à direita, pois a distribuição é ligeiramente assimétrica à direita.
+
+::: {.callout-tip appearance="simple"}
+# Cálculo da média
+
+Utilizando os dados da distância de paragem apresentados na @sec-quant-org-des o cálculo da média é feito da seguinte forma:
+
+```{r}
+#| include: false
+
+num_terms <- c(head(cars$dist, 4), "\\cdots", tail(cars$dist, 1))
+num <- paste(num_terms, collapse = "+")
+den <- length(cars$dist)
+```
+
+$$\bar{x} = \frac{`r num`}{`r den`} = `r m`$$
+:::
+
+::: {.callout-tip appearance="simple"}
+# Cálculo da média (dados agrupados)
+
+Uma outra situação que ocorre com alguma frequência é ter uma situação de dados discretos agrupados, como no exemplo @sec-quant-org-dgroup. Neste caso, o cálculo da média pode ser feito a partir da tabela de frequências (@tbl-quant-dgroup) através da expressão
+
+$$\bar{x}=\frac{\sum_k{x_k f_k}}{n}=\sum_k{x_k f'_k}$$ {#eq-xbar-dgroup}
+
+```{r}
+#| include: false
+
+num_terms <- c(
+  paste(head(names(t), 3), head(t, 3), sep = "\\times"),
+  "\\cdots",
+  paste(tail(names(t), 1), tail(t, 1), sep = "\\times")
+)
+num <- paste(num_terms, collapse = "+")
+den <- length(cars$dist)
+m <- format(mean(age), digits = 5)
+```
+
+$$\bar{x} = \frac{`r num`}{`r den`} = `r m`$$ Multiplicar as idades pelo número de ocorrências é equivalente a somar uma idade o número de vezes que ela ocorre, pelo que a @eq-xbar-dgroup, para dados discretos agrupados, é equivalente à expressão @eq-xbar para dados desagrupados.
+
+No caso de dados contínuos agrupados, como foi visto, o agrupamento implica perda de informação, logo, não é possível calcular a média de forma equivalente à situação de dados desagrupados. Uma forma de estimar um valor aproximado para a média é utilizar a @eq-xbar-dgroup substituindo $x_k$ pelos pontos centrais de cada classe. No caso da @tbl-quant-cgroup, ficaria:
+
+```{r}
+#| include: false
+
+num_terms <- c(
+  paste(head(h$mids, 3), head(h$counts, 3), sep = "\\times"),
+  "\\cdots",
+  paste(tail(h$mids, 1), tail(h$counts, 1), sep = "\\times")
+)
+num <- paste(num_terms, collapse = "+")
+den <- length(cars$dist)
+m <- format(sum(h$counts * h$mids) / sum(h$counts), digits = 5)
+```
+
+$$\bar{x} = \frac{`r num`}{`r den`} = `r m`$$
+
+Como pode verificar, o valor difere ligeiramente do calculado anteriormente pela expressão @eq-xbar, que foi `r mean(cars$dist)`. Daí ser sempre preferível ter os dados desagrupados e efetuar os cálculos a partir destes.
+:::
+
+#### Mediana {.unnumbered}
+
+Uma outra medida de localização comum é a *mediana.* A *mediana* tem uma definição muito simples, sendo o valor central, depois dos dados ordenados (ou, no caso de um número par de observações, a média dos dois valores centrais).
+
+Para calcular a mediana, o procedimento é então:
+
+1.  Ordenar os dados
+2.  Determinar o valor central (número ímpar de observações) ou a média dos dois valores centrais (número par de observações).
+
+::: {.callout-tip appearance="simple"}
+# Cálculo da mediana
+
+```{r}
+#| include: false
+
+set.seed(202503)
+s1 <- round(rnorm(7, 50, 5))
+s1s <- s1sh <- sort(s1)
+s1sh[4] <- paste("[<strong>", s1sh[4], "</strong>]{.text-danger}")
+s2 <- round(rnorm(8, 50, 5))
+s2s <- s2sh <- sort(s2)
+s2sh[c(4, 5)] <- paste("[<strong>", s2sh[c(4, 5)], "</strong>]{.text-danger}")
+```
+
+1.  Considere-se a seguinte amostra: `r s1` (número ímpar de observações)
+
+    Num primeiro passo, devem ordenar-se as observações: `r s1sh`
+
+    A mediana é o valor central, ou seja, `r median(s1)`.
+
+2.  Considere-se agora a seguinte amostra: `r s2` (número par de observações)
+
+    Num primeiro passo devem, ordenar-se as observações: `r s2sh`
+
+    A mediana é a média dos dois valores centrais, ou seja, $\frac{`r s2s[4]` + `r s2s[5]`}{2} =$ `r median(s2)`.
+:::
+
+#### Quantis {.unnumbered}
+
+A mediana é um caso particular de um *quantil*, sendo o *quantil* $Q_p$ definido como o ponto da distribuição abaixo do qual se situa uma proporção de observações igual a $p$.
+
+Logo, a mediana é o quantil $Q_{\frac{1}{2}}$.
+
+De facto, é comum o valor de $p$ ser definido como uma fração, $p=\frac{k}{q}$. Dependendo do valor de $q$, os quantis têm nomes mais específicos:
+
+-   **Quartis** para $q=4$: dividem os dados em quatro partes com, aproximadamente, o mesmo número de observações.
+-   **Decis** para $q=10$: dividem os dados em 10 partes.
+-   **Percentis** para $q=100$: dividem os dados em 100 partes.
+
+No caso dos quartis, teremos os quartis $Q_0$ (mínimo), $Q_1$ (1.º quartil), $Q_2$ (2.º quartil ou mediana), $Q_3$ (3.º quartil) e $Q_4$ (máximo). Estas estatísticas irão ser utilizadas mais à frente.
+
+::: callout-note
+Para não haver confusão entre quantil e quartil, ambos notados com $Q$, adota-se o seguinte critério:
+
+-   se $Q$ for seguido de uma fração ou proporção, é um quantil, por exemplo, $Q\frac{1}{20}$ ou $Q_{0.95}$.
+
+-   Caso seja seguido de um inteiro entre 0 e 4 será um quartil, por exemplo, $Q_3$.
+:::
+
+Para calcular o quantil $Q_p$ utiliza-se a seguinte expressão:
+
+$$ Q_p = x_{\lfloor h \rfloor} + ( h - \lfloor h \rfloor)( x_{\lceil h \rceil} - x_{\lfloor h \rfloor})$$ {#eq-quantile}
+
+com
+
+$$h = (n-1) p + 1$$ {#eq-quantile-h}
+
+::: {.callout-tip appearance="simple"}
+# Cálculo de um quantil
+
+```{r}
+#| include: false
+
+p <- 0.75
+n <- length(s1)
+hh <- (n - 1) * p + 1
+fhh <- floor(hh)
+chh <- ceiling(hh)
+q_p <- s1s[fhh] + (hh - fhh) * (s1s[chh] - s1s[fhh])
+```
+
+Considere-se novamente a amostra: `r s1`
+
+Começamos por ordenar as observações: `r s1s`
+
+Calcule-se agora o 3.º quartil, ou seja, $p=`r p`$.
+
+Através da @eq-quantile-h, calcule-se, $h = (`r n` - 1) * `r p` + 1 = `r hh`$, $\lfloor h \rfloor = `r fhh`$ e $\lceil h \rceil = `r chh`$, sendo $x_{\lfloor h \rfloor}=x_{`r fhh`} = `r s1s[fhh]`$ e $x_{\lceil h \rceil}=x_{`r chh`} = `r s1s[chh]`$.
+
+Podemos agora calcular $Q_3$ utilizando a @eq-quantile:
+
+$$Q_3 = `r s1s[fhh]` + (`r hh` - `r fhh`) * (`r s1s[chh]` - `r s1s[fhh]`) = `r q_p`$$
+:::
+
+### Dispersão {#sec-quant-disp}
+
+A *dispersão* de um conjunto de dados refere-se à variabilidade. Dados com pouca variabilidade estão concentrados num intervalo pequeno e dados com muita variabilidade dispersam-se por um grande intervalo. Naturalmente, os termos *grande* e *pequeno* são relativos e devem ser interpretadas no contexto dos dados.
+
+Vão-se analisar algumas medidas de dispersão: a amplitude amostral, a amplitude interquartis, o desvio padrão e a variância.
+
+#### Amplitude {.unnumbered}
+
+A *amplitude amostral* é simplesmente a diferença entre a observação máxima e a observação mínima.
+
+$$A = x_{max}-x_{min}$$ {#eq-range}
+
+Se a amplitude é pequena, os dados estão concentrados tendo pouca dispersão e, se a amplitude for grande, estão mais dispersos.
+
+Por exemplo no caso das distâncias de paragem da @sec-quant-org-des o valor mínimo é $x_{min}=`r min(cars$dist)`$ e o máximo é $x_{max}=`r max(cars$dist)`$. Logo, $A = x_{max}-x_{min} = `r max(cars$dist)`-`r min(cars$dist)` = `r max(cars$dist) - min(cars$dist)`$.
+
+A amplitude é uma medida que é muito afetada por valores atípicos nos extremos. No exemplo acima, caso a observação máxima (`r max(cars$dist)`) fosse eliminada, o máximo desta amostra seria `r max(cars$dist[-which.max(cars$dist)])`, reduzindo a amplitude consideravelmente.
+
+#### Amplitude interquartis {.unnumbered}
+
+A *amplitude interquartis* é definida como a diferença entre o terceiro e o primeiro quartis.
+
+$$AIQ=Q_3-Q_1$$ {#eq-iqr}
+
+```{r}
+#| include: false
+
+q1 <- quantile(cars$dist, 0.25)
+q3 <- quantile(cars$dist, 0.75)
+iqr <- IQR(cars$dist)
+max_range <- c(q1, q3) + c(-1, 1) * 1.5 * iqr
+```
+
+Por esse motivo, já não é tão afetada por valores extremos. No exemplo que tem vindo a ser seguido (distâncias de paragem) o primeiro quartil é $Q_1 = `r q1`$, o terceiro quartil é $Q_3 = `r q3`$ resultado numa amplitude interquartis $AIQ = `r iqr`$.
+
+#### Diagrama de extremos e quartis {#sec-quant-boxplot .unnumbered}
+
+O *diagrama de extremos e quartis*, vulgarmente designado em inglês por *box plot*, serve para representar algumas das estatísticas já apresentadas (mínimo, máximo, quartis, mediana). É um diagrama bastante útil e que fornece um resumo visual dos dados.
+
+Na @fig-quant-boxplot apresenta-se o diagrama de extremos e quartis para as distâncias de paragem e a figura @fig-quant-boxplot-desc mostra o significado dos vários componentes do diagrama. Os diagramas foram colocados na horizontal por uma questão prática, mas podem ser representados na vertical, transpondo os eixos.
+
+```{r}
+#| label: fig-quant-boxplot
+#| fig-cap: "Diagrama de extremos e quartis (*box plot*) para a *distância de paragem*"
+#| fig-height: 3
+#| echo: false
+
+par(mar = c(5, 2, 2, 2))
+
+ecd_boxplot(
+  cars$dist, 
+  horizontal = TRUE,
+  xlab = lnames[1]
+  )
+```
+
+```{r}
+#| label: fig-quant-boxplot-desc
+#| fig-cap: "Componentes do diagrama de extremos e quartis"
+#| fig-height: 4
+#| echo: false
+
+par(mar = c(5, 2, 2, 2), xpd = NA)
+
+bs <- ecd_boxplot(
+  cars$dist, 
+  horizontal = TRUE,
+  xlab = lnames[1],
+  boxwex = 0.5,
+  frame.plot = FALSE,
+  outcex = 1.5
+  )
+
+stripchart(
+  cars$dist,
+  xlab = lnames[1],
+  method = "stack",
+  at = 0.6, offset = 0.4,
+  pch = 21,
+  col = 7,
+  bg = 2,
+  cex = 1.5,
+  frame.plot = FALSE,
+  add = TRUE
+  )
+
+x0 <- c(bs$stats[, 1], bs$out)
+txt <- c("extremo\n inferior", expression(Q[1]), "mediana", expression(Q[3]), "extremo\nsuperior", "observação\n  incomum")
+text(x0, 1.4, txt, adj = c(0.5, 0), cex = 0.9, col = 7)
+
+arrows(x0, 1.38, x0, 1.15, length = 0.1, col = 7)
+```
+
+No diagrama, a caixa representa a amplitude interquartis e contém, aproximadamente, 50% das observações da amostra, estando as 25% mais pequenas à esquerda da caixa e as 25% maiores à direita da caixa.
+
+A partir do diagrama obtém-se uma ideia precisa do centro, da variabilidade, de eventuais observações incomuns e da assimetria da distribuição, sendo uma boa representação para comparar vários grupos de observações.
+
+::: callout-note
+Por regra, os extremos do diagrama podem ir até à observação mais extrema que não ultrapasse $r$ vezes a amplitude interquartis. Na implementação do R, por omissão, é utilizado $r = 1.5$. Neste caso, sendo $Q_1 = `r q1`$, $Q_3 = `r q3`$ e $AIQ = `r iqr`$ os extremos poder-se-iam estender até $`r q1` - 1.5 \times `r iqr` = `r max_range[1]`$, à esquerda, e até $`r q3` + 1.5 \times `r iqr` = `r max_range[2]`$, à direita. Todas as observações inferiores a `r max_range[1]` ou superiores a `r max_range[2]` seriam representadas com pontos, fora dos extremos (observações incomuns).
+:::
+
+#### Variância e desvio padrão {.unnumbered}
+
+As últimas medidas de dispersão que se apresentam são a *variância* e *desvio padrão*.
+
+Referiu-se a propósito da média que quando se fazia $c = \bar{x}$ a soma $\sum_i (x_i-c)^2$ era mínima. De facto, nessa situação, aquela soma é conhecida por *soma dos desvios quadráticos* ou *SDQ*.
+
+$$SDQ = \sum_i (x_i-\bar{x})^2$$ {#eq-ssq}
+
+Dividindo aquela soma pelo número de observações menos 1 obtém-se uma medida de dispersão denominada *variância amostral* e notada por $s^2$.
+
+$$s^2 = \frac{\sum_i (x_i-\bar{x})^2}{n-1}$$ {#eq-variance}
+
+Esta estatística é uma forma de medir a dispersão, pois quanto mais dispersas estiverem as observações, mais afastadas estarão da média, implicando valores elevados de variância.
+
+::: callout-note
+Tal como no caso da média, existe a variância amostral, $s^2$ e a variância populacional, notada com $\sigma^2$. A relação entre as duas é exatamente a mesma referida para a média: por norma, a variância populacional é uma constante desconhecida que pode ser estimada através da variância amostral. Caso se esteja perante uma população, a expressão é ligeiramente diferente, sendo
+
+$$\sigma^2 = \frac{\sum_i (x_i-\mu)^2}{n}$$ {#eq-variance-pop}
+:::
+
+Alternativamente, trabalhando a @eq-variance, a variância pode ser calculada através da seguinte expressão equivalente:
+
+$$s^2 = \frac{\sum_i x_i^2-n\bar{x}^2}{n-1}$$ {#eq-variance-alt}
+
+Por norma, a expressão @eq-variance-alt é mais prática para efetuar cálculos manuais.
+
+::: callout-important
+# Propriedades da variância
+
+-   A variância nunca é negativa. No mínimo, se todas as observações forem iguais, ou seja, se não houver dispersão, a variância é zero.
+
+-   As unidades de medida da variância são as unidades de medida da variável ao quadrado. Por exemplo, se a variável em causa for a idade, em *anos*, a variância é expressa em *anos^2^*.
+:::
+
+Esta última propriedade torna os valores da variância pouco intuitivos, devido à estranheza das dimensões. Por esse motivo, em alternativa à variância podemos expressar a dispersão em termos do *desvio padrão* que, simplesmente, é definido como a raiz quadrada da variância e é expresso nas mesmas unidades da variável.
+
+$$s = \sqrt{s^2}$$ {#eq-sdev}
+
+::: {.callout-tip appearance="simple"}
+# Cálculo da variância e do desvio padrão
+
+```{r}
+#| include: false
+
+xi2exp <- paste0(s2, "^2", collapse = "+")
+xi2 <- sum(s2 ^ 2)
+xi2t <- format(xi2, scientific = FALSE)
+n <- length(s2)
+```
+
+Considere-se novamente amostra: `r s2`
+
+Para calcular a variância é necessário calcular previamente a média, $\bar{x}= `r mean(s2)`$.
+
+Podemos também calcular
+
+$$\sum_i x_i^2 = `r xi2exp` = `r xi2t`$$ Agora estamos em condições de calcular a variância e o desvio padrão:
+
+$$s^2 = \frac{`r xi2t` - `r n` \times `r mean(s2)`^2}{`r n - 1`} \approx `r format(var(s2), digits = 5)`$$
+
+$$s = \sqrt{`r format(var(s2), digits = 5)`} \approx `r format(sd(s2), digits = 4)`$$
+:::
+
+Uma outra vantagem do desvio padrão está numa propriedade derivada da desigualdade de [Chebyshev](https://en.wikipedia.org/wiki/Pafnuty_Chebyshev){target="_blank"}: se definirmos um intervalo à volta da média com uma meia amplitude 3 desvios padrão, temos a garantia de encontrar a quase totalidade das observações dentro desse intervalo[^quant-1].
+
+[^quant-1]: Num intervalo centrado na média, com uma meia amplitude de 3 desvios padrão, é garantido encontrar $8/9 \approx 88.9\%$ da distribuição dentro do intervalo. Na prática, está demonstrado que este limite é, em geral, muito conservador, havendo inúmeros casos em que a proporção de observações dentro do intervalo é muito próxima de 100%.
+
+Na @fig-quant-strip-six-sigma pode visualizar-se esta propriedade para o exemplo das distâncias de paragem que se tem vindo a tratar.
+
+```{r}
+#| label: fig-quant-strip-six-sigma
+#| fig-cap: "Significado do desvio padrão"
+#| echo: false
+#| fig-height: 2.5
+
+par(mar = c(5, 1, 2, 1))
+
+stripchart(
+  cars$dist,
+  xlab = lnames[1],
+  method = "stack",
+  at = 0.25, offset = 0.4,
+  pch = 21,
+  col = 6,
+  bg = 3,
+  cex = 1.5,
+  frame.plot = FALSE,
+  xlim = c(-40, 130),
+  ylim = c(0, 1),
+  xaxp = c(0, 120, 6)
+  )
+
+m <- mean(cars$dist)
+s <- sd(cars$dist)
+
+x0 <- m + -3:3 * s
+txt <- c(
+  expression(bar(x) - 3*s),
+  expression(bar(x) - 2*s),
+  expression(bar(x) - s),
+  expression(bar(x)),
+  expression(bar(x) + s),
+  expression(bar(x) + 2*s),
+  expression(bar(x) + 3*s)
+)
+
+rect(x0[1:3], 0.05, x0[5:7], 0.9, border = NA, col = palette.colors(alpha = 0.1)[5])
+mtext(txt, 3, at = x0, col = 7, cex = 0.8)
+abline(v = x0, lty = "dotted", col = 7)
+```
+
+Neste caso, a totalidade das observações está dentro do intervalo de 3 desvios padrão em torno da média (nem sempre acontece, mas, geralmente, a quase totalidade vai estar). Note-se que, mesmo reduzindo o intervalo para 2 desvios padrão em torno da média, apenas 1 observação está fora do intervalo.
+
+::: callout-important
+Na prática, esta propriedade permite inferir que, para qualquer variável, observações afastadas da média mais de 2 desvios padrão, são raras e, afastadas mais de 3 desvios padrão, são muito raras. Dever-se-á ter esta constatação sempre presente durante a análise estatística.
+:::
+
+### Observações incomuns e valor Z {#sec-quant-z-score}
+
+Decorre das propriedades do desvio padrão referidas no final da @sec-quant-disp que a distância entre uma observação e a média, no contexto do valor do desvio padrão permite avaliar quão incomum é a observação.
+
+Uma forma eficiente de avaliar a distância de uma observação à média é através do cálculo do seu *valor Z*, uma operação designada por *padronização* ou *normalização* (embora a *normalização* possa significar outros conceitos). O valor Z de uma observação, $x$ pode ser calculado com
+
+$$z = \frac{x-\bar{x}}{s}$$
+
+O valor Z é adimensional e indica de forma expedita quantos desvios padrão a observação está acima da média ($z$ positivo) ou abaixo da média ($z$ negativo). Embora, quer o histograma, quer o diagrama de extremos e quartis permitam detetar observações incomuns, os valores Z são mais uma ferramenta ao dispor do analista.
+
+::: {.callout-tip appearance="simple"}
+# Cálculo de um valor Z
+
+```{r}
+#| include: false
+
+x1 <- cars$dist[1]
+z1 <- (x1 - m) / s
+st <- format(s, digits = 4)
+z1t <- format(z1, digits = 3)
+```
+
+Considere-se a primeira observação das distâncias de paragem, $x_1 = `r x1`$. Relembre-se que $\bar{x} = `r m`$ e $s = `r st`$. O valor z será:
+
+$$z_1 = \frac{`r x1` - `r m`}{`r st`} = `r z1t`$$
+
+Esta valor significa que a observação está `r z1t` desvios padrão abaixo da média (@fig-quant-z-scores).
+:::
+
+Note-se que a padronização não altera a distância relativa entre as observações. Se a padronização for aplicada a toda a distribuição, os dados padronizados terão média igual a 0 e desvio padrão igual a 1. Tal pode ser facilmente demonstrado introduzindo a transformação nas equações [-@eq-xbar] e [-@eq-variance]. A @fig-quant-z-scores ilustra este ponto, utilizando o exemplo das distâncias de paragem.
+
+```{r}
+#| label: fig-quant-z-scores
+#| fig-cap: "Distribuição dos valores Z"
+#| fig-subcap:
+#|   - Dados originais
+#|   - Valores Z
+#| echo: false
+#| fig-height: 2.1
+
+par(mar = c(3, 1, 1, 1))
+
+stripchart(
+  cars$dist,
+  method = "stack",
+  at = 0.25, offset = 0.4,
+  pch = 21,
+  col = 6,
+  bg = 3,
+  cex = 1.5,
+  frame.plot = FALSE
+  )
+abline(v = c(m, m + s, m + 2 * s), col = 7, lty = "dotted")
+arrows(m + s, 1.5, m + 2 * s, 1.5, code = 3,  length = 0.1, col = 7, lty = "dotted")
+text(m, 1.9, bquote(bar(x) == .(m)), pos = 4, col = 7, cex = 0.8)
+text(m + 1.5 * s, 1.5, bquote(s == .(st)), pos = 3, col = 7, cex = 0.8)
+points(x1, 0.25, col = 7, bg = 2, cex = 1.5, pch = 21)
+text(x1, 0.75, bquote(x[1] == .(x1)), col = 7, cex = 0.8, srt = 90)
+
+stripchart(
+  (cars$dist - m) / s,
+  xlab = "",
+  method = "stack",
+  at = 0.25, offset = 0.4,
+  pch = 21,
+  col = 6,
+  bg = 3,
+  cex = 1.5,
+  frame.plot = FALSE
+  )
+abline(v = c(0:2), col = 7, lty = "dotted")
+arrows(1, 1.5, 2, 1.5, code = 3,  length = 0.1, col = 7, lty = "dotted")
+text(0, 1.9, expression(bar(x) == 0), pos = 4, col = 7, cex = 0.8)
+text(1.5, 1.5, expression(s == 1), pos = 3, col = 7, cex = 0.8)
+points(z1, 0.25, col = 7, bg = 2, cex = 1.5, pch = 21)
+text(z1, 0.9, bquote(z[1] == .(z1t)), col = 7, cex = 0.8, srt = 90)
+```
+
+::: {.callout-important}
+Regra geral, uma observação cujo valor Z, em termos absolutos, seja superior a 3, ou seja, $|z| > 3$, é incomum. Tais observações são raras e podem indicar erros nos dados ou características interessantes da distribuição, tal como referido na @sec-quant-hist.
+
+Da mesma forma, valores Z absolutos entre 2 e 3, são também algo incomuns e devem merecer um segundo olhar do analista.
+:::
+
+## Estatísticas robustas
+
+As estatísticas calculadas a partir dos dados devem possuir algumas propriedades que as torne adequadas à análise que se pretende efetuar. Uma dessas propriedades é a *robustez*. A robustez consiste na propriedade do valor da estatística não ser muito afetado por observações incomuns.
+
+Dos estimadores descritos nas secções anteriores, a mediana e a amplitude interquartis são estatísticas robustas. Já a média e o desvio padrão (ou variância) não são estatísticas robustas.
+
+::: {.callout-important}
+Classificação quanto à *robustez*:
+
+* **Robustas**: mediana, amplitude interquartis.
+* **Não robustas**: média, desvio padrão (ou variância).
+:::
+
+Considere-se novamente o conjunto de dados relativo às distâncias de paragem. Para se ilustrar a questão da robustez, vão calcular-se as quatro estatísticas mencionadas, em 4 cenários diferentes:
+
+```{r}
+#| include: false
+
+extrax <- c(NA, round(max(cars$dist) + 1:3 * 2 * sd(cars$dist)))
+```
+
+
+1.  Dados originais.
+2.  Dados originais mais 1 observação igual a `r extrax[2]` (aproximadamente, o máximo dos dados originais mais 2 desvios padrão)
+3.  Dados originais mais 1 observação igual a `r extrax[3]` (máximo mais 4 desvios padrão)
+4.  Dados originais mais 1 observação igual a `r extrax[4]` (máximo mais 6 desvios padrão)
+
+A @tbl-quant-robustness mostra o resultado dos cálculos para os cenários enumerados.
+
+```{r}
+#| label: tbl-quant-robustness
+#| tbl-cap: "Avaliação da robustez de algumas estatísticas"
+#| echo: false
+
+dt <- data.frame(
+  `Média` = sapply(extrax, function(ex) mean(c(cars$dist, ex), na.rm = TRUE)),
+  `Desvio padrão` = sapply(extrax, function(ex) sd(c(cars$dist, ex), na.rm = TRUE)),
+  Mediana = sapply(extrax, function(ex) median(c(cars$dist, ex), na.rm = TRUE)),
+  AIQ = sapply(extrax, function(ex) IQR(c(cars$dist, ex), na.rm = TRUE)),
+  check.names = FALSE
+)
+desc <- c("(dados originais)", paste0("(dados e ", extrax[2:4], ")"))
+row.names(dt) <- paste("Cenário", 1:4, desc)
+
+kbl(dt, digits = 2, escape = FALSE, align = "c") |>
+  add_header_above(c(" " = 1, "Estatísticas não robustas" = 2, "Estatísticas robustas" = 2)) |> 
+  column_spec(1, width_min = "15em")
+```
+
+Como pode verificar, as estatísticas robustas (mediana e AIQ), ou não se alteram, ou apenas se alteram ligeiramente. Já as estatísticas não robustas são muito sensíveis a observações extremas, mesmo que, como é o caso, seja apenas 1 observação.
+
+Isto não quer dizer que as estatísticas não robustas são de evitar, pois possuem outras propriedades desejáveis. A média e o desvio padrão são estatísticas importantes com inúmeras aplicações práticas. Simplesmente, não são robustas, o que as torna pouco adequadas quando a robustez for uma propriedade importante.
+
+Tipicamente, se os dados puderem conter observações extremas, devem valorizar-se estatísticas robustas. Por exemplo, se quisermos avaliar o *rendimento típico* das famílias, a estatística mais adequada é a mediana, pois a média é afetada pelas observações extremas que ocorrem na cauda direita desta distribuição. Há sempre famílias com rendimentos atípicos muito elevados que vão fazer com que o valor da média tenha pouco significado.
+
+::: {.callout-tip}
+Se tiver 10 pessoas em que 9 têm um rendimento igual a 10 e a última tem um rendimento igual a 100, a mediana é 10 e a média é 19. Claramente, a média não é representativa do *rendimento típico*.
+:::
+
+
+#### Média, mediana e simetria {.unnumbered}
+
+Uma consequência do que foi afirmado acima acerca da média e da mediana está expresso na @fig-quant-hist-robust. A figura recupera os dados da @fig-quant-hist-skew e acrescenta a posição da média e da mediana. Acrescentou-se igualmente uma linha de densidade estimada (como o conceito de densidade ainda não foi apresentado, deve entendê-la como um sinónimo de concentração de observações numa vizinhança).
+
+```{r}
+#| label: fig-quant-hist-robust
+#| fig-cap: "Média, mediana e simetria"
+#| fig-subcap:
+#|   - "Assimétrica à esquerda"
+#|   - "Assimétrica à direita"
+#|   - "Simétrica"
+#|   - "Legenda"
+#| layout-ncol: 2 #[[50, 50], [-25, 50, -25]]
+#| echo: false
+
+par(mar = c(2, 3.5, 2, 2) + 0.1)
+
+labs <- c("Densidade", "Média", "Mediana")
+ltys <- c("solid", "dotdash", "dotted")
+
+# left
+special_hist(xlef, density = FALSE)
+d <- density(xlef, bw = "SJ-dpi")
+lines(d, col = 7, lwd = 3)
+abline(v = c(mean(xlef), median(xlef)), lty = ltys[2:3], lwd = 3, col = 7)
+
+# right
+special_hist(xrig, density = FALSE)
+d <- density(xrig, bw = "SJ-dpi")
+lines(d, col = 7, lwd = 3)
+abline(v = c(mean(xrig), median(xrig)), lty = ltys[2:3], lwd = 3, col = 7)
+
+# simetric
+special_hist(xsim, density = FALSE)
+d <- density(xsim, bw = "SJ-dpi")
+lines(d, col = 7, lwd = 3)
+abline(v = c(mean(xsim), median(xsim)), lty = ltys[2:3], lwd = 3, col = 7)
+
+plot.new()
+legend("center", legend = labs, lty = ltys, col = 7, bty = "n", lwd = 3, cex = 1.1, seg.len = 3)
+```
+
+Os gráficos ilustram como se posicionam média e mediana, em termos relativos, quando a distribuição é assimétrica. Enquanto que numa distribuição aproximadamente simétrica, moda, mediana e média estão sensivelmente no mesmo ponto (@fig-quant-hist-robust-3), numa distribuição assimétrica as 3 estatísticas tomam valores diferentes. Numa distribuição assimétrica à esquerda, a média é menor que a mediana, e esta é menor que a moda (@fig-quant-hist-robust-1). Numa distribuição assimétrica à direita acontece o oposto: a média é maior que a mediana, que por sua vez é maior que a moda (@fig-quant-hist-robust-2).
+
+Com o aumento da assimetria, as estatísticas menos robustas deslizam em direção a uma das caudas, dependendo da assimetria.
+
+::: {.callout-important}
+Geralmente:
+
+* Em distribuições aproximadamente simétricas: moda $\approx$ mediana $\approx$ média.
+* Em distribuições assimétricas à esquerda: moda > mediana > média.
+* Em distribuições assimétricas à direita: moda < mediana < média.
+:::
+
+{{< include _tutorial-section.qmd >}}
+
+::: {#quant-listing}
+:::

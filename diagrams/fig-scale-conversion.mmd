@@ -1,0 +1,31 @@
+block-beta
+    columns 4
+
+    block:left:3
+        columns 1
+        abs("<b>Temperatura:</b> 300 ºK") space
+        int("<b>Temperatura:</b> 26.85 ºC") space
+        ord("<b>Estado do tempo:</b> quente") space
+        nom("<b>Parilidade:</b> par")
+    end
+    
+    block:right
+        columns 1
+        sabs("Absoluta") space
+        sint("Intervalo") space
+        sord("Ordinal") space
+        snom("Nominal")
+    end
+
+    abs --> int
+    int --> ord
+    ord --> nom
+
+    sabs --> sint
+    sint --> sord
+    sord --> snom
+
+    style left rx:10,ry:10,fill-opacity:0,stroke-opacity:0;
+    style right rx:10,ry:10;
+    classDef blank fill-opacity:0,stroke-opacity:0;
+    class sabs,sint,sord,snom blank

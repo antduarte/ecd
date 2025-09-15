@@ -1,0 +1,161 @@
+---
+description: >
+  Construção e configuração de histogramas no R.
+date: 2025-05-06
+ecd-order: 6
+# other-links:
+#   - text: OpenIntro (datasets)
+#     href: https://www.openintro.org/data/
+---
+
+# Histogramas {#sec-tut-hist}
+
+## Introdução {#sec-tut-hist-intro}
+
+Este tutorial incide sobre a construção e parametrização de histogramas no R.
+
+Ao longo do texto será utilizado um vetor com 80 observações, `coin`, gerado de forma aleatória. Admita-se que se trata de 80 réplicas da contagem do número de caras (ou coroas) em 100 lançamentos de uma moeda.
+
+```{r}
+set.seed(123)
+coin <- replicate(80, sum(sample(c(0, 1), 100, replace = TRUE)))
+coin
+```
+
+A função `replicate()` é bastante útil para simular a replicação de experiências aleatórias. Pode ler mais sobre a função com `?replicate`.
+
+Para construir um histograma basta invocar a função gráfica de alto nível `hist()`, fornecendo o vetor de observações, tal como no código abaixo que produz a @fig-tut-hist-basic.
+
+```{r}
+#| label: fig-tut-hist-basic
+#| fig-cap: Exemplo de um histograma (sem configurações adicionais)
+
+hist(coin)
+```
+
+Como se pode verificar, a determinação do número de classes e dos respetivos limites é automática, mas havendo a possibilidade de configurar este e outros aspetos, como indicado nas restantes secções deste tutorial.
+
+## Visualização dos detalhes
+
+A informação sobre as classes e as contagens pode ser acedida inspecionando o objeto devolvido pela função `hist()`, neste caso, `h`.
+
+```{r}
+h <- hist(coin, plot = FALSE)
+h
+```
+
+A informação mais relevante contida no objeto é:
+
+-   Os limites das classes, em `$breaks`, sendo as classes abertas à esquerda (exceto a primeira) e fechadas à direita.
+
+-   As frequências absolutas ou contagens, $f_k$, em `$counts`.
+
+-   As densidades estimadas, $\hat{f_k}(x)$, em `$density`: $\hat{f_k}(x) = \frac{f_k}{n \times a_k}$.
+
+-   Os pontos intermédios as classes, em `$mids`.
+
+A função devolve sempre este objeto, que pode ser acedido mais tarde. Também seria possível mostrar o histograma posteriormente com `plot(h)`.
+
+## Classes e contagens {#sec-tut-hist-classes}
+
+Um dos aspetos mais importantes do histograma é a definição das classes, ou seja, quer o número de classes, quer os respetivos limites. Por omissão, o R utiliza a *regra de Sturges* para determinar o número aproximado de classes (aproximado apenas, pois o R tenta ajustar os limites das classes a valores *redondos*). Também por omissão, as classes têm todas a mesma amplitude.
+
+::: callout-note
+### Regra de Sturges
+
+O número de classes, $K$, é dado arredondando por excesso o seguinte cálculo:
+
+$$K = 1+\log_2 n \approx 1+3.322\log_{10}n \approx 1+1.443\ln n$$
+
+No exemplo acima, para $n=80$, $K=\lceil 7.32\rceil=8$
+:::
+
+Como se pode verificar, o histograma apenas tem 6 classes, em vez de 8, pois o R, por motivos estéticos e práticos, arredondou os limites das classes a múltiplos de 5 unidades.
+
+Embora o algoritmo automático seja satisfatório na maior parte das situações, pode haver necessidade de ajustar os intervalos de cada classe. A forma de o fazer é fornecer o argumento `breaks`, que pode ter vários formatos.
+
+O código que se segue produz a @fig-tut-hist-breaks e ilustra as várias formas de fornecer o argumento `breaks`.
+
+```{r}
+#| label: fig-tut-hist-breaks
+#| fig-cap: "Diferentes formas de ajustar o número de classes"
+#| layout-ncol: 2
+#| fig-keep: all
+#| fig-subcap:
+#|   - "Sem configurações (Sturges)"
+#|   - "Uma regra"
+#|   - "Número de classes"
+#|   - "Função que gera o número de classes"
+#|   - "Vetor de intervalos"
+#|   - "Funçaõ que gera vetor de intervalos"
+
+hist(coin)  # <1>
+
+hist(coin, breaks = "Scott")  # <2>
+
+hist(coin, breaks = 9) # <3>
+
+myRule1 <- function(x) {
+  round(sqrt(length(x)))
+}
+hist(coin, breaks = myRule1)  # <4>
+
+myRule2 <- function(x) {
+  seq(min(coin), max(coin), by = (max(coin) - min(coin)) / 9)
+}
+brk <- myRule2(coin)
+hist(coin, breaks = brk)  # <5>
+
+hist(coin, breaks = myRule2)  # <6>
+```
+
+1.  Resulta na @fig-tut-hist-breaks-1 e é o mesmo que especificar `breaks = "Sturges` ou `breaks =`r nclass.Sturges(coin)``.
+2.  Também resulta na @fig-tut-hist-breaks-1 e é o mesmo que especificar `breaks =`r nclass.scott(coin)``
+3.  Resulta na @fig-tut-hist-breaks-2, tendo-se especificado o número de classes diretamente.
+4.  Também resulta na @fig-tut-hist-breaks-2, tendo-se especificado o número de classes através de uma função, `myRule1`. No caso concreto, esta função devolve `r myRule1(coin)` classes, pelo que é equivalente à anterior.
+5.  Resulta na @fig-tut-hist-breaks-3, tendo-se fornecido um vetor com os 9 intervalos desejados.
+6.  Também resulta na @fig-tut-hist-breaks-3, mas os intervalos são indicados fornecendo o nome de uma função, `myRule2`, que calcula os intervalos, sendo equivalente à anterior.
+
+::: callout-important
+Note-se que nos casos 1 a 4, o número de classes é apenas uma sugestão, podendo o R respeitar ou não, pois vai tentar ajustar os limites das classes a números redondos. Caso seja fornecido um vetor com os intervalos, quer diretamente, quer através de uma função, o histograma será produzido de acordo com as classes definidas nesse vetor.
+:::
+
+## Outros ajustes {#sec-tut-hist-args}
+
+Para lá dos ajustes que é possível fazer em qualquer gráfico (títulos, eixos, escalas, etc.), a @tbl-tut-hist-args lista alguns argumentos que se podem passar à função `hist()` para ajustar outros aspetos do histograma.
+
+| Argumento | Elemento |
+|:---------------------|:-------------------------------------------------|
+| `freq = FALSE` | Para utilizar as densidades, em vez das frequências, no eixo vertical |
+| `right = TRUE` | Para fechar os intervalos das classes à direita, em vez de fechar à esquerda |
+| `plot = FALSE` | O gráfico não é desenhado e a função apenas devolve a informação sobre as classes, o que é útil caso se necessite essa informação |
+| `labels =` | Caso `labels = TRUE`, coloca o valor das contagens (ou densidades) no topo das barras. Caso se passe um vetor de texto, os elementos desse vetor serão colocados no topo das barras |
+| `col =`, `border =` | Para especificar a cor e o bordo das barras |
+
+: Configuração de histogramas {#tbl-tut-hist-args .striped}
+
+Na @fig-tut-hist-args exemplifica-se a utilização de alguns dos argumentos apresentados e é construída pelo código que se segue.
+
+```{r}
+#| label: fig-tut-hist-args
+#| fig-cap: Histograma com alguns ajustes
+#| out-extra: class="preview-image"
+
+plot(
+  h,
+  main = "Histograma ajustado",
+  xlab = "# caras em 100 lançamentos", ylab = "Densidade",
+  ylim = c(0, 0.08),
+  freq = FALSE,
+  labels = TRUE,
+  col = "lightblue",
+  border = "blue"
+)
+curve(dnorm(x, mean(coin), sd(coin)), col = "red", add = TRUE)
+```
+
+Note-se que foi utilizada a função `plot()` à qual foi passado o objeto `h`. Este procedimento é equivalente a invocar `hist(coin)` e passar os restantes argumentos. De facto, tanto a função `plot()`, como a função `hist()`, nos bastidores, vão invocar o mesmo código para desenhar o histograma.
+
+::: callout-note
+A função `curve()` serve para desenhar curvas definidas por funções de $x$, neste caso, a linha vermelha da @fig-tut-hist-args. Sem entrar em detalhes, a função `dnorm()` produz uma curva de densidade conhecida, a curva Normal. Como se trata de uma função gráfica de alto nível, o argumento `add = TRUE` especifica que a curva deve ser acrescentada ao gráfico existente, ao invés de ser criado um novo gráfico.
+:::

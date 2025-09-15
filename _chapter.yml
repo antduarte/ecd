@@ -1,0 +1,13 @@
+# common yaml for tutorial listing
+
+listing:
+  contents: t[0-9][0-9][0-9]-*.qmd
+  type: table
+  sort: filename
+  image-placeholder: images/Rlogo.png
+  date-format: "MMMM, YYYY"
+  sort-ui: false
+  filter-ui: false
+  fields: [title, description]
+  field-display-names:
+    title: "Tutorial"

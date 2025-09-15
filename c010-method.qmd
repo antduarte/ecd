@@ -1,0 +1,245 @@
+---
+metadata-files:
+  - _chapter.yml
+
+listing: 
+  id: method-listing
+  include:
+    ecd-order: [1, 2, 3]
+    
+citation:
+  type: article-journal
+  container-title: ACM Transactions on Embedded Computing Systems
+  volume: 21
+  issue: 2
+  issued: 2022-03
+  issn: 1539-9087
+  doi: 10.1145/3514174
+---
+
+```{r}
+#| include: false
+
+source("R/chapters.R")
+```
+
+# Metodologia e Dados {#sec-method}
+
+## Introdução {#sec-method-intro}
+
+A palavra *estatística* costuma estar associada a um de dois significados: num significado mais trivial, *uma estatística* refere-se a um facto numérico, por exemplo, quando se afirma que *o rendimento mediano aumentou 2.1%*.
+
+O outro significado refere-se à disciplina científica, em que *a Estatística* é definida como um conjunto de métodos para recolher, analisar, apresentar e interpretar dados e, através deste processo, apoiar a tomada de decisão em ambientes que apresentem variabilidade.
+
+Naturalmente, é neste último contexto que este texto se insere. Nesse contexto, a aplicação da Estatística segue uma metodologia que, em larga medida, se funde com o método científico:
+
+1.  Definição dos objetivos da análise, ou seja, o que se pretende investigar (frequentemente designados por questões ou hipóteses de investigação) e dos métodos a utilizar na análise.
+
+2.  Definição de um procedimento para a recolha dos dados necessários.
+
+3.  Recolha dos dados.
+
+4.  Análise dos dados.
+
+5.  Interpretação das análises e apresentação dos resultados.
+
+Esta divisão é meramente conceptual pois as várias etapas nem são estanques nem puramente sequenciais. Por exemplo, o estabelecimento dos objetivos e a definição dos métodos de recolha dos dados têm que estar em estreita articulação. Frequentemente, surgem dificuldades não previstas na recolha dos dados que obrigam à redefinição do procedimento de recolha ou até mesmo à reformulação dos objetivos estabelecidos inicialmente. Quase sempre há também restrições económicas ou temporais com influência no planeamento dos trabalhos a desenvolver.
+
+O resto deste capítulo aborda diferentes questões relacionadas com os pontos 1 a 3.
+
+## Tipos de dados {#sec-method-dtypes}
+
+
+### Escalas de medição {#sec-method-dtypes-scales}
+
+Sendo a Estatística uma ciência que lida com dados, é necessário conhecer os diversos tipos de dados e as suas características. A forma mais útil de o fazer é classificar os dados segundo a escala em que são expressos.
+
+É comum identificar quatro escalas de medição agrupadas em duas categorias principais, tal como esquematizado na @fig-data-types. Temos assim:
+
+- Escalas **qualitativas** -- também designadas por escalas **categóricas**, cada observação é classificada numa das categorias.
+
+  - Escalas **nominais** -- as categorias não têm uma ordem natural ou, a ordem das categorias é arbitrária.
+
+      > Exemplos destas escalas são a *cor dos olhos* ou o *sexo* de uma pessoa. Qualquer ordenamento das categorias é arbitrário, como, por exemplo, a ordem alfabética.
+
+  - Escalas **ordinais** -- as categorias têm uma ordem implícita ou existe um critério relevante para as ordenar.
+
+      > Por exemplo, o *clima* de uma região (frio, ameno, quente) ou a *satisfação* com uma compra (muito insatisfeito, insatisfeito, indiferente, satisfeito, muito satisfeito). Nestes casos é possível estabelecer relações de ordem entre as categorias, podendo-se afirmar que *frio* < *ameno* < *quente*.
+
+- Escalas **quantitativas** -- também designadas por escalas **numéricas**, em que as observações são expressas (e ordenadas) com um número.
+
+  - Escalas **de intervalo** (ou relativas) -- a origem (zero) da escala é arbitrária e não tem um significado especial. Nestas escalas, as diferenças são interpretáveis mas os rácios não o são.
+
+    > O exemplo clássico é a *temperatura* expressa em graus centígrados (ou Celsius), em que a origem é definida arbitrariamente como o ponto de fusão da água. Ao comparar uma temperatura de 1 $^\circ$C com uma de 3 $^\circ$C, podemos afirmar que a segunda é maior e há uma diferença de 2 $^\circ$C. Não podemos afirmar que a segunda é o triplo da primeira porque a origem (0 $^\circ$C) não significa que não há temperatura (energia térmica).
+    
+  - Escalas **absolutas** (ou de rácio) -- a origem é fixa e representa uma quantidade igual a zero.
+  
+    > Por exemplo, a *idade* de um indivíduo ou o *número de irmãos*. Em ambos os casos o zero significa *nada*. No exemplo da *temperatura*, caso aquela fosse medida na escala de Kelvin, uma temperatura igual a 0 $^\circ$K significa a ausência de energia térmica.
+
+```{mermaid}
+%%| label: fig-data-types
+%%| fig-cap: Escalas de medição
+
+block-beta
+    columns 4
+    d ("Dados"):4
+
+    quali ("Qualitativos</br>(categóricos)"):2
+    quant ("Quantitativos</br>(numéricos)"):2
+
+    nom ("Nominal")
+    ord ("Ordinal")
+    int ("Intervalo</br>(relativa)")
+    abs ("Absoluta</br>(racio)")
+
+    space space
+    block:prec:2
+        disc("Discretos")
+        cont("Contínuos")
+    end
+
+    style prec rx:10,ry:10
+```
+
+
+
+::: {.callout-tip}
+O facto de uma observação ser expressa num número não implica que se trate, necessariamente, de uma escala numérica. Por norma é, mas há exceções. Para que seja uma escala numérica, o número tem que representar uma quantidade. Por exemplo, o indicativo de um número de telefone (273, 276, ...) é um número, mas está expresso numa escala nominal, uma vez que identifica uma região.
+:::
+
+
+### Natureza da medição {#sec-method-dtypes-nat}
+
+É também útil classificar as escalas numéricas quanto natureza da medição, expressa no conjunto de valores que as observações podem tomar. Assim, podemos ter:
+
+* Dados **discretos** -- a observação apenas poderá resultar num conjunto enumerável de valores (finito ou infinito).
+
+ > O *número de pontos* obtido no lançamento de um dado pertence ao conjunto {1, 2, 3, 4, 5, 6} (finito). O *número de irmãos* de uma pessoa pertence ao conjunto $\mathbb{N}$, ou seja {0, 1, 2, ...}, podendo tomar valores arbitrariamente grandes.
+ 
+* Dados **contínuos** -- a observação pode tomar qualquer valor real (conjunto $\mathbb{R}$).
+
+ > O *peso* de um indivíduo ou o *tempo* decorrido entre dois eventos podem tomar qualquer valor real e ser medidos com uma precisão, expressa num número de casas decimais, limitado apenas pelos instrumentos de medida e registo.
+ 
+::: {.callout-note}
+Na prática, todas as medições são discretas: é impossível medir a registar grandezas de forma absoluta (número infinito de casas decimais). No entanto, é muitas vezes mais prático tratar as observações como contínuas.
+:::
+
+::: {.callout-tip}
+Frequentemente, as observações discretas resultam de contagens (número de ...) e são expressas com números naturais. Já as observações contínuas resultam de medições instrumentais (peso, tempo, pressão, etc.) e são expressas com números reais e casas decimais. 
+
+Embora seja uma forma expedita de distinguir observações discretas de contínuas, trata-se de conceitos diferentes. Por exemplo, *metade dos pontos no lançamento de um dado* tem natureza discreta mas expressa-se com casas decimais.
+:::
+
+
+### Hierarquia das escalas {#sec-method-dtypes-hier}
+
+Os quatro tipos de escalas apresentados na secção @sec-method-dtypes-scales foram ordenados de acordo com o seu grau de complexidade ou *sofisticação*. Esta complexidade advém do facto de, qualquer operação que se possa realizar numa determinada escala, pode ser realizada numa escala de nível hierárquico igual ou mais elevado. O contrário nem sempre é verdadeiro, depende da operação e das escalas em questão.
+
+Por outro lado, qualquer medição feita numa determinada escala, pode ser convertida e expressa numa escala de nível hierárquico inferior.
+
+Relembrando a ordem em relação à complexidade:
+
+1. Escala nominal.
+2. Escala ordinal.
+3. Escala de intervalo.
+4. Escala absoluta.
+
+Para ilustrar o que foi dito, tome-se o exemplo já apresentado da *temperatura*. A temperatura pode ser medida na escala de Kelvin, uma escala absoluta. Podemos converter facilmente temperaturas Kelvin ($K$) para graus centígrados ($C = K + 273.16$). Note-se que esta conversão só se tornou trivial após uma série de avanços científicos.
+
+::: {.callout-caution}
+## Curiosidade
+
+Durante muito tempo foram utilizadas várias escalas de temperatura (Celsius, Fahrenheit e outras) pois ainda não se tinha desenvolvido o conceito de *zero absoluto* na termodinâmica. A escala de Kelvin apenas foi desenvolvida durante o século XIX, adotada pelo Sistema Internacional no século XX e definida com maior precisão, recentemente, em 2019.
+:::
+
+
+Enquanto que na escala de Kelvin faz sentido dizer que um objeto com uma temperatura de 10 $^\circ$K contém o dobro da temperatura (energia térmica) do que o mesmo objeto com 5 $^\circ$K, quando as medições são feitas em graus centígrados (escala de intervalo), é incorreto afirmar que 10 $^\circ$C é o dobro da temperatura do mesmo objeto a 5 $^\circ$C, pois a origem da escala é arbitrária, ou seja, os rácios não têm significado em escalas de intervalo.
+
+Podemos também converter facilmente temperaturas em graus centígrados para uma escala ordinal (designe-se por *estado do tempo*), fazendo corresponder, por exemplo:
+
+1. Se a temperatura for menor que 10 $^\circ$C, classificar como *frio*.
+2. Se a temperatura estiver entre 10 $^\circ$C e 20 $^\circ$C, classificar como *ameno*.
+3. Se a temperatura for superior a 20 $^\circ$C, classificar como *quente*.
+
+Naturalmente, esta conversão tem pouco ou nenhum interesse, apenas se apresenta como exemplo ilustrativo.
+
+Note-se que, sendo fácil converter uma *temperatura* para o *estado do tempo*, o contrário é impossível. Note-se também que as operações aritméticas que podiam ser utilizadas com temperaturas são agora impossíveis (embora haja um ou outro aluno, e não só, que acham o contrário).
+
+Poder-se-ia também observar qual o algarismo das unidades das temperaturas e verificar se era *par* ou *ímpar*. Neste caso estar-se-ia a fazer uma conversão para uma escala nominal. Como é evidente, fazer a conversão inversa é impossível.
+
+Na @fig-scale-conversion pode visualizar-se o exemplo apresentado.
+
+```{mermaid}
+%%| label: fig-scale-conversion
+%%| fig-cap: Exemplo de conversão entre escalas
+
+block-beta
+    columns 4
+
+    block:left:3
+        columns 1
+        abs("<b>Temperatura:</b> 300 ºK") space
+        int("<b>Temperatura:</b> 26.85 ºC") space
+        ord("<b>Estado do tempo:</b> quente") space
+        nom("<b>Parilidade:</b> par")
+    end
+    
+    block:right
+        columns 1
+        sabs("Absoluta") space
+        sint("Intervalo") space
+        sord("Ordinal") space
+        snom("Nominal")
+    end
+
+    abs --> int
+    int --> ord
+    ord --> nom
+
+    sabs --> sint
+    sint --> sord
+    sord --> snom
+
+    style left rx:10,ry:10,fill-opacity:0,stroke-opacity:0;
+    style right rx:10,ry:10;
+    classDef blank fill-opacity:0,stroke-opacity:0;
+    class sabs,sint,sord,snom blank
+```
+
+
+
+
+Geralmente, as conversões inversas são impossíveis, pois, na maior parte dos casos, não é possível estabelecer uma relação unívoca entre os valores, por falta de detalhe. Por exemplo, se souber que uma temperatura termina num algarismo par, não é possível saber, só com essa informação, qual o estado do tempo ou qual a temperatura na escala Celsius ou na escala Kelvin.
+
+
+
+## Organização dos dados {#sec-method-dataorg}
+
+Para que a recolha de dados seja possível é necessário determinar quais as *unidades estatísticas* a observar (objetos, indivíduos, eventos, etc.) e quais as *características* que se vão observar ou medir para cada unidade.
+
+Numa fase posterior, geralmente os dados são organizados num formato tabular ou matricial. A @tbl-mtcars-head mostra as primeiras linhas de um conjunto de dados popular (o *dataset* `mtcars`, incluído no R, que contém dados sobre diferentes características de vários modelos de carros).
+
+```{r}
+#| label: tbl-mtcars-head
+#| tbl-cap: "Algumas observações de `mtcars`"
+#| echo: false
+
+kbl(mtcars) |> 
+  kable_styling() |> 
+  scroll_box(height = "230px", extra_css = "border: 0px; padding: 0px; ")
+```
+
+Trata-se de uma organização lógica em que:
+
+* cada coluna da tabela, geralmente designada por **variável**, contém os dados relativos a cada uma das características que foram observadas ao recolher os dados;
+* cada linha da tabela, geralmente designada por **observação** ou **caso**, contém os dados relativos a cada uma das unidades estatísticas observadas.
+
+Nestas tabelas, é frequente utilizar nomes de colunas curtos, por uma questão de comodidade na manipulação. No entanto, os dados devem ser acompanhados de uma descrição adequada de cada variável observada. Por exemplo, a variável `mpg` expressa o consumo de combustível de cada carro em *milhas por galão americano*. Na documentação do R encontram-se detalhadas as descrições de todas as variáveis.
+
+Nestas tabelas, também é normal encontrar a informação codificada. Por exemplo, a variável `am` indica o tipo de transmissão do carro, tratando-se de uma variável nominal com 2 categorias: *automática* (0) e *manual* (1). Logo, embora a informação que aparece na tabela seja numérica, trata-se de códigos que correspondem a categorias nominais e as operações aritméticas com estes números, regra geral, não fazem sentido.
+
+{{< include _tutorial-section.qmd >}}
+
+::: {#method-listing}
+:::
+

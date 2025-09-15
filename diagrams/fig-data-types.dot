@@ -1,0 +1,58 @@
+graph G {
+    graph [compound=true]
+    node [shape=box style=rounded fontname="Lato" fontsize=10]
+    // TODO: use styles from template, possible?
+    // maybe generating the .dot with R
+    
+    {
+      node [label="Dados" fontsize=12] data
+    }
+    
+    {
+        node [style = "filled,rounded"]
+        node [label="Nominal"]nom
+        node [label="Ordinal"]ord
+        node [label="Intervalo\n(relativa)"]int
+        node [label="Absoluta\n(rácio)"]abs
+    }
+    
+    {
+        node [style=invis, width=0.01 fixedsize=true]
+        node []ql
+        node []qt
+    }
+    
+    subgraph cluster_cat {
+        shape = box
+        style=rounded
+        fontname="Lato"
+        fontsize=12
+        label="Qualitativos\n(categóricos)"
+        {
+            rank = same
+            nom -- ql -- ord[style=invis]
+        }
+    }
+    
+    subgraph cluster_num {
+        shape = box
+        style=rounded
+        fontname="Lato"
+        fontsize=12
+        label="Quantitativos\n(numéricos)"
+        {
+            rank = same
+            int -- qt -- abs[style=invis]
+        }
+    }
+    
+    subgraph prec {
+        node [label="Discretos"]disc
+        node [label="Contínuos"]cont
+    }
+    
+    data -- ql[lhead=cluster_cat]
+    data -- qt[lhead=cluster_num]
+    qt -- disc[ltail=cluster_num]
+    qt -- cont[ltail=cluster_num]
+}

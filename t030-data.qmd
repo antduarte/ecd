@@ -1,0 +1,606 @@
+---
+description: >
+  Estruturas de dados do R: vetores, matrizes, listas e data frames.
+  Gravação e leitura de dados a partir de ficheiros.
+  Especificação de variáveis qualitativas.
+date: 2025-02-18
+ecd-order: 3
+other-links:
+  - text: Pacote readxl
+    href: https://readxl.tidyverse.org/
+    rel: external
+    target: _blank
+    
+knitr: 
+  opts_chunk: 
+    prompt: true
+    collapse: true
+---
+
+# Dados no R {#sec-tut-data}
+
+Este tutorial abrange a criação de estruturas de dados no R. O texto está organizado por nível de complexidade, iniciando com as estruturas mais simples e aumentando progressivamente. Será ainda discutido como codificar variáveis qualitativas no R. Por fim será abordada a leitura e escrita de ficheiros de dados.
+
+## Vetores {#sec-data-vectors}
+
+No R os vetores são objetos com uma estrutura de dados simples mas fundamental, uma vez que implementam o conceito de *variável* estatística. Sendo uma variável estatística um conjunto de observações relativa a uma determinada característica, decorre da definição, que todas as observações são do mesmo tipo (numérica ou categórica, discreta ou contínua, etc.).
+
+De facto, no R, os vetores são conjuntos de elementos do mesmo tipo, uma vez que cada vetor irá, na maior parte dos casos, conter dados referentes a determinada variável estatística.
+
+::: callout-tip
+O conceito de vetor na linguagem R não tem uma relação direta com o conceito matemático de vetor. Noutras linguagens de programação, o que no R se designa por vetor é designado por *array* (*C/C++*, *Java*, etc.).
+:::
+
+Na prática, ao trabalhar com dados reais, os conteúdos dos vetores são quase sempre lidos de ficheiros. Neste tutorial vamos criar pequenos vetores digitando diretamente os conteúdos.
+
+Considere-se a informação resultante de um pequeno inquérito a uma conjunto de 5 alunos:
+
+-   Nome.
+-   Idade (anos).
+-   Nota média (nas disciplinas aprovadas).
+-   Nacionalidade (país).
+-   Satisfação com a escola (insatisfeito, neutral, satisfeito).
+
+Para introduzir a informação diretamente na consola ou num *script* pode usar a função `c()`. Esta função combina os argumentos passados para a função num vetor. Por exemplo, a seguinte instrução cria um vetor de elementos do tipo texto (*character*):
+
+```{r}
+nome <- c("Rui Costa", "David Luiz", "João Pinto", "Di Maria", "Eusébio")
+```
+
+::: callout-tip
+Se um valor for texto, é necessário utilizar aspas. Podem ser utilizadas aspas duplas ou aspas simples, ou seja, tanto `"texto"` como `'texto'` são perfeitamente válidos, embora se recomende o uso das aspas duplas.
+:::
+
+::: callout-note
+O facto de os nomes dos alunos coincidirem com jogadores do Benfica é apenas isso, uma coincidência não intencional. De forma alguma se pretende insinuar que o Benfica é um clube melhor do que qualquer outro.
+:::
+
+Uma vez criado o vetor, podemos agora aceder à sua totalidade ou a elementos específicos desse vetor usando o seletor de elementos, `[ ]`:
+
+```{r}
+nome
+nome[2]
+nome[2:4]
+nome[-(2:4)]
+nome[c(2, 4)]
+```
+
+O código acima ilustra a grande flexibilidade das formas de seleção de elementos de um vetor.
+
+::: callout-tip
+No exemplo anterior e nos seguintes, optou-se por realizar as operações mostrando o resultado de forma efémera, na consola, sem guardar os resultados num novo objeto. É apenas por uma questão de clareza da explicação. Qualquer das operações poderia ser precedida de uma atribuição.
+:::
+
+Podemos criar os restantes vetores de forma semelhante:
+
+```{r}
+idade <- c(19, 20, 21, 23, 22)
+notas <- c(13.3, 13.7, 14.4, NA, 12.9)
+nacional <- c("Portugal", "Brasil", "Portugal", "Argentina", "Portugal")
+satisfacao <- c("satisfeito", NA, "insatisfeito", "neutral", "neutral")
+```
+
+Note a utilização do valor `NA`. No caso das notas pode ser utilizado para representar um aluno que ainda não concluiu qualquer disciplina. No caso da satisfação pode representar alguém que não respondeu à questão.
+
+Para lá da introdução de valores, outras formas úteis de gerar vetores para fazer experiências são as sequências regulares e a geração aleatória.
+
+### Sequências regulares
+
+A forma mais elementar de criar uma sequência é utilizando o operador `:`. A sequência inicia-se no primeiro valor e continua em incrementos de 1 (ou -1). Por exemplo:
+
+```{r}
+1:7
+9:4
+1.7:6
+```
+
+Para ter mais controlo sobre a sequência, a função `seq()` introduz mais alguma flexibilidade. Por exemplo:
+
+```{r}
+seq(from = 1, to = 3, by = 0.5)
+seq(1, 3, by = 0.5)
+seq(from = 1, by = 2, length.out = 5)
+seq(7)
+seq(along.with = nome)
+```
+
+Uma outra forma de gerar vetores regulares é com a função `rep()`, que produz repetições dos objetos fornecidos. Alguns exemplos:
+
+```{r}
+rep(1:3, 3)
+rep(1:3, each = 3)
+rep(1:3, each = 3, times = 2)
+rep(idade, 2)
+```
+
+Estas funções são extremamente flexíveis. Na documentação pode encontrar mais possibilidades de utilização e exemplos.
+
+### Sequências aleatórias
+
+```{r}
+#| include: false
+
+set.seed(123)
+```
+
+Também é possível gerar sequências aleatórias, de uma forma simples, com a função `sample()`. Seguem alguns exemplos da sua utilização:
+
+-   Ordenar um vetor aleatoriamente:
+
+    ```{r}
+    sample(8)
+    sample(nome)
+    ```
+
+-   Selecionar um conjunto aleatório de elementos (sem reposição, isto é, não repetindo elementos):
+
+    ```{r}
+    sample(nome, 3)
+    ```
+
+-   Selecionar um conjunto aleatório de elementos (com reposição, isto é, podendo repetir elementos):
+
+    ```{r}
+    sample(nome, 3, replace = TRUE)
+    ```
+
+::: callout-tip
+Se quiser obter exatamente as mesmas sequências que nos exemplos acima, deve previamente executar a instrução `set.seed(123)`. A função `set.seed()` foi pensada para possibilitar a reprodutibilidade dos resultados. Se não executar esta instrução, ou colocar um número diferente, obterá sequências aleatórias diferentes.
+:::
+
+### Operações
+
+Naturalmente, o objetivo de utilizar vetores é depois poderem ser utilizados em diversas operações, quer como operandos, quer como argumentos de funções.
+
+Os operadores e funções mais usuais modificam o seu comportamento quando estão na presença de vetores. Por exemplo:
+
+```{r}
+1:5 + 10
+idade * 12
+idade + idade
+c(idade, 20)
+log(idade)
+mean(idade)
+```
+
+Como pode verificar, nuns casos as operações são feitas sobre cada elemento do vetor, noutros casos, por exemplo, a média, apenas é produzido um resultado. Tudo depende do tipo de operação considerada.
+
+### Ordenação
+
+Há duas formas de ordenar vetores. A forma mais básica é utilizando a função `sort()`. Neste caso, o resultado da função é o vetor ordenado:
+
+```{r}
+sort(nome)
+sort(idade, decreasing = TRUE)
+```
+
+A outra forma de ordenar envolve a função `order()`. Neste caso a função produz uma lista de índices contendo a posição de cada elemento se o vetor estivesse ordenado. Neste caso, um exemplo torna a explicação mais clara:
+
+```{r}
+order(nome)
+```
+
+O resultado indica em que posição do vetor original está cada elemento do vetor ordenado. Por exemplo, o primeiro elemento do vetor ordenado está na posição `r order(nome)[1]` do vetor original (`r nome[order(nome)[1]]`), o segundo elemento do vetor ordenado está na posição `r order(nome)[2]` do vetor original (`r nome[order(nome)[2]]`), etc.
+
+Para obter o vetor ordenado pode utilizr-se:
+
+```{r}
+nome[order(nome)]
+```
+
+No exemplo anterior, claramente, a função `sort()` é mais intuitiva. No entanto, se fosse necessário desempatar elementos recorrendo a outros vetores, só poderia ser feito com a função `order()`, além de outras funcionalidades adicionais.
+
+### Nomes dos elementos {#sec-data-vectors-names}
+
+A cada elemento de um vetor pode ser atribuído um nome. Esta operação pode tornar mais fácil a manipulação dos elementos do vetor. Por exemplo, vamos atribuir o nome dos alunos ao vetor de idades:
+
+```{r}
+names(idade) <- nome
+idade
+```
+
+A vantagem desta operação é passar a poder selecionar os elementos pelo seu nome, em vez da posição, caso seja conveniente. Por exemplo:
+
+```{r}
+idade["Di Maria"]
+```
+
+Para eliminar os nomes deve fazer-se:
+
+```{r}
+names(idade) <- NULL
+idade
+```
+
+### Selecão de elementos
+
+Tal como exemplificado acima, para selecionar elementos de um vetor pode utilizar-se:
+
+-   Um inteiro ou um vetor de inteiros representado os índices (posições) dos elementos a selecionar.
+
+    ```{r}
+    nome[c(1, 3)]
+    ```
+
+-   Inteiros negativos, representado as posições dos elementos a não selecionar.
+
+    ```{r}
+    nome[-c(1, 3)]
+    ```
+
+-   nomes dos elementos a selecionar, caso estejam definidos, tal como indicado na secção @sec-data-vectors-names.
+
+Outras formas mais avançadas de selecionar envolvem a utilização de valores lógicos ou condições. Seguem-se alguns exemplos:
+
+```{r}
+idade[idade <= 20]
+nome[idade <= 20]
+nome[!(idade <= 20)]
+nome[nacional != "Portugal"]
+nome[nacional == "Portugal" | nacional == "Brasil"]
+```
+
+Note-se que quando se usa uma condição é o mesmo que usar um vetor de valores lógicos cujos com `TRUE` na posição dos elementos a selecionar. De facto, uma condição é convertida num vetor de valores lógicos. O código a seguir ilustra o conceito:
+
+```{r}
+nacional
+nacional == "Portugal"
+nome[nacional == "Portugal"]
+```
+
+### Tamanho e tipo
+
+O tamanho de um vetor pode ser determinado com a função `lenght()`:
+
+```{r}
+length(nome)
+```
+
+O tipo de dados do vetor pode ser determinado com `mode()` e testado com diversas funções, tipicamente iniciadas por `is.`. Por exemplo:
+
+```{r}
+mode(notas)
+is.numeric(notas)
+is.character(notas)
+```
+
+É possível converter entre tipos de dados, havendo um conjunto de funções para o efeito (iniciadas por `as.`). O resultado da conversão depende dos dados que estão no vetor e esta pode não ser possível ou não fazer sentido. Analise os seguintes exemplos:
+
+```{r}
+idade_txt <- as.character(idade)
+idade_txt
+mean(idade_txt)
+as.numeric(idade_txt)
+as.numeric(nome)
+```
+
+A conversão da idade de número para texto foi efetuada. Note que os valores da variável `idade_txt` são apresentados entre aspas, indicando que são texto. Quando depois se tenta calcular a média deste vetor o R devolve `NA` com um aviso a lembrar que a variável não é numérica.
+
+O R também foi capaz de efetuar a conversão inversa, uma vez que os valores em texto puderam ser convertidos para números. Quando se tenta fazer o mesmo com os nomes, é emitido novo aviso e o vetor produzido apenas contém `NA`, pois não há uma forma óbvia de converter os nomes para números.
+
+::: callout-tip
+A quase totalidade dos conceitos que se aplicam a vetores também se aplicam a outras estruturas, com a necessárias adaptações. Para ser proficiente na linguagem R deve ter-se um bom entendimento destas operações.
+:::
+
+### Regra da *reciclagem*[^tut-data-recycle] {#sec-tut-data-vec-recycle}
+
+[^tut-data-recycle]: Em vez da palavra *reciclar*, o mais adequado seria *reutilizar* ou *recircular*. Optou-se por utilizar *reciclar* para manter a proximidade com o vocábulo inglês *recycle*, utilizado na documentação.
+
+A regra da *reciclagem* pode ser ilustrada com o seguinte exemplo:
+
+```{r}
+1:6 + c(10, 20)
+```
+
+O resultado pode ser explicado com recurso à *regra da reciclagem* do R: em muitas operações, quando os vetores têm tamanhos diferentes, o vetor mais pequeno é reciclado, isto é, é replicado tantas vezes quantas as necessárias para obter o mesmo número de elementos do vetor maior. Note que o código seguinte produz o mesmo resultado de forma explícita.
+
+```{r}
+1:6 + rep(c(10, 20), 3)
+```
+
+Quando o tamanho do vetor maior não é múltiplo do tamanho do vetor mais pequeno, a operação é realizada, mas é emitido um aviso, pois é uma operação pouco usual.
+
+
+
+
+## Matrizes
+
+No R, uma matriz pode ser vista como um vetor em duas dimensões, em que cada elemento está na interseção de uma linha com uma coluna. Por ser uma estrutura pouco frequente (a não ser que esteja a trabalhar com cálculo matricial) apenas se apresenta um pequeno exemplo.
+
+```{r}
+m <- matrix(1:12, nrow = 3, ncol = 4)
+m
+m[2, ]   # uma linha
+m[, 2]   # uma coluna
+m[2, 2]  # um elemento
+t(m)     # transposição
+```
+
+## Arrays
+
+No R, os arrays generalizam o conceito de matriz a mais do que 2 dimensões. Como são estruturas muito específicas e de utilização incomum, apenas se refere a existência. Em caso de necessidade recorra à documentação da função `array()`.
+
+## Listas
+
+Uma lista agrupa um conjunto de elementos que podem ser de tipos diferentes e mais ou menos complexos (tipos elementares, vetores, etc.). A cada elemento da lista pode ser atribuído um nome. Muitas funções têm como resultado uma lista, notavelmente, a generalidade dos testes estatísticos.
+
+Por exemplo, o seguinte código cria e mostra uma lista:
+
+```{r}
+aluno <- list(nome = "Luisão", idade = 23, notas = c(13, 15, 11))
+aluno
+```
+
+Para aceder a um elemento específico, a forma mais simples é com o operador `$`. Por exemplo, para as notas do aluno:
+
+```{r}
+aluno$notas
+```
+
+Na lista, podemos modificar o valor dos elementos ou podemos acrescentar ou remover elementos:
+
+```{r}
+aluno$idade <- 24        # modificar
+aluno$pais <- "Brasil"   # acrescentar
+aluno$notas <- NULL      # remover
+aluno
+```
+
+## Data frames
+
+Uma *data frame* pode ser vista como uma tabela e são a estrutura típica para armazenar dados estatísticos, uma vez que cada coluna corresponde a uma variável e cada linha a uma observação.
+
+Em termos de linguagem R uma *data frame* pode ser vista como uma lista composta por vetores, que podem ser de tipos diferentes, mas que, necessariamente, têm o mesmo tamanho. Desto modo, a sintaxe das *data frames* incorpora elementos dos vetores, das matrizes e das listas.
+
+Na mioria dos casos, as data frames são lidas a partir de ficheiros de dados, uma vez que podem conter grandes quantidades de informação. Nesta secção vamos construir uma *data frame* a partir dos vetores criados anteriormente:
+
+```{r}
+turma <- data.frame(nome, idade, notas, nac = nacional, sat = satisfacao)
+turma
+```
+
+Como pode verificar o resultado foi apresentado como uma tabela. Aproveitou-se a criação da *data frame* para tornar os nomes de algumas colunas mais curtos. Note que as linhas estão identificadas por números. Alternativamente poder-se-ia utilizar o nome dos alunos para identificar as linhas, uma vez que se trata de um identificador. Nesse caso, o código deveria ser:
+
+```{r}
+turma <- data.frame(idade, notas, nac = nacional, sat = satisfacao, row.names = nome)
+turma
+```
+
+::: callout-tip
+No *RStudio*, no painel *Environment*, pode ver detalhes sobre as variáveis contidas na data frame, selecionando o ícone ao lado do nome do objeto (seta branca em fundo azul). Pode inspecionar os conteúdos da data frame numa nova aba, selecione o nome do objeto.
+:::
+
+::: callout-note
+O *RStudio*, não é a ferramenta ideal para editar dados. Embora se possa editar uma *data frame* com a função `fix(nome_da_data_frame)`, a ferramenta é muito limitada. Tipicamente os dados são preparados fora do *RStudio* com ferramentas mais adequadas, por exemplo, folhas de cálculo, e depois importados para o R.
+:::
+
+Para aceder ao elementos da data frame pode utilizar-se:
+
+-   **Colunas** (variáveis):
+
+    ```{r}
+    turma$notas
+    turma[["notas"]]
+    turma[, "notas"]
+    turma[, 2]
+    ```
+
+-   **Linhas** (observações):
+
+    ```{r}
+    turma["Di Maria", ]
+    turma[4, ]
+    ```
+
+-   **Elementos**: qualquer combinação das anteriores.
+
+    ```{r}
+    turma["Rui Costa", "idade"]
+    turma$idade[1]
+    turma[1, 1]
+    ```
+
+Embora o R permita grande flexibilidade, por norma, a linhas são selecionadas através de uma condição e as colunas são selecionadas pelo nome, como no exemplo seguinte:
+
+```{r}
+turma[idade <= 20, c("idade", "nac")]
+```
+
+::: callout-tip
+Naturalmente, todas as operações de seleção válidas para vetores, também são válidas para selecionar linhas de uma *data frames*.
+:::
+
+Para além do operador de seleção `[ ]`, uma outra forma de filtrar data frames é com a utilização da função `subset()`. Como o nome indica, trata-se de uma função que filtra a *data frame* e devolve uma outra *data frame* contendo um subconjunto de observações e variáveis. O filtro aplicado acima pode ser obtido com:
+
+```{r,}
+subset(turma, idade <= 20, select = c(idade, nac))
+```
+
+Esta função apenas torna mais explícita a operação de filtragem, mas nada acrescenta ao operador de seleção. Notavelmente:
+
+-   O nome das variáveis colocadas em `select =` não necessita de ter aspas (pode ter ou não ter) ou podem ser referidas pelo índice, por exemplo, `select = c(1, 3)`
+
+-   A condição para as linhas pode ser omitida, sendo selecionadas todas a linhas.
+
+-   Poderíamos fazer, por exemplo, `select = -c(idade, nac)`. Nesse caso, seriam selecionadas todas as variáveis menos aquelas.
+
+## Ler e gravar
+
+Qundo se prepara um *script* para automatizar uma qualquer tarefa de análise, tipicamente, aquele contém 3 etapas:
+
+1.  Ler um conjunto de dados.
+2.  Executar transformações aos dados e análises.
+3.  Guardar um ou vários conjuntos de dados, depois de eventuais transformações ou filtragens.
+
+Para ler e gravar dados o R suporta vários formatos, nativamente ou através de pacotes adicionais. Abordar-se-ão aqui os mais usuais.
+
+Um dos formatos mais simples e com grande compatibilidade e portabilidade entre sistemas é o CSV (*Comma-Separated Values*). Muitos conjunto de dados são disponibilizados na internet neste formato.
+
+Num CSV os dados são gravados como texto, num formato retangular. O texto que se segue é um exemplo do que se poderia gravar num ficheiro CSV:
+
+```{verbatim}
+#| prompt: false
+
+campo1,campo2,campo3
+A,x,1
+B,y,2
+C,z,3
+```
+
+O formato CSV tem as seguintes características:
+
+-   As colunas são separadas por vírgulas.
+-   Todas a linhas têm o mesmo número de colunas (formato retangular).
+-   A primeira linha (cabeçalho) pode conter o nome dos campos.
+-   Os dados podem ser texto ou números (o separador decimal é o ponto).
+
+Provavelmente estará a notar a correspondência entre o formato CSV a a *data frame*. De facto, o CSV é um dos métodos óbvios para ler e guardar dados de *data frames*.
+
+### Formato CSV
+
+Vamos começar por gravar a *data frame* `turma` que foi construída neste tutorial. Para o fazer utiliza-se a função `write.csv()`, como a seguir:
+
+```{r}
+write.csv2(turma, "turma.csv")
+```
+
+Na sua pasta de trabalho deve ter agora um novo ficheiro chamado `turma.csv` que pode agora abrir (no *RStudio* selecione com o rato e escolha *View File*). Os conteúdos deverão ser semelhantes ao seguinte:
+
+```{verbatim}
+#| prompt: false
+#| file: turma.csv
+
+# from file
+```
+
+Trata-se de um ficheiro de texto normal e pode ser editado manualmente no *RStudio* ou no *Bloco de Notas*, por exemplo.
+
+::: callout-note
+O nome das linhas (nome dos alunos) é o primeiro campo do ficheiro e não tem título no cabeçalho. Se os nomes não forem significativos, por omissão são apenas um número sequencial, podemos evitar a sua gravação no ficheiro acrescentando a opção `row.names = FALSE` à função `write.csv()`.
+:::
+
+Para ler um CSV existe a função inversa, `read.csv()`. Por exemplo, para ler o ficheiro criado acima, podemos usar:
+
+```{r}
+turma_copia <- read.csv("turma.csv", row.names = 1)
+```
+
+Como pode verificar, os objetos `turma` e `turma-copia` são iguais.
+
+::: callout-note
+Na função `read.csv()`, o parâmetro `row.names = 1` informa o R que os nomes das linhas estão na coluna 1. Caso este parâmetro fosse omitido, o R iria criar uma variável, `X`, com os nomes.
+:::
+
+### Excel
+
+Embora o *Excel* suporte a leitura e gravação de ficheiros CSV, pode haver pequenas diferenças no formato utilizado. Dependendo da configuração do computador, é usual o Excel utilizar o ponto e vírgula em vez da vírgula, reservando a vírgula para separador decimal. Se for esse o caso e pretender trocar dados com o Excel utilizando o formato CSV, deve usar as funções `write.csv2()` e `read.csv2()`.
+
+Também o universo `tidyverse` disponibiliza o pacote `readxl` que pode ser utilizado para ler diretamente, sem necessidade de converter para CSV, folhas de cálculo do *Excel*. O pacote define as funções `read.xls()` e `read.xlsx()` que podem ler dados a partir dos formatos *xls* e *xlsx*, respetivamente. A utilização é muito simples, sendo uma questão de verificar os detalhes da utilização do [`readxl`](https://readxl.tidyverse.org/){target="_blank"}.
+
+### Outros formatos de texto
+
+Sendo o formato CSV bastante antigo, há várias implementações diferentes. Se necessitar de ler ou gravar um ficheiro que não se enquadre nos casos anteriores pode recorrer às funções `write.table()` e `read.table()` onde pode parametrizar a configuração do ficheiro, dispondo de flexibilidade total.
+
+### Inconsistências
+
+No mundo perfeito, depois de identificado o formato dos dados, a leitura seria simples e poder-se-ia passar à fase de análise. No mundo real, não raras vezes, os dados seguem *mais ou menos* um formato conhecido mas há inconsistências. Noutros casos, só Deus sabe que formato seguem, sendo totalmente inconsistentes.
+
+Alguns exemplos de inconsistências frequentes:
+
+-   Representação de valores em falta: por omissão o R interpreta campos em branco e `"NA"` como valores em falta. Há casos em que são usados outros símbolos, por exemplo, `"-"`, `"--"` ou até `0`. O caso do zero é particularmente pernicioso pois, dependendo do contexto, pode significar zero ou valor em falta. É necessário alterar o parâmetro `na.strings =` para um vetor de símbolos possíveis.
+
+-   Representação de datas: a representação de datas varia consideravelmente entre países e comunidades. Na leitura de datas, numa primeira fase, estas podem ser lidas como texto, sendo depois convertidas para um formato adequado. É um tópico fora do âmbito deste texto.
+
+-   Uso dos espaços: a utilização de espaços a mais no início ou final do texto pode originar valores diferentes para algo que deveria ser igual. O parâmetro `strip.white =` pode ajudar a lidar com a situação.
+
+-   Uso das maiúsculas: quando feito de forma inconsistente também provoca que o mesmo valor tenha duas representações diferentes, por exemplo, `"bragança"` e `"Bragança"`.
+
+-   Presença de texto em campos numéricos: quando acontece provoca que a variável seja lida como texto. Por exemplo, se houver um caso em que o algarismo `0` tenha sido trocado com a letra `O`, impossibilita a leitura automática dos dados como números.
+
+-   Caracteres especiais: a ocorrência de caracteres especiais no texto tem algumas regras. Por exemplo, o R interpreta o `#` como marca de comentário e não processa o resto da linha, possivelmente originando erros. Neste caso o parâmetro `skip =` pode ajudar.
+
+-   Descrição dos dados: por vezes o ficheiro inclui uma descrição no topo. Se as linhas não forem precedidas de `#` vai originar erros.
+
+Ler um ficheiro de dados de proveniência duvidosa pode ser uma tarefa morosa, pois pode haver inúmeras inconsistências. Além das identificadas acima, há depois inconsistências lógicas, por exemplo, um indivíduo com idade igual a -5, ou uma criança com 300 anos. Este tipo de inconsistências vai necessitar processamento adicional após a leitura dos dados.
+
+## Dados categóricos {#sec-data-categorical}
+
+Provavelmente notou que as variáveis nacionalidade (vetor `nacional`) e satisfação (vetor `satisfacao`) representam informação categórica. No caso da primeira, trata-se de uma variável nominal e, no caso da segunda, de uma variável ordinal.
+
+No entanto, não lhes foi dado nenhum tratamento especial, foram tratadas como mero texto. Nesta secção descreve-se como informar o R da natureza daquele tipo de variáveis.
+
+No R, as variáveis categóricas são designadas por fatores, havendo dois tipos de fatores, os nominais (*factor*) e os ordinais (*ordered factor*).
+
+### Dados nominais
+
+Para informar o R da natureza nominal de uma variável utiliza-se a função `factor()`:
+
+```{r}
+nacional
+nac <- factor(nacional)
+nac
+```
+
+Note a diferença na representação da variável antes e depois da aplicação da função `factor()`: o vetor `nacional` deixou de ser texto e passou a ser um fator com 3 níveis (neste caso, os três países existentes).
+
+Se reparar, no *RStudio*, no painel *Environment*, a nacionalidade é agora representada por um número inteiro correspondendo aos países representados (`r paste0(1:length(levels(nac)), ": ", levels(nac))`).
+
+Apesar daquela representação numérica, as operações aritméticas não fazem sentido. Se tentar fazer esse tipo de operações o R vai despoletar um aviso ou um erro. Por exemplo:
+
+```{r}
+#| error: true
+
+mean(nac)
+nac * 2
+```
+
+Por omissão, os níveis são ordenados alfabeticamente, tal pode ser modificado fornecendo um vetor de níveis no parâmetro `levels =`. Note-se que a ordem apenas serve para a apresentação de resultados pois trata-se de uma variável nominal.
+
+Para obter um vetor de texto com os níveis pode usar-se a função `levels()`:
+
+```{r}
+levels(nac)
+```
+
+```{r}
+#| include: false
+
+levels_nac <- levels(nac)
+```
+
+A função `factor()` também pode ser utilizada para recodificar o vetor, ou seja, alterar os rótulos dos vários níveis, através do parâmetro `labels =`. Por exemplo, alterar o nome dos países para o código de 3 letras:
+
+```{r}
+nac <- factor(nac, labels = c("ARG", "BRA", "PRT"))
+nac
+```
+
+Note que o código acima pressupõe o conhecimento dos níveis existentes e da sua ordem (`r levels_nac`). É necessário ser cuidadoso, pois é muito fácil criar situações de níveis trocados nos dados.
+
+::: callout-note
+A função `factor()`, é muito flexível e poderosa, sendo uma excelente ferramenta para corrigir inconsistências nos níveis de um fator através na manipulação dos parâmetros `levels =`, `labels =` e `exclude =`.
+:::
+
+::: callout-tip
+Caso cometa algum erro e faça uma operação inadvertida, deve voltar a ler os dados originais e recomeçar o processo. Recomenda-se a utilização de um *script* para afinar o processo por tentativa e erro.
+:::
+
+### Dados ordinais
+
+Para criar um fator ordinal tudo o que foi escrito para os fatores nominais é aplicável e, adicionalmente, é necessário informar o R que o factor é ordinal, acrescentando o parâmetro `ordered = TRUE`. Naturalmente, é necessário fornecer a ordem adequada no parâmetro `levels =` pois, caso contrário, seria assumida a ordem alfabética.
+
+Assim, para codificar corretamente o vetor `satisfacao` deveria fazer-se:
+
+```{r}
+sat <- factor(satisfacao, levels = c("insatisfeito", "neutral", "satisfeito"), ordered = TRUE)
+sat
+```
+
+Note que a informação sobre os níveis da função reconhece a natureza ordinal do vetor, apresentando a ordenação com o sinal menor, `<`.
+
+```{r}
+#| label: tut-data-cleanup
+#| include: false
+
+unlink("turma.csv")
+```

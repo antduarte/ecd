@@ -1,0 +1,124 @@
+---
+description: >
+  Construção e configuração de diagramas de extremos e quartis no R.
+date: 2025-05-08
+ecd-order: 7
+# other-links:
+#   - text: OpenIntro (datasets)
+#     href: https://www.openintro.org/data/
+---
+
+# Diagramas de Extremos e Quartis {#sec-tut-boxplot}
+
+## Introdução {#sec-tut-boxplot-intro}
+
+O diagrama de extremos e quartis (DEQ) vulgarmente designado pelo termo inglês *box plot* serve para sumariar um conjunto de estatísticas sobre os dados em análise, sendo uma das visualizações mais utilizadas. O DEQ está descrito na @sec-quant-disp.
+
+Para desenvolver este tutorial será utilizado o conjunto de dados `chickwts` incluído no R. Neste conjunto há duas variáveis relativas à observação de um conjunto de frangos: a variável `weight`, contendo o peso, em gramas, dos frangos às 6 semanas, e a variável categórica `feed`, que se refere à alimentação dos frangos.
+
+```{r}
+summary(chickwts)
+```
+
+Como se pode verificar, a variável `feed` já está corretamente codificada como categórica, pelo que se pode passar à análise.
+
+## Elaboração do DEQ {#sec-tut-boxplot-simple}
+
+Para desenhar um diagrama de extremos e quartis basta invocar a função gráfica de alto nível `boxplot()` especificando quais os dados a utilizar. A @fig-tut-boxplot-basic e o código abaixo exemplificam o processo para a variável `weight`.
+
+```{r}
+#| label: fig-tut-boxplot-basic
+#| fig-cap: Exemplo de um DEQ (sem configurações adicionais)
+
+boxplot(chickwts$weight)
+```
+
+A função `boxplot()` pode receber os dados em vários formatos: um vetor, vários vetores ou uma matriz, lista ou *data frame* contendo mais do que uma variável. Caso seja fornecida mais do que uma variável, serão desenhados vários diagramas no mesmo gráfico, como por exemplo na @fig-tut-boxplot-2var, gerada pelo código seguinte.
+
+```{r}
+#| label: fig-tut-boxplot-2var
+#| fig-cap: Exemplo de DEQ com mais do que uma variável
+#| layout-ncol: 2
+#| fig-subcap:
+#|   - "fornecendo uma `data frame`"
+#|   - "fornecendo dois vetores"
+
+
+boxplot(cars)
+boxplot(cars$speed, cars$dist)
+```
+
+Existe ainda uma outra forma de especificar o DEQ que será explorada na @sec-tut-boxplot-formula.
+
+## Configuração do DEQ {#sec-tut-boxplot-args}
+
+A função `boxplot()` pode receber os argumentos habituais para especificar títulos, eixos, escalas, cores, etc., e um conjunto de argumentos específicos, cujos mais importantes se enumeram na @tbl-tut-boxplot-args.
+
+| Argumento | Elemento |
+|:---------------------|:-------------------------------------------------|
+| `range =` | Para especificar o valor máximo dos extremos do diagrama. Por omissão, `range = 1.5`, ou seja, 1.5 vezes a amplitude interquartis. As observações para lá dos extremos são representadas como pontos |
+| `width =`, `varwidth = TRUE` | Para especificar a largura relativa de cada caixa. Alternativamente, `varwidth = TRUE` torna a largura das caixas proporcional à raiz quadrada do número de observações |
+| `names =` | Para especificar um vetor de texto para utilizar como rótulos de cada diagrama |
+| `horizontal = TRUE` | Para especificar que os diagramas devem ser desenhados na horizontal |
+| `add = TRUE`, `at =` | Utilizando `add = TRUE`, o diagrama será colocado sobre um gráfico existente. O argumento `at =` especifica em que coordenadas o diagrama será colocado, podendo ser um vetor, caso haja mais do que um diagrama |
+| `col =`, `border =` | Para especificar a cor do preenchimento e das linhas do diagrama |
+
+: Configuração do diagrama de extremos e quartis {#tbl-tut-boxplot-args .striped}
+
+::: {.callout-note}
+### Parâmetros gráficos específicos
+
+A função `boxplot()` permite configurar alguns parâmetros gráficos específicos do DEQ. Esses parâmetros são designados pelo nome do parâmetro tal como na função `par()` mais um prefixo específico. Os prefixos específicos são `box`, `staple`, `med`, `whisk` e `out`, para configurar a caixa, os extremos, a mediana, a extensão e os *outliers*, respetivamente. Há ainda os argumentos `boxwex`, `staplewex` e `outwex` para controlar a largura dos vários elementos do diagrama.
+
+Por exemplo, `outpch =` configura o símbolo a utilizar nos *outliers* e `boxlty =` configura o tipo de linha a utilizar na caixa.
+
+Para mais informação e exemplos pode consultar a documentação com `?bxp`.
+:::
+
+O código abaixo produz a @fig-tut-boxplot-args, onde se pode verificar o efeito de alguns ajustes realizados. Neste caso, o gráfico e os ajustes fazem pouco sentido e servem apenas para efeito de demonstração.
+
+```{r}
+#| label: fig-tut-boxplot-args
+#| fig-cap: Exemplo de um DEQ com alguns ajustes
+
+boxplot(
+  head(chickwts$weight, 11), # primeiros 11
+  tail(chickwts$weight, 11), # últimos 11
+  horizontal = TRUE,
+  main = "Peso de 22 frangos",
+  names = c("primeiros", "últimos"),
+  xlab = "Peso (g)",
+  col = c("skyblue", "palegreen"), border = "violet",
+  outpch = 8, outcol = "red", outcex = 2,
+  medcol = "orange",
+  staplelty = "dotted"
+)
+```
+
+
+## DEQ por categorias {#sec-tut-boxplot-formula}
+
+Uma utilização bastante frequente do diagrama de dispersão é na comparação de categorias de uma variável categórica, separando as observações de uma variável numérica em função da categoria. No conjunto de dados `chickwts` haverá algum
+interesse em analisar o peso dos frangos alimentados com as diferentes dietas.
+
+A função `boxplot()` permite especificar essa análise utilizando uma construção gramatical do R designado por *fórmula*.
+
+::: {.callout-important}
+### Fórmulas no R
+
+Sem entrar em grandes detalhes, geralmente, utiliza-se uma fórmula para especificar um modelo estatístico em que uma variável pode ser prevista a partir de um modelo linear de outras variáveis. Por exemplo, para especificar um modelo de regressão linear simples, utiliza-se a fórmula `y ~ x`, que se lê *"a variável `y` depende linearmente da variável `x`"*
+
+No contexto do DEQ pode utilizar-se uma fórmula para especificar que as observações de uma variável quantitativa, podemos designar por `y`, devem ser separadas pelas categorias de outra variável, `x`, que deve ser categórica.
+:::
+
+Utilize-se um exemplo para ilustrar a aplicação de uma *fórmula*. No código que se segue utiliza-se uma fórmula para produzir a @fig-tut-boxplot-formula.
+
+```{r}
+#| label: fig-tut-boxplot-formula
+#| fig-cap: Exemplo de DEQ em que se utiliza uma fórmula
+#| out-extra: class="preview-image"
+
+boxplot(weight ~ feed, data = chickwts)
+```
+
+Quando se utilizam fórmulas com variáveis de uma *data frame*, basta indicar o nome da *data frame* com `data =` e deixa de ser necessário utilizar o `$` para qualificar as variáveis. Outro argumento que poderá ser útil é `subset =`, onde se pode indicar uma condição que as observações devem cumprir (um filtro).

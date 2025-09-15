@@ -1,0 +1,13 @@
+---
+listing: 
+  id: tutorial-listings
+  contents: t[0-9][0-9][0-9]*.qmd
+  sort: "filename"
+  image-placeholder: images/Rlogo.png
+  date-format: "MMMM, YYYY"
+---
+
+# Tutoriais {.unnumbered}
+
+::: {#tutorial-listings}
+:::

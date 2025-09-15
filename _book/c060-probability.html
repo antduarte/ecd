@@ -1,0 +1,1807 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>6&nbsp; Probabilidades – Estatística e Ciência de Dados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./tutorials.html" rel="next">
+<link href="./c050-bivariate.html" rel="prev">
+<link href="./images/favicon96.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-probability-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-probability-listing'] = new List('listing-probability-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-YY4SMMTB2W"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-YY4SMMTB2W', { 'anonymize_ip': true});
+</script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="6&nbsp; Probabilidades – Estatística e Ciência de Dados">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://pages.ipb.pt/~aduarte/ecd/images/cover.png">
+<meta property="og:site_name" content="Estatística e Ciência de Dados">
+<meta property="og:image:height" content="2250">
+<meta property="og:image:width" content="1410">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c060-probability.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Procurar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estatística e Ciência de Dados</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/antduarte/ecd/" title="Código fonte" class="quarto-navigation-tool px-1" aria-label="Código fonte"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo de leitor">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Procurar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nota Prévia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./chapters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c010-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Metodologia e Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c020-collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c030-qualitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c040-quantitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c050-bivariate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c060-probability.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutoriais</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t010-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ferramentas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t020-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introdução ao R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t030-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Dados no R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t040-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t050-barplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Gráfico de Barras</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t060-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Histogramas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t070-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Diagramas de Extremos e Quartis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t080-counting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Técnicas de Contagem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliografia</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#sec-prob-concepts" id="toc-sec-prob-concepts" class="nav-link active" data-scroll-target="#sec-prob-concepts"><span class="header-section-number">6.1</span> Conceitos fundamentais</a>
+  <ul class="collapse">
+  <li><a href="#sec-prob-concepts-randexp" id="toc-sec-prob-concepts-randexp" class="nav-link" data-scroll-target="#sec-prob-concepts-randexp"><span class="header-section-number">6.1.1</span> Experiências aleatórias</a></li>
+  <li><a href="#sec-prob-concepts-sspaces" id="toc-sec-prob-concepts-sspaces" class="nav-link" data-scroll-target="#sec-prob-concepts-sspaces"><span class="header-section-number">6.1.2</span> Espaços amostrais</a></li>
+  <li><a href="#sec-prob-concepts-events" id="toc-sec-prob-concepts-events" class="nav-link" data-scroll-target="#sec-prob-concepts-events"><span class="header-section-number">6.1.3</span> Acontecimentos</a></li>
+  <li><a href="#sec-prob-concepts-probability" id="toc-sec-prob-concepts-probability" class="nav-link" data-scroll-target="#sec-prob-concepts-probability"><span class="header-section-number">6.1.4</span> Probabilidade</a></li>
+  <li><a href="#sec-prob-prob-rules" id="toc-sec-prob-prob-rules" class="nav-link" data-scroll-target="#sec-prob-prob-rules"><span class="header-section-number">6.1.5</span> Algumas regras de cálculo</a></li>
+  <li><a href="#sec-prob-concepts-pdist" id="toc-sec-prob-concepts-pdist" class="nav-link" data-scroll-target="#sec-prob-concepts-pdist"><span class="header-section-number">6.1.6</span> Distribuições de probabilidade</a></li>
+  </ul></li>
+  <li><a href="#sec-prob-conditional" id="toc-sec-prob-conditional" class="nav-link" data-scroll-target="#sec-prob-conditional"><span class="header-section-number">6.2</span> Probabilidades condicionais e independência</a>
+  <ul class="collapse">
+  <li><a href="#sec-prob-conditional-margin" id="toc-sec-prob-conditional-margin" class="nav-link" data-scroll-target="#sec-prob-conditional-margin"><span class="header-section-number">6.2.1</span> Probabilidades marginais</a></li>
+  <li><a href="#sec-prob-conditional-conj" id="toc-sec-prob-conditional-conj" class="nav-link" data-scroll-target="#sec-prob-conditional-conj"><span class="header-section-number">6.2.2</span> Probabilidades conjuntas e reunião</a></li>
+  <li><a href="#sec-prob-conditional-cond" id="toc-sec-prob-conditional-cond" class="nav-link" data-scroll-target="#sec-prob-conditional-cond"><span class="header-section-number">6.2.3</span> Probabilidades condicionais</a></li>
+  <li><a href="#sec-prob-conditional-indep" id="toc-sec-prob-conditional-indep" class="nav-link" data-scroll-target="#sec-prob-conditional-indep"><span class="header-section-number">6.2.4</span> Independência</a></li>
+  </ul></li>
+  <li><a href="#sec-prob-bayes-theorem" id="toc-sec-prob-bayes-theorem" class="nav-link" data-scroll-target="#sec-prob-bayes-theorem"><span class="header-section-number">6.3</span> Teorema de Bayes</a>
+  <ul class="collapse">
+  <li><a href="#sec-prob-bayes-tree" id="toc-sec-prob-bayes-tree" class="nav-link" data-scroll-target="#sec-prob-bayes-tree"><span class="header-section-number">6.3.1</span> Diagrama de árvore</a></li>
+  <li><a href="#sec-prob-bayes-general" id="toc-sec-prob-bayes-general" class="nav-link" data-scroll-target="#sec-prob-bayes-general"><span class="header-section-number">6.3.2</span> Generalização</a></li>
+  </ul></li>
+  <li><a href="#sec-prob-counting" id="toc-sec-prob-counting" class="nav-link" data-scroll-target="#sec-prob-counting"><span class="header-section-number">6.4</span> Contagem</a></li>
+  <li><a href="#tutoriais" id="toc-tutoriais" class="nav-link" data-scroll-target="#tutoriais">Tutoriais</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c060-probability.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c060-probability.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c060-probability.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-prob" class="quarto-section-identifier"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Neste capítulo são apresentados os principais conceitos, frequentemente designados por <em>teoria da probabilidade</em> ou por <em>introdução à probabilidade</em>. Começam por ser apresentadas as definições mais elementares que, mais à frente, serão utilizadas para introduzir conceitos mais complexos e abstratos. Trata-se de uma leitura fundamental para compreender toda a teoria estatística.</p>
+<section id="sec-prob-concepts" class="level2" data-number="6.1">
+<h2 data-number="6.1" class="anchored" data-anchor-id="sec-prob-concepts"><span class="header-section-number">6.1</span> Conceitos fundamentais</h2>
+<p>A maior parte da estatística envolve, de uma ou outra forma, probabilidades. Embora todos tenhamos uma noção do que são probabilidades, pois estas estão associadas a decisões que tomamos diariamente, quando se pretende definir os conceitos de forma mais genérica e abstrata, surgem dificuldades. Esta secção apresenta os conceitos elementares associados às probabilidades.</p>
+<section id="sec-prob-concepts-randexp" class="level3" data-number="6.1.1">
+<h3 data-number="6.1.1" class="anchored" data-anchor-id="sec-prob-concepts-randexp"><span class="header-section-number">6.1.1</span> Experiências aleatórias</h3>
+<p>As probabilidades são sempre associadas a contextos de incerteza. Frequentemente, aparecem situações em que, perante as mesmas condições iniciais, o resultado de algo é incerto. Na Estatística estas situações são designadas por <em>experiências aleatórias</em>. Mais formalmente, para que se esteja perante uma experiência aleatória é necessário:</p>
+<ul>
+<li>Haver dois ou mais resultados possíveis.</li>
+<li>Haver incerteza sobre o resultado.</li>
+</ul>
+<p>Trivialmente, é possível enumerar exemplos clássicos de experiências aleatórias: lançar uma moeda, lançar um dado, selecionar, ao acaso, uma carta de um baralho ou uma bola de uma urna, etc.</p>
+<p>Numa análise mais superficial, em qualquer dos exemplos apontados, as duas condições enumeradas <em>parecem</em> estar reunidas. No entanto, numa análise mais profunda, em qualquer um dos exemplos, se fosse possível reunir as mesmas condições iniciais e repetir o procedimento exato, rapidamente se constata que teria que se obter sempre o mesmo resultado.</p>
+<p>Tome-se o exemplo do lançamento de uma moeda. Caso as condições iniciais do lançamento possam ser replicadas de forma exata, o resultado do lançamento será sempre o mesmo, pois o fenómeno apenas está sujeito às leis da física.</p>
+<p>No entanto, quando uma pessoa lança uma moeda à mão, é muito difícil, garantir ou controlar as condições iniciais de cada lançamento: velocidade, ângulo de saída, momento angular, distância ao solo, etc. Por este motivo, o resultado do lançamento de uma moeda por uma pessoa é considerado incerto.</p>
+<p>Em geral, sempre que o resultado de uma experiência é muito sensível às condições iniciais pode ser mais prático tratar o fenómeno como aleatório, como nos casos enumerados atrás (moeda, dado, cartas, urna e outros).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uma forma de obter sequências aleatórias consiste precisamente em utilizar dispositivos muito sensíveis às condições iniciais. Por exemplo, o lançamento de um dado é um desses dispositivos, gerando sequências de resultados indistinguíveis de sequências verdadeiramente aleatórias.</p>
+</div>
+</div>
+<p>Na prática, independentemente da fonte da incerteza, quer advenha das condições iniciais, quer advenha do fenómeno em si, podemos aplicar o conceito de <em>experiência aleatória</em> de forma indistinta.</p>
+</section>
+<section id="sec-prob-concepts-sspaces" class="level3" data-number="6.1.2">
+<h3 data-number="6.1.2" class="anchored" data-anchor-id="sec-prob-concepts-sspaces"><span class="header-section-number">6.1.2</span> Espaços amostrais</h3>
+<p>Um <em>espaço amostral</em> tem uma definição muito simples: trata-se do conjunto de todos os resultados possíveis de uma experiência aleatória. Os espaços amostrais podem ser classificados em:</p>
+<ul>
+<li><p>Espaços amostrais <strong>discretos</strong>: o conjunto de resultados pode ser enumerado. Estes espaços amostrais podem ser finitos ou infinitos.</p>
+<blockquote class="blockquote">
+<p>Um exemplo de um espaço amostral <strong>finito</strong> são os resultados possíveis no lançamento de um dado, ou seja, o conjunto {1, 2, 3, 4, 5, 6}.</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Já um espaço amostral <strong>infinito</strong> pode ser exemplificado pelas sequências de resultados até obter <em>6</em> no dado, ou seja, {6, 16, 26, …, 116, 126, … 216, 226, … 1116, 1126, …}.</p>
+</blockquote></li>
+<li><p>Espaços amostrais <strong>contínuos</strong>: o conjunto de resultados é um valor num determinado intervalo real. Estes espaços amostrais são sempre infinitos, mesmo que se trate de intervalos fechados.</p>
+<blockquote class="blockquote">
+<p>Um exemplo de um espaço amostral contínuo pode ser o intervalo que decorre entre duas chegadas a uma fila de espera, que será um valor no intervalo [0, +<span class="math inline">\(\infty\)</span>[.</p>
+</blockquote></li>
+</ul>
+<p>Por norma, o conjunto de resultados de um espaço amostral é designado pela letra grega <span class="math inline">\(\Omega\)</span>.</p>
+<p>Note-se que na <a href="c010-method.html#sec-method-dtypes-nat" class="quarto-xref"><span>Secção 1.2.2</span></a> fez-se uma distinção semelhante a propósito dos diferentes tipos de dados estatísticos. De facto, uma observação de uma variável estatística também é um elemento de entre um conjunto de valores possíveis.</p>
+</section>
+<section id="sec-prob-concepts-events" class="level3" data-number="6.1.3">
+<h3 data-number="6.1.3" class="anchored" data-anchor-id="sec-prob-concepts-events"><span class="header-section-number">6.1.3</span> Acontecimentos</h3>
+<p>Apoiados nos dois conceitos anteriores podemos agora definir um <em>acontecimento</em>, como um subconjunto do espaço amostral.</p>
+<p>Geralmente, falamos de acontecimentos quando se pretende referir um subconjunto de resultados que têm alguma característica expressiva em comum. Por exemplo, no lançamento de um dado, podemos definir o acontecimento <em>obter um número par</em>, correspondendo ao conjunto {2, 4, 6}. No entanto, é possível definir um acontecimento que corresponda a um qualquer subconjunto arbitrário.</p>
+<p>Os acontecimentos costumam ser designados por letras maiúsculas, A, B, C, etc., e podem ser representados num <em>diagrama de Venn</em>, tal como na <a href="#fig-prob-venn" class="quarto-xref">Figura&nbsp;<span>6.1</span></a>, onde se representa o espaço amostral do lançamento de um dado e o acontecimento <em>obter um número primo</em>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prob-venn" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-venn-1.png" class="img-fluid figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.1: Diagrama de Venn
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Quando se trata de conjuntos, tal como é o caso dos acontecimentos, o diagrama de Venn é uma excelente visualização, pois permite intuir facilmente sobre as regras da álgebra de conjuntos. Por exemplo, na <a href="#fig-prob-set-basics" class="quarto-xref">Figura&nbsp;<span>6.2</span></a> pode visualizar-se o resultado da aplicação de algumas regras algébricas sobre conjuntos.</p>
+<div id="fig-prob-set-basics" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-set-basics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-prob-set-basics" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-prob-set-basics-1" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-prob-set-basics-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-set-basics-1.png" class="preview-image img-fluid figure-img" data-ref-parent="fig-prob-set-basics" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-prob-set-basics-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Reunião de A com B
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-prob-set-basics" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-prob-set-basics-2" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-prob-set-basics-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-set-basics-2.png" class="preview-image img-fluid figure-img" data-ref-parent="fig-prob-set-basics" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-prob-set-basics-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Interseção de A com B
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-prob-set-basics" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-prob-set-basics-3" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-prob-set-basics-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-set-basics-3.png" class="preview-image img-fluid figure-img" data-ref-parent="fig-prob-set-basics" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-prob-set-basics-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Complementar de A
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-prob-set-basics" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-prob-set-basics-4" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-prob-set-basics-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-set-basics-4.png" class="preview-image img-fluid figure-img" data-ref-parent="fig-prob-set-basics" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-prob-set-basics-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Complementar de A relativo a B
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-set-basics-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.2: Algumas operações com conjuntos
+</figcaption>
+</figure>
+</div>
+<p>Em geral, qualquer regra que se aplique na álgebra de conjuntos também pode ser aplicada a acontecimentos para determinar os conjuntos resultantes das operações de reunião, interseção, etc., efetuadas sobre acontecimentos.</p>
+<p>Há alguns acontecimentos notáveis, cujas definições se apresentam:</p>
+<ul>
+<li><p><strong>Acontecimento certo</strong>: é um acontecimento cujo conjunto de resultados inclui todos os elementos do espaço amostral.</p>
+<blockquote class="blockquote">
+<p>O acontecimento definido por <em>obter um ou mais pontos no lançamento de um dado</em> inclui todos os elementos do espaço amostral.</p>
+</blockquote></li>
+<li><p><strong>Acontecimento impossível</strong>: é um acontecimento cujo conjunto de resultados é vazio.</p>
+<blockquote class="blockquote">
+<p>O acontecimento definido por <em>obter mais de 6 pontos no lançamento de um dado</em> não inclui qualquer elemento do espaço amostral.</p>
+</blockquote></li>
+<li><p><strong>Acontecimento simples</strong> ou acontecimento elementar: é um acontecimento cujo conjunto de resultados é singular, i.e, contém apenas 1 resultado.</p>
+<blockquote class="blockquote">
+<p>O acontecimento definido por <em>obter 6 pontos no lançamento de um dado</em> é um exemplo, uma vez que há apenas 1 resultado favorável ao acontecimento.</p>
+</blockquote></li>
+<li><p><strong>Acontecimentos mutuamente exclusivos</strong> ou acontecimentos disjuntos: são acontecimentos cujos conjuntos de resultados não têm elementos em comum, ou seja <span class="math inline">\(A \cap B = \emptyset\)</span>.</p>
+<blockquote class="blockquote">
+<p>Um exemplo deste tipo de acontecimentos é <em>obter 2 ou menos pontos</em> e <em>obter 5 ou mais pontos</em> num lançamento do dado. Não há nenhum resultado que pertença aos dois conjuntos.</p>
+</blockquote></li>
+<li><p><strong>Acontecimentos complementares</strong>: são acontecimentos mutuamente exclusivos em que o conjunto de resultados que resulta da reunião é igual ao espaço amostral, ou seja <span class="math inline">\(A \cup \bar{A} = \Omega\)</span>. Para designar o complementar do acontecimento <span class="math inline">\(A\)</span>, utiliza-se <span class="math inline">\(\bar{A}\)</span>.</p>
+<blockquote class="blockquote">
+<p>Um exemplo deste tipo de acontecimentos é <em>obter um número par</em> e <em>obter um número ímpar</em> num lançamento do dado. Note-se que os acontecimentos são mutuamente exclusivos e a reunião é o espaço amostral.</p>
+</blockquote></li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Todos os acontecimentos complementares são mutuamente exclusivos. O contrário nem sempre é verdade.</p>
+</div>
+</div>
+</section>
+<section id="sec-prob-concepts-probability" class="level3" data-number="6.1.4">
+<h3 data-number="6.1.4" class="anchored" data-anchor-id="sec-prob-concepts-probability"><span class="header-section-number">6.1.4</span> Probabilidade</h3>
+<p>Na linguagem comum, o termo <em>probabilidade</em> está associado à maior ou menor possibilidade ou frequência com que algum acontecimento tenha ocorrido ou venha a ocorrer. De facto, no dicionário, <em>probabilidade</em> está definida, entre outras aceções, como a <em>frequência com que ocorre determinado acontecimento</em> <span class="citation" data-cites="infopedia-probabilidade">(<a href="references.html#ref-infopedia-probabilidade" role="doc-biblioref">Porto Editora, 2025</a>)</span>.</p>
+<p>Embora esta definição sirva na linguagem comum, na definição matemática é necessário mais rigor e precisão. Assim, ao longo do tempo foram apresentadas e desenvolvidos definições e conceitos associados à probabilidade.</p>
+<section id="abordagem-clássica" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="abordagem-clássica">Abordagem clássica</h4>
+<p>Dado o espaço amostral de experiência aleatória em que todos os resultados têm a mesma probabilidade de ocorrência, a probabilidade de um acontecimento é definida como o rácio entre o número de resultados favoráveis a esse acontecimento e o número de resultados possíveis.</p>
+<p>Formalmente, se um espaço amostral for composto por <span class="math inline">\(R_1\)</span>, <span class="math inline">\(R_2\)</span>, …, <span class="math inline">\(R_n\)</span> resultados diferentes e se um acontecimento <span class="math inline">\(A\)</span> for definido sobre esse espaço amostral, então</p>
+<p><span class="math display">\[P(A)=\frac{n_A}{n}\]</span></p>
+<p>sendo <span class="math inline">\(n_A\)</span> o número de elementos do espaço amostral pertencentes ao conjunto de resultados do acontecimento A.</p>
+<p>Embora esta definição de probabilidade tenha um âmbito limitado, só sendo aplicável quando os diferentes resultados são equiprováveis, não deixa de ser aplicável a inúmeros casos com interesse prático.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Aplicação da definição clássica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se, por exemplo, no lançamento de um dado, se pretender determinar a probabilidade de <em>obter um número ímpar</em>, podemos utilizar a definição clássica, admitindo que se trata de um dado perfeitamente equilibrado.</p>
+<p>Seja A o referido acontecimento. Então,</p>
+<p><span class="math display">\[P(A)=\frac{n_A}{n}=\frac{\#\{ 1, 3, 5\}}{\#\{ 1, 2, 3, 4, 5, 6\}} = \frac{3}{6} = \frac{1}{2} = 0.5\]</span></p>
+</div>
+</div>
+</section>
+<section id="abordagem-frequencista" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="abordagem-frequencista">Abordagem frequencista</h4>
+<p>A maior limitação da abordagem clássica de probabilidade é ser aplicável apenas a espaços amostrais em que todos os resultados são equiprováveis. É fácil constatar que esta limitação é importante e inúmeras situações com interessa prático não poderiam ser tratadas. Por exemplo, na experiência do lançamento do dado, se não houver a certeza de se tratar de um dado perfeitamente equilibrado, a abordagem clássica não faria sentido.</p>
+<p>Caso a experiência aleatória em causa possa ser repetida um número arbitrário de vezes, aquela limitação pode ser contornada utilizando a abordagem frequencista de probabilidade. Assim, a probabilidade de um acontecimento <span class="math inline">\(A\)</span> pode ser calculada através do rácio entre o número de vezes que o acontecimento ocorre e o número de repetições, quando o número de repetições for arbitrariamente grande. Formalmente,</p>
+<p><span id="eq-prob-freq-def"><span class="math display">\[P(A)=\lim_{n\to\infty}\frac{n_A}{n} \tag{6.1}\]</span></span> em que <span class="math inline">\(n\)</span> é o número de vezes que se repete a experiência aleatória e <span class="math inline">\(n_A\)</span> o número de vezes que, na experiência, o acontecimento <span class="math inline">\(A\)</span> ocorreu. Note-se que, ao contrário da abordagem clássica, não se trata de uma probabilidade exata, mas de uma aproximação com base na frequência relativa do acontecimento. No entanto, a aplicação da <em>Lei dos grandes números</em> garante a convergência, quando o número de repetições é suficientemente grande.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Lei dos grandes números
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>No contexto da abordagem frequencista de probabilidade, a <em>lei dos grandes números</em> (LGN) garante que, à medida que o número de repetições tende para infinito, a probabilidade de um qualquer acontecimento definido no respetivo espaço amostral, converge para a verdadeira probabilidade desse acontecimento.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+A falácia do jogador
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uma interpretação falaciosa da LGN é conhecida coma a <em>falácia do jogador</em>, por ser especialmente popular entre jogadores de jogos fortuna e azar. Nesta <em>versão</em> da LGN algumas pessoas acreditam que, depois de ter azar várias vezes, o jogo (cartas, dados, etc.) lhe está <em>em favor</em> e que terá certamente que ser <em>compensado</em> devido à LGN.</p>
+<p>Naturalmente, o facto de um acontecimento ter ou não ocorrido, não muda a probabilidade de ocorrência no futuro. Por exemplo, admita-se que uma moeda foi lançada 10 vezes, tendo sido obtidas 10 <em>caras</em>. A probabilidade de obter <em>cara</em> ou <em>coroa</em> no lançamento seguinte é a mesma dos anteriores, por hipótese, 0.5 cada face.</p>
+<p>A moeda não está <em>a dever</em> uma <em>coroa</em>, pelo simples facto de que se trata de um objeto de metal inanimado, não possuindo contabilidade organizada. Igualmente, não existe nenhuma entidade ou força conhecida encarregue de manter os registos e o equilíbrio.</p>
+</div>
+</div>
+<p>Na <a href="#fig-prob-freq-demo" class="quarto-xref">Figura&nbsp;<span>6.3</span></a> pode visualizar-se a convergência para a real probabilidade do acontecimento quando se utiliza a expressão <a href="#eq-prob-freq-def" class="quarto-xref">Equação&nbsp;<span>6.1</span></a>. No gráfico simula-se o resultado do lançamento de uma moeda 500 vezes. Por hipótese, a probabilidade teórica de sair cara é igual a 0.5.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prob-freq-demo" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-freq-demo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-freq-demo-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-freq-demo-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.3: Convergência na abordagem frequencista
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Note-se que, no contexto da LGN, a convergência não é <em>monótona</em>, isto é, o valor da probabilidade estimada nem sempre se aproxima da probabilidade teórica à medida que o número de repetições aumenta. Como se pode ver na figura, há períodos em que o valor estimado se afasta do valor teórico. Aliás, em termos absolutos, a diferença entre o número de caras obtido e o número de caras teórico tende a aumentar. No entanto, a probabilidade tende a convergir para o valor teórico pois o número de lançamentos (denominador) aumenta mais rapidamente.</p>
+</section>
+<section id="abordagem-subjectiva" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="abordagem-subjectiva">Abordagem subjectiva</h4>
+<p>As abordagens descritas anteriormente são objetivas, no sentido em que há uma forma unívoca de calcular uma probabilidade. No entanto, apenas se aplicam em circunstâncias particulares, não sendo universais.</p>
+<p>Para os subjetivistas, a probabilidade é um <em>grau de crença</em>, isto é, a probabilidade reflete a disposição de um indivíduo para acreditar na eventual ocorrência de um acontecimento. Este grau de crença pode variar de indivíduo para indivíduo e pode variar no tempo.</p>
+<p>Desta forma, é possível atribuir probabilidades a qualquer acontecimento, mesmo aqueles que não é possível observar. Por exemplo, a probabilidade de haver outras formas de vida inteligentes na nossa galáxia.</p>
+<p>Talvez a forma mais comum de interpretar a abordagem subjetiva seja imaginar uma situação em que, na ocorrência de um acontecimento, A, um agente racional recebe 1 unidade de uma qualquer utilidade (dinheiro, bens, etc.). Caso o acontecimento A não ocorra, recebe 0. O grau de crença em A é igual a <span class="math inline">\(p\)</span> se <span class="math inline">\(p\)</span> for o valor mínimo a que estaria disposto a vender aquela proposta (ou o valor máximo a que estaria disposto a comprar).</p>
+<p>Note-se que, interpretada desta forma, a probabilidade terá um conjunto de características semelhante à abordagem clássica ou à abordagem frequencista. Por exemplo, a probabilidade fica limitada ao intervalo entre 0 e 1.</p>
+</section>
+<section id="abordagem-axiomática" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="abordagem-axiomática">Abordagem axiomática</h4>
+<p>Embora as abordagens apresentadas até agora tenham o seu âmbito de aplicação e sejam úteis em muitos contextos, noutros casos, há a necessidade de uma abordagem mais precisa. Assim, a abordagem axiomática define um conjunto de regras abstratas (axiomas) a que as probabilidades devem obedecer. Esta abordagem foi introduzida em 1933 por <a href="https://en.wikipedia.org/wiki/Andrey_Kolmogorov" target="_blank">Andrey Kolmogorov</a>, sendo também conhecida como axiomática de Kolmogorov. Apresentam-se de seguida os referidos axiomas.</p>
+<p>Considere-se um espaço amostral <span class="math inline">\(\Omega\)</span> e seja <span class="math inline">\(P(A)\)</span> a probabilidade de um qualquer acontecimento A.</p>
+<section id="axioma-1" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="axioma-1">Axioma 1</h5>
+<p><span id="eq-prob-axiom1"><span class="math display">\[P(A)\in\mathbb{R}, P(A)\geq 0 \tag{6.2}\]</span></span></p>
+<p>O axioma 1 garante que a probabilidade é um número real positivo.</p>
+</section>
+<section id="axioma-2" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="axioma-2">Axioma 2</h5>
+<p><span id="eq-prob-axiom2"><span class="math display">\[P(\Omega)=1 \tag{6.3}\]</span></span></p>
+<p>O axioma 2, efetivamente, limita qualquer probabilidade a 1. Em conjunto com o axioma 1 podemos afirmar que, para qualquer acontecimento, A, <span class="math inline">\(0 \leq P(A) \leq 1\)</span>.</p>
+</section>
+<section id="axioma-3" class="level5 unnumbered">
+<h5 class="unnumbered anchored" data-anchor-id="axioma-3">Axioma 3</h5>
+<p>Para quaisquer acontecimentos, A, B, C, …, <strong>mutuamente exclusivos</strong>,</p>
+<p><span id="eq-prob-axiom3"><span class="math display">\[P(A\cup B\cup C\cup\cdots)= P(A)+P(B)+P(C)+\cdots \tag{6.4}\]</span></span></p>
+<p>A partir destes 3 axiomas, as probabilidades passam a ter um conjunto de propriedades a que devem obedecer, não importando como são interpretadas, se de forma objetiva ou subjetiva. Na <a href="#sec-prob-prob-rules" class="quarto-xref"><span>Secção 6.1.5</span></a> serão apresentadas algumas regras práticas de cálculo que podem ser facilmente demonstradas a partir destes axiomas.</p>
+</section>
+</section>
+</section>
+<section id="sec-prob-prob-rules" class="level3" data-number="6.1.5">
+<h3 data-number="6.1.5" class="anchored" data-anchor-id="sec-prob-prob-rules"><span class="header-section-number">6.1.5</span> Algumas regras de cálculo</h3>
+<p>A partir dos axiomas enumerados anteriormente é possível deduzir uma série de regras para o cálculo de probabilidades.</p>
+<p><span id="eq-prob-complement"><span class="math display">\[P(A)+P(\bar{A})=1 \tag{6.5}\]</span></span></p>
+<p>A <a href="#eq-prob-complement" class="quarto-xref">Equação&nbsp;<span>6.5</span></a> pode ser facilmente deduzida a partir dos axiomas. Pela definição de complementaridade sabemos que <span class="math inline">\(A\cup\bar{A}=\Omega\)</span>. Então, <span class="math inline">\(P(A\cup\bar{A})=P(\Omega)\)</span>. Pelo axioma 1 sabemos que <span class="math inline">\(P(\Omega)=1\)</span> e, como <span class="math inline">\(A\)</span> e <span class="math inline">\(\bar{A}\)</span> são mutuamente exclusivos, pelo axioma 2, <span class="math inline">\(P(A\cup\bar{A})=P(A)+P(\bar{A})\)</span>. Consequentemente, <span class="math inline">\(P(A)+P(\bar{A})=1\)</span>.</p>
+<p>Sabemos também que o acontecimento impossível, <span class="math inline">\(\emptyset\)</span>, e o acontecimento <span class="math inline">\(\Omega\)</span> são complementares. Logo podemos deduzir facilmente que</p>
+<p><span id="eq-prob-emptyset"><span class="math display">\[P(\emptyset)=0 \tag{6.6}\]</span></span></p>
+<p>Uma outra regra que pode ser deduzida seguindo um raciocínio semelhante é a regra geral da adição:</p>
+<p><span id="eq-prob-add"><span class="math display">\[P(A\cup B) = P(A) + P(B) - P(A\cap B) \tag{6.7}\]</span></span></p>
+<p>A aplicação da <a href="#eq-prob-add" class="quarto-xref">Equação&nbsp;<span>6.7</span></a> pode ser visualizada na <a href="#fig-prob-venn-addition" class="quarto-xref">Figura&nbsp;<span>6.4</span></a> recorrendo à experiência aleatória do lançamento de um dado equilibrado. Definindo os acontecimentos A (número primo) e B (número par) é imediato constatar que <span class="math inline">\(A\cup B = \lbrace 2,3,4,5,6\rbrace\)</span> e que <span class="math inline">\(P(A\cup B)=5/6\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prob-venn-addition" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-venn-addition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-venn-addition-1.png" class="img-fluid figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-venn-addition-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.4: Aplicação da regra da adição (<a href="#eq-prob-add" class="quarto-xref">Equação&nbsp;<span>6.7</span></a>)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Aplicando a regra da adição, obtém-se exatamente o mesmo resultado:</p>
+<p><span class="math display">\[
+\begin{align}
+  P(A\cup B) &amp;= P(A) + P(B) - P(A\cap B)\\
+  &amp;= P(\lbrace 2,3,5\rbrace) + P(\lbrace 2,4,6\rbrace) - P(\lbrace 2\rbrace)\\
+  &amp;= 3/6 + 3/6 - 1/6\\
+  &amp;= 5/6
+\end{align}
+\]</span></p>
+</section>
+<section id="sec-prob-concepts-pdist" class="level3" data-number="6.1.6">
+<h3 data-number="6.1.6" class="anchored" data-anchor-id="sec-prob-concepts-pdist"><span class="header-section-number">6.1.6</span> Distribuições de probabilidade</h3>
+<p>No contexto de uma experiência aleatória, uma distribuição de probabilidade pode ser vista como uma função que descreve as probabilidades de cada um dos resultados do espaço amostral da experiência.</p>
+<p>Considere-se o caso da experiência aleatória que consiste no lançamento de uma moeda. O espaço amostral, <span class="math inline">\(\Omega\)</span>, é o conjunto {<em>cara</em>, <em>coroa</em>}. A distribuição de probabilidade pode ser descrita por um vetor de probabilidades correspondentes a cada resultado, por exemplo, {0.5, 0.5}. O que a distribuição de probabilidade transmite é <span class="math inline">\(P(cara)=0.5\)</span> e <span class="math inline">\(P(coroa)=0.5\)</span>.</p>
+<p>Na prática, quando se trata de espaços amostrais discretos, é comum definir a distribuição de probabilidade com recurso a uma tabela. Por exemplo, na experiência aleatória que consiste no lançamento de um dado equilibrado, a distribuição de probabilidade poderia ser definida como na <a href="#tbl-prob-distr1" class="quarto-xref">Tabela&nbsp;<span>6.1</span></a>.</p>
+<div id="tbl-prob-distr1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prob-distr1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;6.1: Distribuição de probabilidade no lançamento de um dado equilibrado
+</figcaption>
+<div aria-describedby="tbl-prob-distr1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Resultado</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">5</td>
+<td style="text-align: center;">6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Probabilidade</td>
+<td style="text-align: center;">1/6</td>
+<td style="text-align: center;">1/6</td>
+<td style="text-align: center;">1/6</td>
+<td style="text-align: center;">1/6</td>
+<td style="text-align: center;">1/6</td>
+<td style="text-align: center;">1/6</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Em vez de enumerar os resultados do espaço amostral, pode definir-se uma distribuição de probabilidade a partir de um conjunto de acontecimentos. Por exemplo no caso do dado, caso apenas interessasse o facto de o resultado ser <em>par</em> ou <em>ímpar</em>, a distribuição poderia ser definida pela <a href="#tbl-prob-distr2" class="quarto-xref">Tabela&nbsp;<span>6.2</span></a>.</p>
+<div id="tbl-prob-distr2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prob-distr2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;6.2: Distribuição de probabilidade alternativa no lançamento de um dado equilibrado
+</figcaption>
+<div aria-describedby="tbl-prob-distr2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="caption-top table">
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Resultado</td>
+<td style="text-align: center;"><em>par</em></td>
+<td style="text-align: center;"><em>ímpar</em></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Probabilidade</td>
+<td style="text-align: center;">1/2</td>
+<td style="text-align: center;">1/2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>No caso de espaços amostrais contínuos a definição de uma distribuição de probabilidade é feita através de uma função densidade de probabilidade. Este tópico será abordado num capítulo posterior.</p>
+<p>Independentemente de como a distribuição de probabilidade é definida, de forma a respeitar os axiomas definidos anteriormente, as seguintes propriedadedes terão que ser respeitadas:</p>
+<ul>
+<li>O conjunto de resultados ou acontecimentos, <span class="math inline">\(A_1\)</span>, <span class="math inline">\(A_2\)</span>, <span class="math inline">\(\cdots\)</span>, <span class="math inline">\(A_n\)</span> é mutuamente exclusivo.</li>
+<li><span class="math inline">\(0\leq P(A_i)\leq 1\)</span>, para qualquer resultado, <span class="math inline">\(A_i\)</span>.</li>
+<li><span class="math inline">\(\sum_{i=1}^n{A_i}=1\)</span>, ou seja, a soma de todas as probabilidades deve ser 1, que pode ser assegurado se <span class="math inline">\(A_1\cup A_2\cup\cdots = \Omega\)</span>.</li>
+</ul>
+<p>Como se pode verificar nos exemplos acima, todas as distribuições apresentadas respeitam estas 3 propriedades.</p>
+</section>
+</section>
+<section id="sec-prob-conditional" class="level2" data-number="6.2">
+<h2 data-number="6.2" class="anchored" data-anchor-id="sec-prob-conditional"><span class="header-section-number">6.2</span> Probabilidades condicionais e independência</h2>
+<p>Considerem-se os dados do conjunto <code>HairEyeColor</code> que já tinham sido usados na <a href="c050-bivariate.html#sec-bivar-cat" class="quarto-xref"><span>Secção 5.1</span></a>. Reproduz-se novamente a tabela de contingência contendo o número de alunos por cada categoria de quanto à cor dos olhos e quanto à cor do cabelo (<a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a>).</p>
+<div class="cell">
+<div id="tbl-prob-hair-eye" class="cell quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-prob-hair-eye-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;6.3: Tabela de contingência para a cor dos olhos e do cabelo
+</figcaption>
+<div aria-describedby="tbl-prob-hair-eye-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output-display">
+<table class=" lightable-paper lightable-striped" style="font-size: 15px; font-family: &quot;Lato&quot;; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+<tr>
+<th style="empty-cells: hide;" colspan="1"></th>
+<th style="padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="4"><div style="TRUE">Cabelo</div></th>
+<th style="empty-cells: hide;" colspan="1"></th>
+</tr>
+  <tr>
+   <th style="text-align:left;"> Olhos </th>
+   <th style="text-align:right;"> Black </th>
+   <th style="text-align:right;"> Blond </th>
+   <th style="text-align:right;"> Brown </th>
+   <th style="text-align:right;"> Red </th>
+   <th style="text-align:right;"> Total </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Blue </td>
+   <td style="text-align:right;"> 20 </td>
+   <td style="text-align:right;"> 94 </td>
+   <td style="text-align:right;"> 84 </td>
+   <td style="text-align:right;"> 17 </td>
+   <td style="text-align:right;font-weight: bold;"> 215 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Brown </td>
+   <td style="text-align:right;"> 68 </td>
+   <td style="text-align:right;"> 7 </td>
+   <td style="text-align:right;"> 119 </td>
+   <td style="text-align:right;"> 26 </td>
+   <td style="text-align:right;font-weight: bold;"> 220 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Green </td>
+   <td style="text-align:right;"> 5 </td>
+   <td style="text-align:right;"> 16 </td>
+   <td style="text-align:right;"> 29 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;font-weight: bold;"> 64 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Hazel </td>
+   <td style="text-align:right;"> 15 </td>
+   <td style="text-align:right;"> 10 </td>
+   <td style="text-align:right;"> 54 </td>
+   <td style="text-align:right;"> 14 </td>
+   <td style="text-align:right;font-weight: bold;"> 93 </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;font-weight: bold;"> Total </td>
+   <td style="text-align:right;font-weight: bold;"> 108 </td>
+   <td style="text-align:right;font-weight: bold;"> 127 </td>
+   <td style="text-align:right;font-weight: bold;"> 286 </td>
+   <td style="text-align:right;font-weight: bold;"> 71 </td>
+   <td style="text-align:right;font-weight: bold;font-weight: bold;"> 592 </td>
+  </tr>
+</tbody>
+<tfoot>
+<tr>
+<td style="padding: 0; border:0;" colspan="100%"><sup>a</sup> Intencionalmente, os nomes das cores não foram traduzidos.</td>
+</tr>
+</tfoot>
+</table>
+
+</div>
+</div>
+</figure>
+</div>
+</div>
+<p>Considere-se agora uma experiência aleatória que consiste em selecionar um aluno ao acaso entre os 592 participantes do estudo. O espaço amostral desta experiência tem 592 resultados possíveis – um para cada aluno.</p>
+<p>Naquele espaço amostral é possível definir um conjunto de acontecimentos relativos às cores dos olhos e do cabelo do aluno selecionado. Assim, relativamente à cor dos olhos podemos definir 4 acontecimentos (Blue, Brown, Green, Hazel) e relativamente à cor do cabelo podemos definir mais 4 acontecimentos (Black, Blond, Brown, Red).</p>
+<p>Nos exemplos apresentados, não se vai utilizar o acontecimento <em>Brown</em>, pois tanto se poderia referir à cor dos olhos, como à cor do cabelo, o que seria confuso.</p>
+<section id="sec-prob-conditional-margin" class="level3" data-number="6.2.1">
+<h3 data-number="6.2.1" class="anchored" data-anchor-id="sec-prob-conditional-margin"><span class="header-section-number">6.2.1</span> Probabilidades marginais</h3>
+<p>Para qualquer destes acontecimentos é fácil calcular as probabilidades de ocorrência, bastando aplicar a definição clássica de probabilidade, admitindo que todos os alunos têm a mesma probabilidade de serem selecionados (1/592).</p>
+<p>Por exemplo a probabilidade de selecionar um aluno com olhos azuis (<em>Blue</em>) é</p>
+<p><span class="math display">\[P(Blue)=\frac{215}{592} \approx 0.363\]</span></p>
+<p>Já a probabilidade de selecionar um aluno de cabelo preto (<em>Black</em>) será</p>
+<p><span class="math display">\[P(Black)=\frac{108}{592} \approx 0.182\]</span></p>
+<p>As probabilidades calculadas designam-se por <em>probabilidades marginais</em>, pois representam a probabilidade de um acontecimento sem considerar outros acontecimentos.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Probabilidades marginais
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uma probabilidade marginal diz respeito a um acontecimento, não considerando outros acontecimentos, também podem ser designadas por <em>probabilidades simples</em>. A designação <em>marginal</em> advém do facto de, tipicamente, serem anotadas nas margens das tabelas semelhantes à <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a>, representado as probabilidades dos acontecimentos nas linhas ou nas colunas.</p>
+<p>O conjunto de acontecimentos relativos à cor do olhos (ou à cor do cabelo) forma aquilo a que se poderia designar por <em>distribuição de probabilidade marginal</em>, possuindo todas as propriedades enumeradas na <a href="#sec-prob-concepts-pdist" class="quarto-xref"><span>Secção 6.1.6</span></a>.</p>
+</div>
+</div>
+</section>
+<section id="sec-prob-conditional-conj" class="level3" data-number="6.2.2">
+<h3 data-number="6.2.2" class="anchored" data-anchor-id="sec-prob-conditional-conj"><span class="header-section-number">6.2.2</span> Probabilidades conjuntas e reunião</h3>
+<p>Quando se dispõe de uma tabela de contingência semelhante à <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a> é simples calcular probabilidades conjuntas. Por exemplo a probabilidade de selecionar uma aluno de olhos azuis <strong>e</strong> de cabelo preto é</p>
+<p><span class="math display">\[P(Blue\cap Black)=\frac{20}{592} \approx 0.034\]</span></p>
+<p>Já para calcular probabilidades resultantes da reunião de acontecimentos, pode ser usada a regra da adição (<a href="#eq-prob-add" class="quarto-xref">Equação&nbsp;<span>6.7</span></a>). Por exemplo, a probabilidade de selecionar um aluno de olhos azuis <strong>ou</strong> de cabelo preto é</p>
+<p><span class="math display">\[
+\begin{align}
+  P(Blue\cup Black)&amp;=P(Blue)+P(Black)-P(Blue\cap Black)\\
+  &amp;=\frac{215}{592} +
+  \frac{108}{592} -
+  \frac{20}{592}\\
+  &amp;=\frac{303}{592} \approx 0.512
+\end{align}
+\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nunca é demais salientar, pois é causa de confusão frequente, que o conjunto <span class="math inline">\(Blue\cup Black\)</span> inclui todos os alunos que tenham olhos azuis ou que tenham cabelo preto, podendo, deste modo, incluir alunos que tenham as duas características, ou seja, que pertençam ao conjunto <span class="math inline">\(Blue\cap Black\)</span>.</p>
+</div>
+</div>
+</section>
+<section id="sec-prob-conditional-cond" class="level3" data-number="6.2.3">
+<h3 data-number="6.2.3" class="anchored" data-anchor-id="sec-prob-conditional-cond"><span class="header-section-number">6.2.3</span> Probabilidades condicionais</h3>
+<p>Admita-se agora que se pretende calcular a probabilidade de ocorrência de um acontecimento, subordinada à ocorrência de um outro qualquer acontecimento. Por exemplo, a probabilidade de selecionar um aluno de olhos azuis, admitindo que o aluno selecionado (ou a selecionar) tem cabelo preto.</p>
+<p>Dada a <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a>, o cálculo daquela probabilidade é intuitivo: admitimos que o aluno tem cabelo preto, logo, será um dos 108 alunos que partilham essa característica. Desses alunos, vamos selecionar um ao acaso, sabendo que há 20 alunos com olhos azuis nesse grupo. Logo, a probabilidade de selecionar um aluno de olhos azuis entre os alunos de cabelo preto terá que ser 20/108.</p>
+<p>Em geral, se tivermos 2 acontecimentos, A e B, a probabilidade de ocorrer A condicionada pela ocorrência de B deve ser escrita como</p>
+<p><span class="math display">\[P(A|B)\]</span></p>
+<p>Podemos designar A como o <em>acontecimento de interesse</em> e B como <em>condição</em>. Assim, estamos interessados na probabilidade do <em>acontecimento de interesse</em> (A) dada uma determinada <em>condição</em> (B).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Dica
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quando estamos perante a notação <span class="math inline">\(P(A|B)\)</span> lê-se <em>probabilidade de A dado B</em> ou <em>probabilidade de A sabendo que B</em> ou, simplesmente, <em>probabilidade de A condicionada por B</em>. Ou seja, o acontecimento B já ocorreu (ou admite-se que irá ocorrer) e queremos calcular a probabilidade de A nesse pressuposto.</p>
+</div>
+</div>
+<p>No exemplo acima, na presença da <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a>, foi intuitivo calcular <span class="math inline">\(P(Blue|Black)\)</span>. Em geral, é possível calcular qualquer probabilidade condicionada utilizando a expressão <a href="#eq-prob-condicional" class="quarto-xref">Equação&nbsp;<span>6.8</span></a>:</p>
+<p><span id="eq-prob-condicional"><span class="math display">\[P(A|B)=\frac{P(A\cap B)}{P(B)} \tag{6.8}\]</span></span></p>
+<p>Aplicando a expressão ao cálculo de <span class="math inline">\(P(Blue|Black)\)</span> podemos obter o mesmo resultado de outra forma:</p>
+<p><span class="math display">\[
+\begin{align}
+  P(Blue|Black) &amp;= \frac{P(Blue\cap Black)}{P(Black)}\\
+  &amp;=\frac{20/592}{108/592}
+  =\frac{20}{108}
+  \approx 0.185
+\end{align}
+\]</span></p>
+</section>
+<section id="sec-prob-conditional-indep" class="level3" data-number="6.2.4">
+<h3 data-number="6.2.4" class="anchored" data-anchor-id="sec-prob-conditional-indep"><span class="header-section-number">6.2.4</span> Independência</h3>
+<p>O conceito de independência já foi mencionado na <a href="c020-collect.html#sec-collect-var-rel" class="quarto-xref"><span>Secção 2.2</span></a> no contexto do estudo das relações entre variáveis estatísticas. No entanto, não foi apresentada uma definição formal de independência estatística, o que será feito nesta secção.</p>
+<blockquote class="blockquote">
+<p>Dois acontecimentos dizem-se <em>independentes</em> quando a ocorrência de qualquer um deles não altera a probabilidade de ocorrência do outro.</p>
+</blockquote>
+<p>A definição acima implica que, para acontecimentos independentes,</p>
+<p><span id="eq-prob-indep-def1"><span class="math display">\[P(A|B)=P(A) \tag{6.9}\]</span></span> <span id="eq-prob-indep-def2"><span class="math display">\[P(B|A)=P(B) \tag{6.10}\]</span></span></p>
+<p>que, atendendo à <a href="#eq-prob-condicional" class="quarto-xref">Equação&nbsp;<span>6.8</span></a>, implica que</p>
+<p><span id="eq-prob-indep-join"><span class="math display">\[P(A\cap B)=P(A)\times P(B) \tag{6.11}\]</span></span></p>
+<p>Intuitivamente, podemos verificar a <a href="#eq-prob-indep-join" class="quarto-xref">Equação&nbsp;<span>6.11</span></a> através de um exemplo. Considere-se que se vai lançar uma moeda e um dado. Seja o acontecimento A <em>obter cara na moeda</em> e o acontecimento B <em>obter 6 no dado</em>. Por hipótese, podemos considerar <span class="math inline">\(P(A)=1/2\)</span> e <span class="math inline">\(P(B)=1/6\)</span>. Naturalmente, os acontecimentos são independentes, pois não é conhecida qualquer forma de a moeda e o dado se influenciam mutuamente.</p>
+<p>Qual deverá ser a probabilidade <span class="math inline">\(P(A\cap B)\)</span>? Na moeda irá ocorrer <em>cara</em> em 1/2 dos lançamentos. Nesses lançamentos ir-se-á obter a face 6 em 1/6 dos lançamentos, ou seja, 1/6 de 1/2 ou, de outra forma, 1/6 <span class="math inline">\(\times\)</span> 1/2 ou 1/12.</p>
+<p>Note que, iniciar o raciocínio com o dado, produz o mesmo resultado, uma vez que a multiplicação é comutativa e, portanto, <span class="math inline">\(P(A\cap B)=P(B\cap A)\)</span>.</p>
+<p>As expressões <a href="#eq-prob-indep-def1" class="quarto-xref"><span>6.9</span></a>, <a href="#eq-prob-indep-def2" class="quarto-xref"><span>6.10</span></a> e <a href="#eq-prob-indep-join" class="quarto-xref"><span>6.11</span></a> podem ser utilizadas para determinar se dois acontecimentos são independentes. Por exemplo, considere-se novamente a <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a> e os acontecimentos <em>ter olhos azuis</em> (<em>Blue</em>) e <em>ter cabelo preto</em> (<em>Black</em>). Serão estes acontecimentos independentes?</p>
+<p>Sabemos que <span class="math inline">\(P(Blue)=215/592\)</span> e que <span class="math inline">\(P(Black)=108/592\)</span>. Logo, se os acontecimentos forem independentes, a probabilidade conjunta deveria ser</p>
+<p><span class="math display">\[P(Blue\cap Black)=P(Blue)\times P(Black)=\frac{215}{592}\times\frac{108}{592}\approx 0.066\]</span></p>
+<p>No entanto, já se viu que a probabilidade conjunta pode ser retirada diretamente da <a href="#tbl-prob-hair-eye" class="quarto-xref">Tabela&nbsp;<span>6.3</span></a> e é igual a <span class="math inline">\(20/592 \approx 0.034\)</span>. Logo, os acontecimentos A e B <strong>não são</strong> independentes<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>.</p>
+<p>A prova pode ser feita recorrendo a qualquer uma das três expressões, pois, qualquer uma delas, é condição suficiente para a independência. Por exemplo, cálculos anteriores já demonstraram que <span class="math inline">\(P(Blue|Black)\neq P(Blue)\)</span>, o que, por si só, seria suficiente para provar que os acontecimentos não são independentes.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para verificar se dois acontecimentos são independentes, basta provar que uma das equações <a href="#eq-prob-indep-def1" class="quarto-xref"><span>6.9</span></a>, <a href="#eq-prob-indep-def2" class="quarto-xref"><span>6.10</span></a> e <a href="#eq-prob-indep-join" class="quarto-xref"><span>6.11</span></a> é verdadeira. As referidas equações, ou são todas verdadeiras, ou são todas falsas, não sendo necessário testar as três.</p>
+</div>
+</div>
+<p>A <a href="#eq-prob-indep-join" class="quarto-xref">Equação&nbsp;<span>6.11</span></a> pode ser generalizada a mais do que 2 acontecimentos, ou seja, se houver <span class="math inline">\(n\)</span> acontecimentos independentes, então</p>
+<p><span id="eq-prob-indep-join-mult"><span class="math display">\[P(A_1\cap A_2\cap \cdots\cap A_n)=P(A_1)\times P(A_2)\times\cdots\times P(A_n) \tag{6.12}\]</span></span></p>
+<p>Esta expressão é bastante útil para calcular a probabilidade conjunta de uma série de acontecimentos independentes. Por exemplo, pode ser utilizada para determinar a probabilidade de obter 10 <em>caras</em> seguidas no lançamento de uma moeda. Se <span class="math inline">\(A_i\)</span> representar o acontecimento <em>obter cara no lançamento <span class="math inline">\(i\)</span></em>, então,</p>
+<p><span class="math display">\[
+\begin{align}
+P(A_1\cap A_2\cap \cdots\cap A_{10})&amp;=P(A_1)\times P(A_2)\times\cdots\times P(A_{10})\\
+&amp;=\frac{1}{2}\times\frac{1}{2}\times\cdots\times\frac{1}{2}\\
+&amp;=\left(\frac{1}{2}\right)^{10}=\frac{1}{1024}\approx 0.000977
+\end{align}
+\]</span></p>
+</section>
+</section>
+<section id="sec-prob-bayes-theorem" class="level2" data-number="6.3">
+<h2 data-number="6.3" class="anchored" data-anchor-id="sec-prob-bayes-theorem"><span class="header-section-number">6.3</span> Teorema de Bayes</h2>
+<p>Em alguns cenários, são conhecidas as probabilidades de um acontecimento ocorrer sob determinadas condições mas pretende-se saber a probabilidade de, tendo o evento ocorrido, se ter verificado a referida condição.</p>
+<p>Um exemplo clássico da aplicação do teorema de Bayes está relacionado com os testes médicos. Por exemplo, num estudo de 2022 <span class="citation" data-cites="covid19">(<a href="references.html#ref-covid19" role="doc-biblioref">Dinnes et al., 2022</a>)</span> reporta dados sobre os testes rápidos de antigénios para o vírus SARS-CoV-2, causador da doença designada por COVID-19. O estudo reporta que, em pessoas sem sintomas, suspeitas de terem estado em contacto com um infetado, os testes identificavam corretamente 64% dos indivíduos infetados. Para o mesmo grupo, os testes identificam corretamente 99.7% dos indivíduos não infetados.</p>
+<p>Admitindo que, em determinada fase, os infetados eram 2% da população, há interesse em determinar qual a probabilidade de, um indivíduo que apresentasse um teste negativo, estar infetado pelo vírus.</p>
+<p>Considerem-se os acontecimentos:</p>
+<ul>
+<li><span class="math inline">\(I\)</span>: estar infetado, com <span class="math inline">\(P(I)=0.02\)</span>.</li>
+<li><span class="math inline">\(\oplus\)</span>: testar positivo, com <span class="math inline">\(P(\oplus|I)=0.64\)</span> (no caso dos infetados, um <em>resultado correto</em> é testar positivo).</li>
+<li><span class="math inline">\(\ominus\)</span>: testar negativo, com <span class="math inline">\(P(\ominus|\bar{I})=0.997\)</span> (no caso dos não infetados, um <em>resultado correto</em> é testar negativo).</li>
+</ul>
+<p>Como os acontecimentos <span class="math inline">\(\oplus\)</span> e <span class="math inline">\(\ominus\)</span> são complementares, então, <span class="math inline">\(P(\ominus|I)=1-P(\oplus|I)=0.36\)</span> e <span class="math inline">\(P(\oplus|\bar{I})=1-P(\ominus|\bar{I})=0.003\)</span>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nas ciências da saúde a probabilidade de um teste dar positivo, caso o indivíduo tenha uma dada doença ou condição clínica, é designada por <strong>sensibilidade</strong>. O acontecimento complementar, isto e, um teste negativo em indivíduos doentes é designado por <strong>falso negativo</strong>.</p>
+<p>Paralelamente, a probabilidade de um teste dar negativo, caso o indivíduo não tenha a doença ou condição clínica, é designada por <strong>especificidade</strong>. Já o acontecimento complementar, isto e, um teste positivo em indivíduos não doentes é designado por <strong>falso positivo</strong>.</p>
+<p>Quanto mais altos forem os valores de sensibilidade e especificidade e, consequentemente, quanto mais baixas forem as probabilidades de obter falsos negativos e falsos positivos, mais preciso é o teste.</p>
+</div>
+</div>
+<p>Podemos facilmente calcular a probabilidade de interesse, <span class="math inline">\(P(I|\ominus)\)</span>, recorrendo à <a href="#eq-prob-condicional" class="quarto-xref">Equação&nbsp;<span>6.8</span></a>.</p>
+<p><span class="math display">\[
+\begin{align}
+  P(I|\ominus) &amp;= \frac{P(I\cap\ominus)}{P(\ominus)}
+  = \frac{P(I\cap\ominus)}{P(I\cap\ominus)+P(\bar{I}\cap\ominus)} \\
+  &amp;= \frac{P(\ominus|I)\times P(I)}{P(\ominus|I)\times P(I)+P(\ominus|\bar{I})\times P(\bar{I})}
+\end{align}
+\]</span></p>
+<p>Depois do desenvolvimento todas as probabilidades da fração são conhecidas, podendo ser calculado o resultado.</p>
+<p><span class="math display">\[
+P(I|\ominus)=\frac{0.36\times0.02}{0.36\times0.02+0.997\times0.98} =
+\frac{0.0072}{0.0072+0.97706} \approx
+0.0073
+\]</span></p>
+<p>Neste caso, a probabilidade de um indivíduo que testou negativo estar infetado é pequena, cerca de 0.73%. O resultado faz sentido, uma vez que a incidência da doença é muito baixa e o teste tem elevada especificidade.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ainda no âmbito das ciências da saúde o tipo de cálculo que se acabou de efetuar é muito relevante pois, embora a sensibilidade e especificidade do teste sejam importantes, o verdadeiro <em>valor preditivo</em> do teste também depende da prevalência da doença.</p>
+<p>Podemos então falar no <strong>valor preditivo positivo</strong> (VPP), isto é, a probabilidade de o indivíduo estar doente quando o teste dá positivo, e no <strong>valor preditivo negativo</strong> (VPN), que é a probabilidade de o indivíduo não estar doente quando o teste dá negativo.</p>
+<p>Mantendo os valores de sensibilidade e de especificidade constantes, à medida que a prevalência da doença aumenta, o VPP aumenta e o VPN diminui.</p>
+<p>No exemplo desta secção, o VPN é cerca de 99.3% e o VPP cerca de 81.3%. Os cálculos para chegar a estes resultados são semelhantes aos apresentados, ficando como exercício para o leitor.</p>
+</div>
+</div>
+<section id="sec-prob-bayes-tree" class="level3" data-number="6.3.1">
+<h3 data-number="6.3.1" class="anchored" data-anchor-id="sec-prob-bayes-tree"><span class="header-section-number">6.3.1</span> Diagrama de árvore</h3>
+<p>Uma forma particularmente intuitiva de visualizar este tipo de situações é utilizando o <em>diagrama de árvore</em>. Neste diagrama, a ramificação principal da árvore é utilizada para colocar as probabilidades dos acontecimentos condicionantes e, na ramificação secundária são colocadas as probabilidades condicionadas. Na terminação de cada ramo podem ser colocadas as probabilidades conjuntas.</p>
+<p>A <a href="#fig-prob-tree-example" class="quarto-xref">Figura&nbsp;<span>6.5</span></a> ilustra a aplicação do diagrama de árvore ao exemplo que se tem vindo a tratar.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prob-tree-example" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-tree-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-tree-example-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-tree-example-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.5: Diagrama de árvore
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-prob-bayes-general" class="level3" data-number="6.3.2">
+<h3 data-number="6.3.2" class="anchored" data-anchor-id="sec-prob-bayes-general"><span class="header-section-number">6.3.2</span> Generalização</h3>
+<p>No caso analisado havia apenas dois acontecimentos condicionantes. No entanto, é possível aplicar a mesma lógica a qualquer número de acontecimentos, isto é, o teorema de Bayes pode ser ser generalizado. Considere-se:</p>
+<ul>
+<li><p>Um conjunto de acontecimentos mutuamente exclusivos, <span class="math inline">\(A_1\)</span>, <span class="math inline">\(A_2\)</span>, … <span class="math inline">\(A_n\)</span> em que <span class="math inline">\(\sum_i A_i = 1\)</span> e para os quais se conhecem as probabilidades.</p></li>
+<li><p>Um acontecimento, <span class="math inline">\(B\)</span>, para o qual se conhecem as probabilidades de ocorrência condicionais a cada <span class="math inline">\(A_i\)</span>, ou seja, <span class="math inline">\(P(B|A_i)\)</span>.</p></li>
+</ul>
+<p>Nestas condições, sabe-se que</p>
+<p><span id="eq-prob-bayes-total"><span class="math display">\[
+\begin{align}
+  P(B)&amp;=P(A_1\cap B) + P(A_2\cap B) +\cdots+P(A_n\cap B)\\
+  &amp;=P(A_1|B)\times P(A_1)+P(A_2|B)\times P(A_2)+\cdots+P(A_n|B)\times P(A_n)
+\end{align}
+\tag{6.13}\]</span></span></p>
+<p>Aplicando as equações <a href="#eq-prob-condicional" class="quarto-xref"><span>6.8</span></a> e <a href="#eq-prob-bayes-total" class="quarto-xref"><span>6.13</span></a>, para qualquer acontecimento <span class="math inline">\(A_k\)</span>, com <span class="math inline">\(k\in\lbrace 1, 2,\cdots,n\rbrace\)</span>, podemos determinar <span class="math inline">\(P(A_k|B)\)</span>:</p>
+<p><span id="eq-prob-bayes"><span class="math display">\[
+\begin{align}
+  P(A_k|B) &amp;= \frac{P(B|A_k)\times P(A_k)}{P(B)}\\
+  &amp;= \frac{P(B|A_k)\times P(A_k)}{P(A_1|B)\times P(A_1)+P(A_2|B)\times P(A_2)+\cdots+P(A_n|B)\times P(A_n)}\\
+  &amp;=\frac{P(B|A_k)\times P(A_k)}{\sum_{i=1}^n P(A_i|B)\times P(A_i)}
+\end{align}
+\tag{6.14}\]</span></span></p>
+<p>A aplicação da <a href="#eq-prob-bayes" class="quarto-xref">Equação&nbsp;<span>6.14</span></a> nas condições enunciadas é conhecida como o Teorema de Bayes. O diagrama de Venn da <a href="#fig-prob-bayes-venn" class="quarto-xref">Figura&nbsp;<span>6.6</span></a> permite uma possível visualização do significado dos vários conjuntos.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-prob-bayes-venn" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-bayes-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c060-probability_files/figure-html/fig-prob-bayes-venn-1.png" class="img-fluid figure-img" width="480">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-bayes-venn-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.6: Visualização do teorema de Bayes
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Como se pode verificar, os conjuntos <span class="math inline">\(A_1\)</span>, <span class="math inline">\(A_2\)</span>, … <span class="math inline">\(A_n\)</span> são mutuamente exclusivos e preenchem a totalidade do espaço amostral. O conjunto <span class="math inline">\(B\)</span> interseta os vários conjuntos com probabilidades diferentes.</p>
+<p>Fundamentalmente, o teorema de Bayes permite atualizar o <em>grau de crença</em> na ocorrência de um determinado evento, <span class="math inline">\(A_k\)</span>, na presença de um facto novo, neste caso, a ocorrência de <span class="math inline">\(B\)</span>. Para uma melhor compreensão deste importante e interessante tópico da Estatística, recomenda-se a visualização do vídeo da <a href="#fig-prob-bayes-video" class="quarto-xref">Figura&nbsp;<span>6.7</span></a>.</p>
+<div id="fig-prob-bayes-video" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-prob-bayes-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-video ratio ratio-16x9"><iframe data-external="1" src="https://www.youtube.com/embed/HZGCoVF3YvM?si=pirvsRLeBcoDM9mz" title="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen=""></iframe></div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-prob-bayes-video-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6.7: Vídeo sobre a interpretação do teorema de Bayes (em inglês)
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-prob-counting" class="level2" data-number="6.4">
+<h2 data-number="6.4" class="anchored" data-anchor-id="sec-prob-counting"><span class="header-section-number">6.4</span> Contagem</h2>
+</section>
+<section id="tutoriais" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="tutoriais">Tutoriais</h2>
+<p>Depois de ler este capítulo pode verificar como são implementados estes conceitos no ambiente computacional R. Os tutoriais listados abaixo estão diretamente relacionados com este capítulo.</p>
+<div id="listing-probability-listing" class="quarto-listing quarto-listing-container-table">
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+Tutorial
+</th>
+
+<th>
+Descrição
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-date-sort="1751670000000" data-listing-file-modified-sort="1752701312715" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="10" data-listing-word-count-sort="1977" data-listing-title-sort="Técnicas de Contagem" data-listing-filename-sort="t080-counting.qmd">
+<td>
+<a href="./t080-counting.html" class="title listing-title">Técnicas de Contagem</a>
+</td>
+<td>
+<span class="listing-description">Demonstração da aplicação das técnicas de contagem mais frequentes, especialmente úteis na presença de populações de pequena dimensão. </span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">Nenhum item correspondente</div>
+</div>
+
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-os4" class="csl-entry" role="listitem">
+Diez, D., Çetinkaya-Rundel, M., &amp; Barr, C. (2019). <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</a>
+</div>
+<div id="ref-covid19" class="csl-entry" role="listitem">
+Dinnes, J., Sharma, P., Berhane, S., Wyk, S. S. van, Nyaaba, N., Domen, J., Taylor, M., Cunningham, J., Davenport, C., Dittrich, S., Emperador, D., Hooft, L., Leeflang, M. M. G., McInnes, M. D. F., Spijker, R., Verbakel, Y., J, Takwoingi, Y., Taylor-Phillips, S., Van den Bruel, A., &amp; Deeks, J. J. (2022). Rapid, point‐of‐care antigen tests for diagnosis of SARS‐CoV‐2 infection. <em>Cochrane Database of Systematic Reviews</em>, <em>7</em>. <a href="https://doi.org/10.1002/14651858.CD013705.pub3">https://doi.org/10.1002/14651858.CD013705.pub3</a>
+</div>
+<div id="ref-guimaraes2010e" class="csl-entry" role="listitem">
+Guimarães, R. C., &amp; Cabral, J. S. (2010). <em>Estatística</em>. Verlag Dashöfer Portugal.
+</div>
+<div id="ref-hyndman-fpp" class="csl-entry" role="listitem">
+Hyndman, R. J., &amp; Athanasopoulos, G. (2021). <em>Forecasting: principles and practice</em> (3rd edition). OTexts. <a href="https://otexts.com/fpp3/">https://otexts.com/fpp3/</a>
+</div>
+<div id="ref-lit-digest-blunder" class="csl-entry" role="listitem">
+Lusinchi, D. (2012). <span>«President»</span> Landon and the 1936 Literary Digest Poll: Were Automobile and Telephone Owners to Blame? <em>Social Science History</em>, <em>36</em>(1), 23–54. <a href="https://doi.org/10.1017/S014555320001035X">https://doi.org/10.1017/S014555320001035X</a>
+</div>
+<div id="ref-mann2010is" class="csl-entry" role="listitem">
+Mann, P. S. (2010). <em>Introductory Statistics</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-infopedia-probabilidade" class="csl-entry" role="listitem">
+Porto Editora. (2025). <em>Porto Editora – no Dicionário infopédia da Língua Portuguesa [em linha]</em>. <a href="https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade">https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade</a>
+</div>
+<div id="ref-rstudio" class="csl-entry" role="listitem">
+Posit team. (2024). <em>RStudio: Integrated Development Environment for R</em>. Posit Software, PBC. <a href="http://www.posit.co/">http://www.posit.co/</a>
+</div>
+<div id="ref-baseR" class="csl-entry" role="listitem">
+R Core Team. (2024). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>
+</div>
+<div id="ref-sapo-voluntary" class="csl-entry" role="listitem">
+Sapo.pt. (2025). <em>Pergunta do dia</em>. <a href="http://www.sapo.pt">http://www.sapo.pt</a>
+</div>
+<div id="ref-r4ds2016" class="csl-entry" role="listitem">
+Wickham, H., &amp; Grolemund, G. (2016). <em>R for Data Science: Import, Tidy, Transform, Visualize, and Model Data</em>. O’Reilly Media. <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz/</a>
+</div>
+<div id="ref-wilson2005mammal" class="csl-entry" role="listitem">
+Wilson, D. E., &amp; Reeder, D. A. M. (2005). <em>Mammal Species of the World: A Taxonomic and Geographic Reference</em>. Johns Hopkins University Press. <a href="https://www.departments.bucknell.edu/biology/resources/msw3/">https://www.departments.bucknell.edu/biology/resources/msw3/</a>
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Esta conclusão é válida ao considerar a experiência aleatória que consiste em escolher ao acaso um dos alunos do estudo. Se aquele conjunto de alunos fosse uma amostra aleatória e se o objetivo fosse <em>inferir</em> sobre a independência na população o procedimento seria insuficiente, pois seria necessário considerar a variabilidade amostral.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/pages\.ipb\.pt\/~aduarte\/ecd\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./c050-bivariate.html" class="pagination-link" aria-label="Dados Bivariados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./tutorials.html" class="pagination-link" aria-label="Tutoriais">
+        <span class="nav-page-text">Tutoriais</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c060-probability.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c060-probability.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></div></div></footer></body></html>

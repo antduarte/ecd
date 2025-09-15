@@ -1,0 +1,103 @@
+project:
+  type: book
+  resources:
+    - Rlogo.png
+    
+lang: pt
+language: pt-strings.yml
+
+book:
+  title: Estatística e Ciência de Dados
+  subtitle: Teoria, Métodos e Aplicações
+  license: CC BY-NC-ND 4.0
+  
+  google-analytics:
+    tracking-id: "G-YY4SMMTB2W"
+
+  author:
+    id: auth-AD
+    name:
+      given: António
+      family: Duarte
+    url: https://pages.ipb.pt/~aduarte
+    email: aduarte@ipb.pt
+    orcid: 0000-0003-3759-3850
+    affiliations:
+      - id: aff-ipb
+        name: Instituto Politécnico de Bragança
+        address: Campus de Santa Apolónia
+        postal-code: 5300-253
+        city: Bragança
+        country: Portugal
+        url: https://ipb.pt/
+      - id: aff-uniag
+        name: "UNIAG, Unidade de Investigação Aplicada em Gestão, Instituto Politécnico de Bragança"
+        address: Campus de Santa Apolónia
+        postal-code: 5300-253
+        city: Bragança
+        country: Portugal
+        url: https://uniag.ipb.pt/
+  
+  date: last-modified
+  date-format: "MMMM, YYYY"
+  language: pt-PT
+  
+  cover-image: images/cover.png
+  cover-image-alt: "capa com motivos em tons de verde"
+  favicon: images/favicon96.png
+  
+  site-url: https://pages.ipb.pt/~aduarte/ecd/
+  repo-url: https://github.com/antduarte/ecd/
+  repo-branch: main
+  repo-actions: [source, edit, issue]
+  reader-mode: true
+  open-graph:
+    image: images/cover.png
+  
+  chapters:
+    - index.qmd
+    - part: chapters.qmd
+      chapters:
+        - c010-method.qmd
+        - c020-collect.qmd
+        - c030-qualitative.qmd
+        - c040-quantitative.qmd
+        - c050-bivariate.qmd
+        - c060-probability.qmd
+    - part: tutorials.qmd
+      chapters:
+        - t010-tools.qmd
+        - t020-basics.qmd
+        - t030-data.qmd
+        - t040-graphics.qmd
+        - t050-barplot.qmd
+        - t060-histogram.qmd
+        - t070-boxplot.qmd
+        - t080-counting.qmd
+    - references.qmd
+    
+    
+bibliography: references.bib
+csl: https://www.zotero.org/styles/apa
+
+format:
+  html:
+    theme:
+      light: flatly
+      dark: darkly
+    link-external-icon: true
+    respect-user-color-scheme: true
+    mermaid-format: png
+      
+knitr:
+  opts_chunk:
+    comment: ""
+    R.options:
+      scipen: 0 #default
+
+nocite: |
+  @*
+
+execute:
+  cache: true
+  freeze: auto

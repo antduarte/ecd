@@ -1,0 +1,1484 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>2&nbsp; Recolha de Dados – Estatística e Ciência de Dados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./c030-qualitative.html" rel="next">
+<link href="./c010-method.html" rel="prev">
+<link href="./images/favicon96.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-listing/list.min.js"></script>
+<script src="site_libs/quarto-listing/quarto-listing.js"></script>
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<script>
+
+  window.document.addEventListener("DOMContentLoaded", function (_event) {
+    const listingTargetEl = window.document.querySelector('#listing-collect-listing .list');
+    if (!listingTargetEl) {
+      // No listing discovered, do not attach.
+      return; 
+    }
+
+    const options = {
+      valueNames: ['listing-title','listing-description',{ data: ['index'] },{ data: ['categories'] },{ data: ['listing-date-sort'] },{ data: ['listing-title-sort'] }],
+      
+      searchColumns: ["listing-date","listing-title","listing-author"],
+    };
+
+    window['quarto-listings'] = window['quarto-listings'] || {};
+    window['quarto-listings']['listing-collect-listing'] = new List('listing-collect-listing', options);
+
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  });
+
+  window.addEventListener('hashchange',() => {
+    if (window['quarto-listing-loaded']) {
+      window['quarto-listing-loaded']();
+    }
+  })
+  </script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-YY4SMMTB2W"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-YY4SMMTB2W', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="2&nbsp; Recolha de Dados – Estatística e Ciência de Dados">
+<meta property="og:description" content="">
+<meta property="og:image" content="https://pages.ipb.pt/~aduarte/ecd/images/cover.png">
+<meta property="og:site_name" content="Estatística e Ciência de Dados">
+<meta property="og:image:height" content="2250">
+<meta property="og:image:width" content="1410">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c020-collect.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Procurar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estatística e Ciência de Dados</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/antduarte/ecd/" title="Código fonte" class="quarto-navigation-tool px-1" aria-label="Código fonte"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo de leitor">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Procurar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nota Prévia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./chapters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c010-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Metodologia e Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c020-collect.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c030-qualitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c040-quantitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c050-bivariate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c060-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutoriais</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t010-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ferramentas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t020-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introdução ao R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t030-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Dados no R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t040-graphics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t050-barplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Gráfico de Barras</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t060-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Histogramas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t070-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Diagramas de Extremos e Quartis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t080-counting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Técnicas de Contagem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliografia</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#sec-collect-pop-sample" id="toc-sec-collect-pop-sample" class="nav-link active" data-scroll-target="#sec-collect-pop-sample"><span class="header-section-number">2.1</span> Populações e amostras</a>
+  <ul class="collapse">
+  <li><a href="#representatividade" id="toc-representatividade" class="nav-link" data-scroll-target="#representatividade"><span class="header-section-number">2.1.1</span> Representatividade</a></li>
+  <li><a href="#amostragem-não-probabilística" id="toc-amostragem-não-probabilística" class="nav-link" data-scroll-target="#amostragem-não-probabilística"><span class="header-section-number">2.1.2</span> Amostragem não probabilística</a></li>
+  <li><a href="#enviesamento" id="toc-enviesamento" class="nav-link" data-scroll-target="#enviesamento"><span class="header-section-number">2.1.3</span> Enviesamento</a></li>
+  <li><a href="#erro-amostral" id="toc-erro-amostral" class="nav-link" data-scroll-target="#erro-amostral"><span class="header-section-number">2.1.4</span> Erro amostral</a></li>
+  </ul></li>
+  <li><a href="#sec-collect-var-rel" id="toc-sec-collect-var-rel" class="nav-link" data-scroll-target="#sec-collect-var-rel"><span class="header-section-number">2.2</span> Relações entre variáveis</a>
+  <ul class="collapse">
+  <li><a href="#associação-e-independência" id="toc-associação-e-independência" class="nav-link" data-scroll-target="#associação-e-independência"><span class="header-section-number">2.2.1</span> Associação e independência</a></li>
+  <li><a href="#associação-e-causalidade" id="toc-associação-e-causalidade" class="nav-link" data-scroll-target="#associação-e-causalidade"><span class="header-section-number">2.2.2</span> Associação e causalidade</a></li>
+  </ul></li>
+  <li><a href="#origem-dos-dados" id="toc-origem-dos-dados" class="nav-link" data-scroll-target="#origem-dos-dados"><span class="header-section-number">2.3</span> Origem dos dados</a></li>
+  <li><a href="#sec-collect-observational" id="toc-sec-collect-observational" class="nav-link" data-scroll-target="#sec-collect-observational"><span class="header-section-number">2.4</span> Estudos observacionais</a>
+  <ul class="collapse">
+  <li><a href="#amostragem-aleatória-simples" id="toc-amostragem-aleatória-simples" class="nav-link" data-scroll-target="#amostragem-aleatória-simples"><span class="header-section-number">2.4.1</span> Amostragem aleatória simples</a></li>
+  <li><a href="#amostragem-por-estratificação" id="toc-amostragem-por-estratificação" class="nav-link" data-scroll-target="#amostragem-por-estratificação"><span class="header-section-number">2.4.2</span> Amostragem por estratificação</a></li>
+  <li><a href="#amostragem-por-conglomerados-clusters" id="toc-amostragem-por-conglomerados-clusters" class="nav-link" data-scroll-target="#amostragem-por-conglomerados-clusters"><span class="header-section-number">2.4.3</span> Amostragem por conglomerados (<em>clusters</em>)</a></li>
+  </ul></li>
+  <li><a href="#sec-collect-experimental" id="toc-sec-collect-experimental" class="nav-link" data-scroll-target="#sec-collect-experimental"><span class="header-section-number">2.5</span> Estudos experimentais</a></li>
+  <li><a href="#tutoriais" id="toc-tutoriais" class="nav-link" data-scroll-target="#tutoriais">Tutoriais</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c020-collect.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c020-collect.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./chapters.html">Capítulos</a></li><li class="breadcrumb-item"><a href="./c020-collect.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-collect" class="quarto-section-identifier"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="sec-collect-pop-sample" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-collect-pop-sample"><span class="header-section-number">2.1</span> Populações e amostras</h2>
+<p>Ao delinear os objetivos de uma análise (ou questão de investigação), pelo menos implicitamente, é também definida uma <em>população-alvo</em> (ou simplesmente, <em>população</em>), sendo esta definida como o conjunto de entidades para as quais temos interesse em estudar determinadas características.</p>
+<p>Para ilustrar o conceito, eis alguns exemplos de questões de investigação:</p>
+<ol type="1">
+<li>Qual a tensão média de rutura das vigas metálicas do tipo X?</li>
+<li>Qual a percentagem de eleitores que vai votar na candidatura Y?</li>
+<li>Qual o nível médio de satisfação dos visitantes do evento Z?</li>
+<li>Um novo fármaco para tratar a dor, reduz ou não o número médio de queixas dos doentes?</li>
+</ol>
+<p>Em todos estes exemplos fica definida qual a população-alvo. Por exemplo, na questão 1, a população alvo são todas a vigas metálicas do tipo X. Já na questão 2 a população alvo são todos os potenciais eleitores.</p>
+<p>Estes dois exemplos deixam perceber as dificuldades em observar toda uma população e responder à questão de forma exata. No caso da questão 1, estamos a tratar de uma população potencialmente infinita, eventualmente incluindo as vigas que ainda não foram fabricadas, mas que se tenciona fabricar com as mesmas características. Adicionalmente, para determinar a tensão de rotura será necessário destruir a viga.</p>
+<p>No segundo exemplo, o número de eleitores pode ser muito elevado e pode não se dispor de tempo e recursos para os sondar a todos. Pode ainda haver eleitores que, por qualquer motivo, não se consigam encontrar ou recusem participar no estudo.</p>
+<p>Este tipo de dificuldades conduz a que, raramente, se possa estudar a totalidade das populações. O processo de estudar a totalidade da população é designado por <em>censo</em>. As principais dificuldades de um censo são:</p>
+<ul>
+<li>Populações muito grandes, havendo dificuldade em identificar ou localizar todos os elementos.</li>
+<li>Populações dinâmicas, em constante alteração.</li>
+</ul>
+<p>Por estes motivos, e para poder continuar a responder às questões de investigação, é necessário basear a resposta no estudo de uma <em>amostra</em>.</p>
+<p>Uma <em>amostra</em> é um subconjunto de observações escolhidas na população-alvo. Tipicamente, uma amostra apenas contém uma pequena fração da população, sendo a dimensão determinada tendo em conta considerações da teoria estatística e considerações económicas e práticas.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>População-alvo (ou população)</strong>: conjunto de entidades para as quais se pretende estudar determinadas características.</p>
+<p><strong>Amostra</strong>: subconjunto de entidades, selecionadas na população, que são efetivamente estudadas.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Se quisermos ser <del>pedantes</del> rigorosos, uma população estatística (ou amostra) é o conjunto de observações ou medições que se faz sobre determinada característica (dados) e não os objetos ou entidades que se estão a estudar. Frequentemente, sobre as mesmas entidades, são recolhidos dados sobre várias características, ou seja, temos várias populações que se poderiam designar por <em>populações conjuntas</em>. Por esse motivo, como não há grandes riscos de confusão, o termo <em>população</em> é utilizado, de forma imprecisa, para designar o conjunto de entidades.</p>
+</div>
+</div>
+<section id="representatividade" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="representatividade"><span class="header-section-number">2.1.1</span> Representatividade</h3>
+<p>Para que, a partir de uma amostra, se possa inferir com confiança sobre as populações, a amostra deve ser <em>representativa</em>. Uma amostra representativa, tanto quanto possível, aproxima as características da população.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Uma amostra representativa é o oposto da observação circunstancial dos fenómenos. Nem uma inundação fora do comum confirma que existe aquecimento global, nem um janeiro frio prova que o aquecimento global não existe. Para estudar um fenómeno tão complexo é necessário um conjunto alargado e criterioso de medições (amostra representativa) e uma análise correta.</p>
+</div>
+</div>
+<p>Uma das melhores formas de garantir a representatividade da amostra é selecionar as entidades a observar ao acaso. Uma amostra deste tipo designa-se por <em>amostra aleatória</em> ou <em>amostra probabilística</em>. Numa amostra aleatória todos os elementos da população têm a mesma possibilidade de vir a pertencer à amostra. As secções <a href="#sec-collect-observational" class="quarto-xref"><span>2.4</span></a> e <a href="#sec-collect-experimental" class="quarto-xref"><span>2.5</span></a> apresentam diversos procedimentos para a seleção de amostras aleatórias.</p>
+<p>Alternativamente, se a amostra não for aleatória (<em>amostra não probabilística</em>), a representatividade não é garantida. Neste caso diz-que a a amostra pode ter um <em>enviesamento de seleção</em>, ou seja, determinados grupos populacionais podem estar sub-representados ou sobrerrepresentados na amostra. Por norma, este tipo de amostragem é utilizado apenas por motivos de ordem prática.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Em qualquer tipo de estudo, uma amostra aleatória, representativa, permite inferir sobre as populações de onde foi retirada, ou seja, permite generalizar as conclusões da análise à população.</p>
+</div>
+</div>
+</section>
+<section id="amostragem-não-probabilística" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="amostragem-não-probabilística"><span class="header-section-number">2.1.2</span> Amostragem não probabilística</h3>
+<p>Há vários processos para recolher amostras não probabilísticas. Enumeram-se a seguir alguns mais comuns:</p>
+<section id="amostragem-por-conveniência" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amostragem-por-conveniência">Amostragem por conveniência</h4>
+<p>Neste processo os elementos a incluir na amostra são os mais convenientes para o analista. Por exemplo, um professor decide fazer um estudo numa escola utilizando como amostra os alunos das turmas a que leciona, por estes estarem mais acessíveis.</p>
+</section>
+<section id="amostragem-subjetiva" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amostragem-subjetiva">Amostragem subjetiva</h4>
+<p>Neste caso, o analista, usando um critério pessoal escolhido subjetivamente, escolhe os elementos a incluir na amostra. O professor referido no ponto anterior, poderia selecionar um conjunto de alunos que ele próprio e os colegas achassem que seriam <em>alunos típicos</em> ou que <em>de resposta honesta</em>.</p>
+</section>
+<section id="amostragem-por-referenciação" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amostragem-por-referenciação">Amostragem por referenciação</h4>
+<p>Esta amostragem aplica-se a pessoas e, neste caso o analista escolhe um conjunto de especialistas no assunto em análise e encarrega estes especialistas de recrutar para a amostra outros especialistas que conheça. Pode dizer-se que se trata de um tipo de amostragem subjetiva.</p>
+</section>
+<section id="amostragem-voluntária" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="amostragem-voluntária">Amostragem voluntária</h4>
+<p>Também aplicada a pessoas, o analista difunde um pedido de colaboração (correio, redes sociais, etc.) e os indivíduos participam voluntariamente, se assim o entenderem. É comum deparar com inquéritos semelhantes aos da <a href="#fig-voluntary-question" class="quarto-xref">Figura&nbsp;<span>2.1</span></a>.</p>
+<div id="fig-voluntary-question" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-voluntary-question-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/voluntary-question.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-voluntary-question-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.1: Exemplo de inquérito voluntário <span class="citation" data-cites="sapo-voluntary">(<a href="references.html#ref-sapo-voluntary" role="doc-biblioref">Sapo.pt, 2025</a>)</span>
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="enviesamento" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="enviesamento"><span class="header-section-number">2.1.3</span> Enviesamento</h3>
+<p>Quando o procedimento para selecionar a amostra não é aleatório, muitas vezes os dados sofrem do já referido <em>enviesamento de seleção</em>, ou seja, uma tendência para que, na amostra, determinados grupos populacionais estejam sobrerrepresentados e outros subrepresentados.</p>
+<p>Os motivos para o enviesamento podem ser vários e podem ocorrer em simultâneo. Enumeram-se de seguida os mais frequentes:</p>
+<ul>
+<li><p><strong>Não resposta</strong>: independentemente de como é feita a selecção da amostra, quando existe uma taxa de não resposta alta, as pessoas que respondem podem não representar a população por se concentrarem em determinados grupos. Pode ocorrer, por exemplo, quando as questões são de natureza íntima, ou quando se trata de um inquérito extenso que acaba por selecionar pessoas com tempo disponível.</p></li>
+<li><p><strong>Resposta errada</strong>: ocorre quando o indivíduo dá uma resposta errada à questão colocada. Pode dever-se a vários motivos, sendo os mais frequentes uma má formulação da questão, não permitindo a fácil compreensão, ou por receio de revelar a resposta verdadeira devido à natureza sensível ou íntima da questão.</p></li>
+<li><p><strong>Resposta voluntária</strong>: é uma situação semelhante à não resposta, na medida em que apenas pessoas de determinados grupos, com algum tipo de motivação, são atraídas a responder às questões e podem não representar a população.</p></li>
+<li><p><strong>Não cobertura</strong>: ocorre quando determinados grupos populacionais são ignorados, quer na seleção da amostra (por exemplo, na amostragem de conveniência ou na amostragem subjetiva), quer na identificação das unidades populacionais. Por exemplo, se uma sondagem de resposta voluntária é divulgada numa determinada rede social, automaticamente, exclui as pessoas que não têm conta nessa rede social.</p></li>
+</ul>
+<div style="float: right; margin: 10px; width: 200px;">
+<div id="fig-collect-ldigest1936" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-ldigest1936-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="images/ldigest1936.png" class="img-fluid figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-ldigest1936-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.2: <br>Capa The Literary Digest,<br> outubro, 1936
+</figcaption>
+</figure>
+</div>
+</div>
+<section id="um-exemplo-famoso" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="um-exemplo-famoso">Um exemplo famoso</h4>
+<p>Quando se fala de enviesamento não se pode deixar de referir o que aconteceu em 1936 quando a revista <em>The Literary Digest</em>, <a href="#fig-collect-ldigest1936" class="quarto-xref">Figura&nbsp;<span>2.2</span></a>, publicou uma sondagem sobre as eleições presidenciais nos EUA em 1936. Os principais candidatos eram Alfred Landon (Partido Republicano) e Franklin D. Roosevelt (Partido Democrata).</p>
+<p>A publicação fez uma sondagem a 10 milhões de eleitores e obteve mais de 2.3 milhões de respostas. A sondagem indicou uma vitória de Landon, com cerca de 54.4% dos votos, contra cerca de 40.9% de Roosevelt.</p>
+<p>E o resto é história: as eleições resultaram na vitória de Roosevelt com cerca de 60.8% dos votos, tendo Landon obtido apenas cerca de 36.5% dos votos.</p>
+<p>Infelizmente para a revista, a sondagem tinha alguns dos problemas indicados nesta secção:</p>
+<ul>
+<li><p>Não cobertura: a revista sondou os seus próprios leitores e os proprietários de telefones fixos e de automóveis, deixando de foram franjas significativas da população.</p></li>
+<li><p>Não resposta: segundo <span class="citation" data-cites="lit-digest-blunder">Lusinchi (<a href="references.html#ref-lit-digest-blunder" role="doc-biblioref">2012</a>)</span> o principal problema da sondagem foi uma alta taxa de não resposta entre os eleitores democratas.</p></li>
+</ul>
+<p>Este exemplo ilustra a necessidade de extremo rigor na definição da população e na escolha da amostra pois, ocorrências que podem parecer insignificantes, podem levar a erros catastróficos. Coincidência ou não, a revista teve o seu último número em 1938.</p>
+</section>
+</section>
+<section id="erro-amostral" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="erro-amostral"><span class="header-section-number">2.1.4</span> Erro amostral</h3>
+<p>Qualquer amostra, mesmo uma amostra representativa selecionada através das melhores técnicas, contém sempre um <em>erro amostral</em>. Este erro amostral pode ser definido como a diferença entre um qualquer resultado obtido através da amostra e o mesmo resultado, caso se tivesse estudado toda a população.</p>
+<p>Torna-se evidente que o erro amostral é inevitável, pois resulta da aleatoriedade na seleção da amostra. A não ser que a amostra inclua a totalidade da população, o erro amostral dificilmente será nulo. Há vários processos para controlar o erro amostral. Por exemplo, através da manipulação do tamanho das amostras, o erro amostral pode, quase sempre, ser reduzido para níveis muito baixos, que permitam extrair conclusões úteis da análise.</p>
+<p>Uma vez que a Estatística, quase sempre, envolve amostras, a compreensão do erro amostral é absolutamente fundamental.</p>
+</section>
+</section>
+<section id="sec-collect-var-rel" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-collect-var-rel"><span class="header-section-number">2.2</span> Relações entre variáveis</h2>
+<p>Na maior parte dos estudos estatísticos, não se observa apenas uma variável. Tipicamente, são observadas simultaneamente várias características (variáveis) relativas aos objetos de estudo. Muitas vezes, o objetivo do estudo é estudar relações de associação ou relações de causalidade entre variáveis.</p>
+<p>Quando o estudo envolve mais do que uma variável tornam-se relevantes mais alguns conceitos.</p>
+<section id="associação-e-independência" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="associação-e-independência"><span class="header-section-number">2.2.1</span> Associação e independência</h3>
+<p>Diz-se que duas variáveis têm uma <em>associação</em> quando se observa um padrão em que mudanças numa delas correspondem, geralmente, a mudanças na outra.</p>
+<p>Dependendo do tipo de dados envolvidos, há várias formas de caracterizar uma associação entre variáveis. Uma associação pode ser caracterizada em várias vertentes:</p>
+<ul>
+<li><p><strong>Intensidade</strong>: pode afirmar-se que uma associação é fraca, moderada, forte, etc., conforme o padrão observado seja mais ou menos consistente ou previsivel, havendo várias formas de quantificar esta intensidade.</p></li>
+<li><p><strong>Direção</strong>: quando as variáveis são medidas numa escala ordinal ou superior, a direção pode dizer-se <em>positiva</em>, se aumentos numa correspondem a aumentos na outra, ou <em>negativa</em>, quando aumentos numa correspondem a diminuições na outra.</p></li>
+</ul>
+<p>Quando duas variáveis não estão associadas, estas dizem-se <em>independentes</em>. Nesta situação, não há qualquer padrão de correspondência nas observações de uma e de outra. Por outras palavras, a observação de uma delas não fornece qualquer informação útil sobre o valor da outra.</p>
+</section>
+<section id="associação-e-causalidade" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="associação-e-causalidade"><span class="header-section-number">2.2.2</span> Associação e causalidade</h3>
+<p>Vale a pena abordar esta ideia neste ponto: a existência de uma relação de associação entre duas variáveis não implica que haja uma relação de causalidade entre elas. Frequentemente, a associação é explicada pela existência de um <em>confundimento</em> (ou confusão) com uma terceira variável.</p>
+<p>Por exemplo, se analisar o conjunto de dados <a href="datasets/icecream.csv" target="_blank">icecream.csv</a> poderá verificar que existe uma associação entre a produção de gelados e o número de afogamentos. Na <a href="#fig-collect-icecream" class="quarto-xref">Figura&nbsp;<span>2.3</span></a> podem visualizar-se os dados, onde cada ponto representa um mês entre 2018 e 2023.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-collect-icecream" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-icecream-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c020-collect_files/figure-html/fig-collect-icecream-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-icecream-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.3: Produção de gelados e número de afogamentos
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Como se pode verificar, parece haver um maior número de afogamentos quando a produção de gelados é maior, ou seja, parece haver uma associação positiva entre as variáveis. Obviamente, nem a produção de gelados faz aumentar afogamentos, nem os afogamentos fazem aumentar a produção de gelados e a associação pode ser facilmente explicada por serem duas variáveis sazonais: no tempo mais quente produzem-se (e vendem-se) mais gelados e as pessoas vão mais às praias aumentando os afogamentos acidentais.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Associação ≠ causalidade
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Na Estatística, é uma ideia que não pode ser repetida vezes a mais, pois é um erro muito comum na interpretação de resultados. Duas variáveis podem estar associadas sem haver uma relação de causa e efeito entre elas.</p>
+</div>
+</div>
+<section id="variáveis-explicativas-e-variáveis-de-resposta" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="variáveis-explicativas-e-variáveis-de-resposta">Variáveis explicativas e variáveis de resposta</h4>
+<p>É frequente ver uma variável referida como <em>variável explicativa</em> ou como <em>variável de resposta</em> ou como <em>variável dependente</em>. Embora as designações possam dar uma ideia de causalidade, a maior parte das vezes trata-se apenas de uma suspeita ou de uma hipótese a verificar. As designações são apenas o reflexo disso e uma forma de organizar os procedimentos.</p>
+<p>Por exemplo, se a questão de investigação for perceber como as horas de estudo afetam o rendimento escolar, é natural rotular as <em>horas de estudo</em> como variável explicativa e o <em>rendimento escolar</em> como variável de resposta ou variável dependente.</p>
+<p>Naturalmente, não basta colocar uma designação para estabelecer uma relação de causalidade, sendo necessário aplicar técnicas de análise estatística.</p>
+</section>
+</section>
+</section>
+<section id="origem-dos-dados" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="origem-dos-dados"><span class="header-section-number">2.3</span> Origem dos dados</h2>
+<p>A origem dos dados pode ser tipificada sob várias perspetivas. Relativamente à fonte dos dados podemos falar em <em>dados primários</em>, quando estes são recolhidos pelo investigador diretamente das entidades observadas, ou <em>dados secundários</em>, quando a fonte são outros estudos ou bases de dados publicadas.</p>
+<p>Quando se adota uma perspetiva temporal pode falar-se num <em>estudo transversal</em> quando os dados são recolhidos num determinado momento ou num curto intervalo, sendo o objetivo caracterizar a população naquele momento.</p>
+<p>Quando as entidades são acompanhadas durante um período extenso e são recolhidas observações em diversos instantes, temos um <em>estudo longitudinal</em>. Este tipo de estudo permite caracterizar tendências que ocorrem ao longo do tempo.</p>
+</section>
+<section id="sec-collect-observational" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="sec-collect-observational"><span class="header-section-number">2.4</span> Estudos observacionais</h2>
+<p>Os estudos estatísticos podem ser categorizados em dois tipos: observacionais (nesta secção) e experimentais (<a href="#sec-collect-experimental" class="quarto-xref"><span>Secção 2.5</span></a>).</p>
+<p>Nos estudos observacionais o analista não interfere com os objetos de estudo, apenas observa e regista os dados à medida que eles ocorrem naturalmente. Tipicamente, o objetivo da análise é identificar correlações entre as diferentes variáveis.</p>
+<p>Dentro desta categoria de estudos é possível delinear vários procedimentos aleatórios. Descrevem-se a seguir quatro dos mais utilizados.</p>
+<section id="amostragem-aleatória-simples" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="amostragem-aleatória-simples"><span class="header-section-number">2.4.1</span> Amostragem aleatória simples</h3>
+<p>É a forma mais elementar de assegurar a aleatoriedade da amostra e consiste em escolher ao acaso, de entre a população, os elementos a integrar na amostra, sem qualquer condicionamento ou restrição.</p>
+<p>Na sua forma mais básica, poder-se-iam numerar todos os elementos da população e sortear um conjunto de números para determinar a amostra. Utilizando o computador, é um processo simples e rápido. Se houver uma base de dados populacional, o número da linha na base de dados serve como identificador e pode ser usado para aleatorizar.</p>
+<p>A figura <a href="#fig-collect-sampling-simple" class="quarto-xref">Figura&nbsp;<span>2.4</span></a> pretende dar uma ideia visual do processo. Neste caso, a área sombreada delimita a população e os pontos assinalados com um círculo foram selecionados para a amostra.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-collect-sampling-simple" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-sampling-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c020-collect_files/figure-html/fig-collect-sampling-simple-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-sampling-simple-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.4: Visualização do processo de amostragem aleatória simples
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A amostragem aleatória simples pode ser feita sem reposição, tal como na <a href="#fig-collect-sampling-simple" class="quarto-xref">Figura&nbsp;<span>2.4</span></a>, em que um elemento da população pode ou não ser selecionado para a amostra. Quando a seleção é feita com reposição, o mesmo indivíduo pode ser selecionado mais do que uma vez. Esta questão merece ser analisada mais profundamente num capítulo posterior.</p>
+</div>
+</div>
+</section>
+<section id="amostragem-por-estratificação" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="amostragem-por-estratificação"><span class="header-section-number">2.4.2</span> Amostragem por estratificação</h3>
+<p>Se a população puder ser dividida em grupos homogéneos (estratos) utilizando um qualquer critério e quando se pretende representar proporcionalmente todos os estratos, utiliza-se a <em>amostragem por estratificação</em>. Neste caso, é recolhida uma amostra representativa em cada estrato (por exemplo, recorrendo a uma amostra aleatória simples) que pode ser analisada em separado, para caracterizar o estrato, ou em conjunto, para caracterizar a população inteira.</p>
+<p>A vantagem deste tipo de amostragem é assegurar uma redução do erro amostral, ou seja, uma maior representatividade. A desvantagem é o aumento da complexidade da recolha e análise dos dados.</p>
+<p>A figura <a href="#fig-collect-sampling-strata" class="quarto-xref">Figura&nbsp;<span>2.5</span></a> é uma representação visual do processo, ilustrando a seleção de uma amostra aleatória em cada um dos estratos (áreas sombreadas).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-collect-sampling-strata" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-sampling-strata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c020-collect_files/figure-html/fig-collect-sampling-strata-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-sampling-strata-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.5: Visualização do processo de amostragem estratificada
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="amostragem-por-conglomerados-clusters" class="level3" data-number="2.4.3">
+<h3 data-number="2.4.3" class="anchored" data-anchor-id="amostragem-por-conglomerados-clusters"><span class="header-section-number">2.4.3</span> Amostragem por conglomerados (<em>clusters</em>)</h3>
+<p>Na amostragem por conglomerados, a população é dividida em grupos heterogéneos (conglomerados ou <em>clusters</em>) que se supõe terem uma composição idêntica à da população. Para selecionar a amostra há dois procedimentos alternativos, envolvendo, ou uma, ou duas etapas.</p>
+<section id="uma-etapa" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="uma-etapa">Uma etapa</h4>
+<p>Neste procedimento, é selecionada ao acaso uma amostra de <em>clusters</em> e todos os elementos dos conglomerados selecionados são observados. A <a href="#fig-collect-sampling-cluster1s" class="quarto-xref">Figura&nbsp;<span>2.6</span></a> representa visualmente o processo. Note que todos os elementos em cada conglomerado selecionado são observados.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-collect-sampling-cluster1s" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-sampling-cluster1s-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c020-collect_files/figure-html/fig-collect-sampling-cluster1s-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-sampling-cluster1s-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.6: Visualização do processo de amostragem por conglomerados (uma etapa)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="duas-etapas" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="duas-etapas">Duas etapas</h4>
+<p>Quando o procedimento é bietápico, para além de ser selecionada uma amostra de conglomerados a observar (primeira etapa), em cada conglomerado selecionado é depois selecionada uma amostra aleatória de elementos (segunda etapa). Neste caso, a representação visual do processo pode ser descrita pela <a href="#fig-collect-sampling-cluster2s" class="quarto-xref">Figura&nbsp;<span>2.7</span></a>. Note a diferença para a <a href="#fig-collect-sampling-cluster1s" class="quarto-xref">Figura&nbsp;<span>2.6</span></a>, sendo selecionada apenas uma amostra de elementos em cada <em>cluster</em> selecionado.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div id="fig-collect-sampling-cluster2s" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-sampling-cluster2s-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="c020-collect_files/figure-html/fig-collect-sampling-cluster2s-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-sampling-cluster2s-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.7: Visualização do processo de amostragem por conglomerados (duas etapa)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>A amostragem por conglomerados, por norma, faz aumentar o erro amostral, devido a eventuais diferenças entre os conglomerados. A razão para usar este tipo de amostragem é de ordem prática, pois é quase sempre mais barato, rápido e eficiente amostrar um pequeno numero de conglomerados, em vez de fazer amostragem aleatória simples ou estratificada.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exemplo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Imagine que se quer estudar os hábitos de estudo dos alunos de uma universidade através de um inquérito. Poder-se-iam estabelecer vários procedimentos para selecionar uma amostra representativa de alunos.</p>
+<ul>
+<li><p><strong>Amostragem aleatória simples</strong>: a partir da lista de alunos matriculados, selecionar aleatoriamente um conjunto de alunos a inquirir.</p></li>
+<li><p><strong>Amostragem estratificada</strong>: dividindo os alunos por curso e por ano, escolher uma amostra aleatória de alunos em cada combinação curso e ano.</p></li>
+<li><p><strong>Amostragem por conglomerados (uma etapa)</strong>: selecionar ao acaso um conjunto aleatório de aulas e distribuir o inquérito a <em>todos</em> os alunos que estiverem presentes nas aulas selecionadas.</p></li>
+<li><p><strong>Amostragem por conglomerados (duas etapas)</strong>: selecionar ao acaso um conjunto aleatório de aulas e distribuir o inquérito a <em>uma amostra aleatória</em> escolhida entre os alunos que estiverem presentes nas aulas selecionadas.</p></li>
+</ul>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-collect-experimental" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-collect-experimental"><span class="header-section-number">2.5</span> Estudos experimentais</h2>
+<p>A presente secção é uma pequena introdução às experiências em Estatística. Apenas se vão referir os principais conceitos e terminologia, de uma forma necessariamente superficial.</p>
+<p>O principal acréscimo de estudo experimental, em relação a um estudo observacional, é a possibilidade do analista submeter cada elemento da amostra a um conjunto de condições experimentais. Estas condições são designadas por <em>tratamentos</em>.</p>
+<p>Seguem alguns exemplos de tratamentos que poderiam ser aplicados:</p>
+<ul>
+<li><p>No laboratório, uma experiência pode ser replicada a várias temperaturas (tratamentos) para estudar o efeito da temperatura nos resultados.</p></li>
+<li><p>Num ensaio clínico de um medicamento, diferentes grupos de participantes recebem dosagens diferentes (tratamentos) para perceber o efeito da dosagem nos resultados clínicos.</p></li>
+<li><p>Numa fábrica, podem experimentar-se vários processos semelhantes (tratamentos) e verificar o efeito sobre a qualidade do produto final.</p></li>
+</ul>
+<p>Para decidir qual o tratamento a aplicar a cada unidade da amostra é utilizado um processo de <em>afetação aleatória</em> ou <em>aleatorização</em>. Neste processo, as unidades a afetar a cada tratamento são escolhidas de forma aleatória.</p>
+<p>A afetação aleatória é fundamental para que se possam inferir relações de causalidade entre as variáveis. Quando não há afetação aleatória é sempre possível haver fatores não controlados que possam estar na origem de eventuais diferenças entre os grupos observados.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nas experiências, a afetação aleatória permite inferir sobre causalidade, até mesmo, antes de se conhecerem os mecanismos dessa causalidade.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exemplo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Num exemplo famoso, o médico húngaro <a href="https://en.wikipedia.org/wiki/Ignaz_Semmelweis" target="_blank">Ignaz Semmelweis</a> concluiu em 1847 que, se o profissionais de obstetrícia desinfetassem as mãos, a incidência de infeções pós-parto diminuiam drasticamente. Na altura, estas conlusões chegaram a ser ridicularizadas, pois o médico não tinha uma explicação para o mecanismo de causa e efeito. Apenas anos mais tarde, através das descobertas de <a href="https://en.wikipedia.org/wiki/Louis_Pasteur" target="_blank">Louis Pasteur</a> no âmbito da teoria dos germes, se vieram a entender as causas.</p>
+</div>
+</div>
+<p>Tipicamente, nos melhores ensaios clínicos utiliza-se um modelo designado por <em>RTC – Randomized Controlled Trial</em>, onde os participantes são distribuídos pelos diversos tratamentos de forma aleatória. Este passo garante a eliminação de eventuais confundimentos, típicos dos estudos observacionais.</p>
+<p>Em muitas experiências também se utilizam <em>grupos de controlo</em>, que é um grupo que não recebe qualquer tratamento. Também nos ensaios clínicos há quase sempre um grupo de participantes que não recebe qualquer dose do medicamento, sendo apenas administrado um <em>placebo</em>, devido ao <em>efeito placebo</em>.</p>
+<p>Por norma, os participantes não sabem se estão em algum grupo de tratamento ou se estão no grupo de controlo, isto é, existe a chamada <em>ocultação</em> (<em>blinding</em>). Quando nem os médicos que administram os medicamentos têm aquela informação designa-se por <em>dupla ocultação</em>. Se a ocultação for estendida às pessoas que recolhem e manipulam os dados, podemos falar em <em>tripla ocultação</em>. O objetivo destas técnicas é eliminar qualquer tipo de enviesamento e garantir resultados fiáveis.</p>
+<p>Para reduzir a variabilidade dos resultados e eliminar os efeitos de eventuais variáveis que não se possam controlar, muitas experiências utiliza-se o <em>controlo por blocos</em>. Os <em>blocos</em> são construídos a partir de variáveis que não se podem afetar. Por exemplo, num ensaio clínico, se houver motivos para supor que o medicamento afeta cada sexo de forma diferente, o sexo pode ser utilizado para criar blocos.</p>
+<p>Para aferir a confiabilidade dos resultados de uma experiência esta pode ser replicada. A <em>replicação</em> pode ser feita por diferentes cientistas utilizando os mesmos métodos em contextos mais ou menos semelhantes. A replicação serve para validar os resultados de uma experiência.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exemplo
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Num laboratório pretende-se comparar dois métodos para medir a concentração de uma substância numa solução (métodos A e B). Supõe-se que a experiência de laboratório dos alunos possa ter influência nos resultados. Assim, vai utilizar-se o ano do aluno como indicador de experiência de laboratório. Para avaliar os dois métodos, poder-se-ia utilizar o seguinte procedimento:</p>
+<ol type="1">
+<li><p><strong>Amostra</strong>: selecionar uma amostra aleatória de alunos, por exemplo, 30 alunos.</p></li>
+<li><p><strong>Blocos</strong>: verificar o ano do aluno (1, 2 ou 3) de modo a criar um <em>bloco</em> de alunos para cada ano.</p></li>
+<li><p><strong>Aleatorização</strong>: para os alunos de cada ano, colocar metade (escolhidos aleatoriamente) a executar o método A e a outra metade a executar o método B.</p></li>
+<li><p>Registar e analisar os resultados.</p></li>
+</ol>
+<p>Com este procedimento seria realizada a <em>experiência ideal</em>, onde os resultados poderiam ser generalizados a todos os alunos da população (porque se utiliza uma amostra aleatória de alunos) e se poderia inferir qual o método que produz os melhores resultados, ou seja, causalidade (porque foi aplicada a afetação aleatória). A <a href="#fig-collect-experiment" class="quarto-xref">Figura&nbsp;<span>2.8</span></a> esquematiza o procedimento.</p>
+</div>
+</div>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div id="fig-collect-experiment" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-collect-experiment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div>
+<p><img src="c020-collect_files\figure-html\mermaid-figure-1.png" style="width:5.55in;height:2.86in" class="figure-img"></p>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-collect-experiment-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2.8: Esquema de um desenho experimental
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="tutoriais" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="tutoriais">Tutoriais</h2>
+<p>Depois de ler este capítulo pode verificar como são implementados estes conceitos no ambiente computacional R. Os tutoriais listados abaixo estão diretamente relacionados com este capítulo.</p>
+<div id="listing-collect-listing" class="quarto-listing quarto-listing-container-table">
+<table class="quarto-listing-table table">
+<thead>
+<tr>
+
+<th>
+Tutorial
+</th>
+
+<th>
+Descrição
+</th>
+
+</tr>
+</thead>
+<tbody class="list">
+
+<tr data-index="0" data-listing-date-sort="1739836800000" data-listing-file-modified-sort="1745314586934" data-listing-date-modified-sort="NaN" data-listing-reading-time-sort="20" data-listing-word-count-sort="3859" data-listing-title-sort="Dados no R" data-listing-filename-sort="t030-data.qmd">
+<td>
+<a href="./t030-data.html" class="title listing-title">Dados no R</a>
+</td>
+<td>
+<span class="listing-description">Estruturas de dados do R: vetores, matrizes, listas e data frames. Gravação e leitura de dados a partir de ficheiros. Especificação de variáveis qualitativas. </span>
+</td>
+
+</tr>
+
+</tbody>
+</table>
+<div class="listing-no-matching d-none">Nenhum item correspondente</div>
+</div>
+
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-os4" class="csl-entry" role="listitem">
+Diez, D., Çetinkaya-Rundel, M., &amp; Barr, C. (2019). <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</a>
+</div>
+<div id="ref-covid19" class="csl-entry" role="listitem">
+Dinnes, J., Sharma, P., Berhane, S., Wyk, S. S. van, Nyaaba, N., Domen, J., Taylor, M., Cunningham, J., Davenport, C., Dittrich, S., Emperador, D., Hooft, L., Leeflang, M. M. G., McInnes, M. D. F., Spijker, R., Verbakel, Y., J, Takwoingi, Y., Taylor-Phillips, S., Van den Bruel, A., &amp; Deeks, J. J. (2022). Rapid, point‐of‐care antigen tests for diagnosis of SARS‐CoV‐2 infection. <em>Cochrane Database of Systematic Reviews</em>, <em>7</em>. <a href="https://doi.org/10.1002/14651858.CD013705.pub3">https://doi.org/10.1002/14651858.CD013705.pub3</a>
+</div>
+<div id="ref-guimaraes2010e" class="csl-entry" role="listitem">
+Guimarães, R. C., &amp; Cabral, J. S. (2010). <em>Estatística</em>. Verlag Dashöfer Portugal.
+</div>
+<div id="ref-hyndman-fpp" class="csl-entry" role="listitem">
+Hyndman, R. J., &amp; Athanasopoulos, G. (2021). <em>Forecasting: principles and practice</em> (3rd edition). OTexts. <a href="https://otexts.com/fpp3/">https://otexts.com/fpp3/</a>
+</div>
+<div id="ref-lit-digest-blunder" class="csl-entry" role="listitem">
+Lusinchi, D. (2012). <span>«President»</span> Landon and the 1936 Literary Digest Poll: Were Automobile and Telephone Owners to Blame? <em>Social Science History</em>, <em>36</em>(1), 23–54. <a href="https://doi.org/10.1017/S014555320001035X">https://doi.org/10.1017/S014555320001035X</a>
+</div>
+<div id="ref-mann2010is" class="csl-entry" role="listitem">
+Mann, P. S. (2010). <em>Introductory Statistics</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-infopedia-probabilidade" class="csl-entry" role="listitem">
+Porto Editora. (2025). <em>Porto Editora – no Dicionário infopédia da Língua Portuguesa [em linha]</em>. <a href="https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade">https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade</a>
+</div>
+<div id="ref-rstudio" class="csl-entry" role="listitem">
+Posit team. (2024). <em>RStudio: Integrated Development Environment for R</em>. Posit Software, PBC. <a href="http://www.posit.co/">http://www.posit.co/</a>
+</div>
+<div id="ref-baseR" class="csl-entry" role="listitem">
+R Core Team. (2024). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>
+</div>
+<div id="ref-sapo-voluntary" class="csl-entry" role="listitem">
+Sapo.pt. (2025). <em>Pergunta do dia</em>. <a href="http://www.sapo.pt">http://www.sapo.pt</a>
+</div>
+<div id="ref-r4ds2016" class="csl-entry" role="listitem">
+Wickham, H., &amp; Grolemund, G. (2016). <em>R for Data Science: Import, Tidy, Transform, Visualize, and Model Data</em>. O’Reilly Media. <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz/</a>
+</div>
+<div id="ref-wilson2005mammal" class="csl-entry" role="listitem">
+Wilson, D. E., &amp; Reeder, D. A. M. (2005). <em>Mammal Species of the World: A Taxonomic and Geographic Reference</em>. Johns Hopkins University Press. <a href="https://www.departments.bucknell.edu/biology/resources/msw3/">https://www.departments.bucknell.edu/biology/resources/msw3/</a>
+</div>
+</div>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/pages\.ipb\.pt\/~aduarte\/ecd\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./c010-method.html" class="pagination-link" aria-label="Metodologia e Dados">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Metodologia e Dados</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./c030-qualitative.html" class="pagination-link" aria-label="Dados Qualitativos">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/c020-collect.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/c020-collect.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></div></div></footer></body></html>

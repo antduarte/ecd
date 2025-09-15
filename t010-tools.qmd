@@ -1,0 +1,180 @@
+---
+description: >
+  Instalação e configuração das ferramentas
+  computacionais e dos fluxos de trabalho.
+date: 2025-02-18
+ecd-order: 1
+engine: knitr # needed if inline before chunk
+
+other-links:
+  - text: The Comprehensive R Archive Network
+    href: https://cran.r-project.org/
+    rel: external
+    target: _blank
+  - text: Posit Software downloads (RStudio)
+    href: https://posit.co/downloads/
+    rel: external
+    target: _blank
+  - text: Tidyverse
+    href: https://www.tidyverse.org/
+    rel: external
+    target: _blank
+  - text: Referência RStudio
+    href: https://rstudio.github.io/cheatsheets/translations/portuguese/rstudio-ide_pt.pdf/
+    rel: external
+    target: _blank
+    
+rstudio-version: "2024.12.0.467"
+lang: pt
+---
+
+# Ferramentas {#sec-tut-tools}
+
+
+## Introdução {#sec-tut-tools-intro}
+
+Este tutorial versa sobre a instalação e configuração das ferramentas computacionais necessárias ao acompanhamento dos restantes tutoriais. Também são apontadas algumas recomendações e configurações para tirar o melhor partido do ambiente computacional. 
+
+
+## R {#sec-tut-tools-r}
+
+A primeira aplicação a instalar é o R [@baseR] a partir de
+[The Comprehensive R Archive Network](https://cran.r-project.org/){target="_blank"}.
+Podem ser descarregadas versões para os diversos sistemas operativos e a instalação é igual a qualquer outra aplicação. Periodicamente são publicadas versões atualizadas. Este documento foi compilado com a versão
+`r paste(version$major, version$minor, sep = ".")` publicada em
+`r paste(version$month, version$year, sep = "/")`.
+
+Após a instalação o R está pronto a ser utilizado. No entanto, a instalação base do R apenas dispõe de uma interface gráfica e um ambiente de desenvolvimento limitados. Por esse motivo, embora completamente funcional, é difícil justificar a utilização daquela interface, estando disponíveis melhores alternativas, como sugerido na secção @sec-tut-tools-rstudio, a seguir.
+
+Para testar se o R está a funcionar, no Windows, a partir do menu dos programas, pode executar-se agora a aplicação *Rgui.exe*. Deverá ser mostrada uma janela semelhante à da figura @fig-rgui.
+
+![Interface gráfica do R (Rgui.exe)](images/Rgui.png){#fig-rgui}
+
+Confirmado que está o funcionamento do R, aquela janela pode ser fechada. Provavelmente nunca será necessária a utilização desta interface.
+
+
+## RStudio {#sec-tut-tools-rstudio}
+Embora possam ser utilizadas outras interfaces para o trabalho com o R, a alternativa mais popular é sem dúvida o *RStudio* [@rstudio]. A aplicação pode ser descarregada em
+[Posit Software](https://posit.co/downloads/){target="_blank"}.
+A instalação é simples e há versões para os diversos sistemas operativos. Tal como o R, a aplicação é atualizada periodicamente. Este texto foi editado na versão {{< meta rstudio-version >}}.
+
+Após a instalação a aplicação está pronta a ser utilizada e pode ser invocada do menu de programas. A @fig-rstudio mostra a interface da aplicação.
+
+![Ambiente de Desenvolvimento (IDE) do RStudio](images/RStudio.png){#fig-rstudio .preview-image}
+
+Embora o aspeto gráfico e a disposição dos vários painéis possa ser personalizada a gosto do utilizador em *Tools, Global Options...*, o conteúdo e funcionalidade de cada painel descreve-se sumariamente a seguir.
+
+* **Consola**:  neste painel pode interagir-se diretamente com o R emitindo comandos, que poderão executar cálculos, gráficos, etc. e que são executados imediatamente. Note que a consola é a mesma que aparecia na @fig-rgui, com a mesma funcionalidade.
+
+* **Código**: neste painel poderão ser editados e executados ficheiros de código R (*scripts*) ou outro tipo de ficheiros de texto. Também aqui podem ser visualizados dados tabulares.
+
+* **Ambiente, histórico, etc.**: este painel mostra a lista de objetos em memória e o histórico dos comandos executados na consola. Trata-se de um painel de grande utilidade, por exemplo, para verificar se o comandos executados produziram as ações desejadas.
+
+* **Ficheiros, gráficos, ajuda, etc.**: neste painel há uma série de utilitários, como a visualização de ficheiros e pastas, os gráficos elaborados, a documentação, os pacotes instalados, etc.
+
+Para uma visão abrangente e uma referência rápida de todas as utilidades da interface pode descarregar uma ~~cábula~~ referência (*cheatsheet*)
+[aqui](https://rstudio.github.io/cheatsheets/translations/portuguese/rstudio-ide_pt.pdf){target="_blank"}.
+
+
+## Pacotes (packages) adicionais {#sec-tut-tools-pkg}
+
+As várias funcionalidades do R estão agrupadas em pacotes (*packages*). A instalação base do R instala um conjunto de pacotes que disponibilizam as funcionalidades básicas. Alguns desses pacotes são carregados para a memória quando se inicia uma sessão, enquanto outros podem ser carregados a pedido do utilizador.
+
+Sendo uma linguagem de programação aberta, a comunidade desenvolve, atualiza e disponibiliza permanentemente pacotes de funcionalidades adicionais, por norma, para auxiliar tarefas muito específicas que a maioria dos utilizadores não necessita.
+
+Nestes tutoriais, optou-se por utilizar apenas as funcionalidades nos pacotes instalados inicialmente e, apenas esporadicamente, quando se justifique, recorrer a pacotes adicionais. O motivo prende-se com a camada de complexidade adicional, sendo este livro dirigido a alunos de cursos introdutórios de Estatística.
+
+Notavelmente, com alguma pena, não se utiliza, pelo menos de forma sistemática, os pacotes do universo `tidyverse`
+(<https://www.tidyverse.org/>{target="_blank"})
+amplamente utilizados em ciência de dados. Naturalmente, incentivo o leitor mais avançado ou curioso a utilizar aquelas ferramentas. Uma excelente referência sobre aquele conjunto de ferramentas é @r4ds2016.
+
+Caso necessite de instalar um pacote adicional, pode usar o painel *Packages* do *RStudio*, ou a função `install.packages()` na consola do R. Pode encontrar uma lista de pacotes para o R [aqui](https://cran.r-project.org/web/packages/available_packages_by_name.html){target="_blank"}.
+
+
+## Configurações
+
+Naturalmente, a organização do trabalho depende das preferências de cada um e há sempre margem para melhorar e adaptar práticas. Por outro lado, há muitas formas de fazer as coisas e estas recomendações resultam da experiência pessoal e devem ser adaptadas às preferências de cada um.
+
+
+### Configuração da pasta de trabalho
+
+Determinar e alterar a pasta de trabalho que o *RStudio* está a utilizar é crucial, pois o R vai tentar ler os ficheiros (por exemplo, dados) dessa pasta. Igualmente, quando se grava um ficheiro ele é gravado na pasta de trabalho. Naturalmente, pode-se ler e gravar numa pasta arbitrária, mas é preciso indicar a localização da pasta ao R, o que pode ser fastidioso e propenso a erros.
+
+Ao iniciar o *RStudio*, o painel **Files** mostra a pasta de trabalho que vai ser utilizada na sessão de trabalho. A pasta de trabalho é determinada pela configuração do *RStudio.* Numa nova instalação do *RStudio* a pasta de trabalho costuma ser a pasta dos documentos do sistema.
+
+A qualquer momento, a pasta de trabalho pode ser determinada executando na consola a função `getwd()`.
+
+
+```{r}
+#| engine: verbatim
+#| prompt: false
+
+> getwd()
+[1] "C:/Users/aduarte/Documents"
+```
+
+
+Por norma, é boa ideia configurar uma pasta diferente, pois a pasta dos documentos costuma conter inúmeros ficheiros, criando confusão. Para alterar a pasta de trabalho para uma outra pasta à escolha, deve aceder-se a *Tools > Global Options...* e alterar o *Default working directory* para a pasta preferida utilizando o botão *Browse...*.
+
+Na @fig-rs-global-opt exemplifica-se como alterar a pasta de trabalho para uma pasta mais adequada. Depois de confirmar, pode ser necessário reiniciar o *RStudio* para que a nova definição seja aplicada.
+
+![RStudio Options](images/rstudio-global-options.png){#fig-rs-global-opt}
+
+Também é possível modificar a pasta de trabalho de forma temporária. Para isso, no painel **Files** deve navegar-se até à pasta que se quer indicar como a pasta de trabalho e fazer *More > Set As Working Directory*. Na @fig-rs-setwd ilustra-se o procedimento. Note-se que este processo é equivalente a utilizar a função `setwd()` na consola. 
+
+![RStudio Options](images/rstudio-setwd.png){#fig-rs-setwd}
+
+Uma terceira forma de estabelecer a pasta de trabalho (também temporária) é iniciar o *RStudio* através da abertura de um ficheiro (por exemplo, no *Windows*, dando *duplo clique* num *script*). Quando se inicia o RStudio desta forma, a pasta de trabalho será aquela onde o referido ficheiro reside. Note-se que se o RStudio já estiver aberto, abrir um ficheiro desta forma não tem qualquer efeito na pasta de trabalho.
+
+
+Uma outra forma de trabalhar, mais conveniente em análises de maior dimensão, que envolvam vários *scripts* e ficheiros de dados, passa pela utilização de *projetos*. No *RStudio*, pode criar-se um projeto em *File > New Project...*. Tipicamente, o projeto irá residir numa nova pasta e todas as operações de leitura e escrita, quando o projeto está ativo, são relativas a essa pasta.
+
+
+### Resultados das análises 
+
+À medida que se vão executando análises e cálculos, tipicamente, os resultados (intermédios ou finais) são guardados em objetos na memória do R e podem ser visualizados no painel *Environment*. Estes objetos devem ser encarados como efémeros, devendo todos os resultados relevantes poder ser recriados a partir de código Este código, por norma, deve ser guardado num *script*, para evitar ter de o digitar novamente ou de o procurar no histórico.
+
+Numa nova instalação, o *RStudio* está configurado para perguntar ao utilizador se quer guardar os resultados ao terminar a sessão e para carregar automaticamente esses resultados no início da sessão seguinte. Podendo haver um ou outro caso onde este procedimento faça sentido, recomenda-se a alterar este comportamento do *RStudio.*
+
+Assim, deve aceder-se novamente a *Tools > Global Options...* e modificar a opção *Save workspace to .RData on exit:* para *Never* (nunca). O procedimento é ilustrado na @fig-rs-global-opt-rdata.
+
+![RStudio Options](images/rstudio-global-options-rdata.png){#fig-rs-global-opt-rdata}
+
+Se já existir um ficheiro chamado *.RData* na pasta de trabalho que tenha sido criado inadvertidamente, este pode ser eliminado.
+
+Caso seja necessário, por algum motivo extraordinário, guardar um conjunto de resultados, no painel *Environment*, há um botão para guardar os conteúdos da memória num ficheiro à escolha.
+
+De facto, uma forma de testar se um *script* produz aquilo que se deseja é eliminar todos os objetos e voltar a executar o *script* num ambiente "limpo". Para isso deve proceder-se da seguinte forma:
+
+1. Reiniciar a sessão R para eliminar todos os objetos: *Session > Restart R* ou {{< kbd Ctrl >}}+{{< kbd Shift >}}+{{< kbd F10 >}}.
+2. Executar novamente o script: botão *Source* ou {{< kbd Ctrl >}}+{{< kbd Shift >}}+{{< kbd S >}}.
+
+Para determinar exatamente o que um *script* faz, é essencial que este seja executado num ambiente "limpo", de forma a ficar isolado de interferências de objetos na memória ou de pacotes carregados.
+
+
+### Extensões Ocultas no *Windows* e *macOS*
+
+Por convenção, os nomes dos ficheiros, quer no *Windows*, quer no *macOS*, quer noutros sistemas, são compostos de duas partes separadas por um ponto (por exemplo, *carta.docx*). A parte que precede o ponto costuma designar-se por *nome* e, por norma, dá uma pista sobre o conteúdo. A parte que aparece depois do ponto é designada por *extensão* e serve para informar de que tipo (formato) se trata. Por exemplo, o ficheiro *carta.docx*, em princípio, será uma carta (a julgar pelo nome) escrita num processador de texto como o Word (a julgar pela extensão).
+
+
+Como raramente há a necessidade de alterar uma extensão, numa tentativa de ~~compor o que não estava estragado~~ simplificar a vida ao utilizador, a configuração por omissão do *Windows* e do *macOS* oculta a extensão para ficheiros conhecidos. No entanto, este comportamento também pode gerar confusão: por exemplo, se houver um ficheiro do Word chamado *carta.docx* e um ficheiro do Excel chamado *carta.xlsx*, vão aparecer ambos designados por *carta* (eventualmente com ícones diferentes).
+
+Na @fig-win-no-ext ilustra-se a situação com 5 ficheiros chamados *carta*. Note-se que os ícones e as descrições são diferentes, mas a utilização do mesmo nome pode gerar confusão.
+
+![Windows Explorer (extensões ocultas)](images/windows-no-ext.png){#fig-win-no-ext}
+
+As secções seguintes ilustram como proceder para que o sistema mostre o nome completo do ficheiro, com as respetivas extensões.
+
+
+#### No *Windows*
+
+No *Windows*, abrindo o *File Explorer*, deve aceder-se a *Options > View* e desativar a opção *Hide extensions for known file types*, conforme ilustrado na @fig-win-fix. Na mesma figura pode já ver-se o resultado da operação, podendo ser observadas as diferenças para a @fig-win-no-ext.
+
+![Mostrar extensões no Windows Explorer](images/windows-fix.png){#fig-win-fix}
+
+
+#### No *macOS*
+
+No *macOS*, abrindo o *Finder*, deve aceder-se a *Settings... > Advanced* e ativar a opção *Show all filename extensions*, conforme ilustrado na @fig-macos-fix.
+
+![Mostrar extensões no Windows Explorer](images/macos-fix.jpg){#fig-macos-fix}

@@ -1,0 +1,2366 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="pt" xml:lang="pt"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.7.33">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Noções fundamentais sobre a elaboração de gráficos no R.">
+
+<title>10&nbsp; Gráficos – Estatística e Ciência de Dados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./t050-barplot.html" rel="next">
+<link href="./t030-data.html" rel="prev">
+<link href="./images/favicon96.png" rel="icon" type="image/png">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-dark-bc185b5c5bdbcb35c2eb49d8a876ef70.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-ea385d0e468b0dd5ea5bf0780b1290d9.css" rel="stylesheet" class="quarto-color-scheme-extra" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-dark-b9e11ad5a37ead2aabff839d95ae3857.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<link href="site_libs/bootstrap/bootstrap-c27fdc8e5b00b532d2d5a75ada188648.min.css" rel="stylesheet" append-hash="true" class="quarto-color-scheme-extra" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "Nenhum resultado",
+    "search-matching-documents-text": "documentos correspondentes",
+    "search-copy-link-title": "Copiar link para a busca",
+    "search-hide-matches-text": "Esconder correspondências adicionais",
+    "search-more-match-text": "mais correspondência neste documento",
+    "search-more-matches-text": "mais correspondências neste documento",
+    "search-clear-button-title": "Limpar",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancelar",
+    "search-submit-button-title": "Enviar",
+    "search-label": "Procurar"
+  }
+}</script>
+<script async="" src="https://www.googletagmanager.com/gtag/js?id=G-YY4SMMTB2W"></script>
+
+<script type="text/javascript">
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-YY4SMMTB2W', { 'anonymize_ip': true});
+</script>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+<meta property="og:title" content="10&nbsp; Gráficos – Estatística e Ciência de Dados">
+<meta property="og:description" content="Noções fundamentais sobre a elaboração de gráficos no R.">
+<meta property="og:image" content="https://pages.ipb.pt/~aduarte/ecd/images/cover.png">
+<meta property="og:site_name" content="Estatística e Ciência de Dados">
+<meta property="og:image:height" content="2250">
+<meta property="og:image:width" content="1410">
+</head>
+
+<body class="nav-sidebar floating quarto-light"><script id="quarto-html-before-body" type="application/javascript">
+    const toggleBodyColorMode = (bsSheetEl) => {
+      const mode = bsSheetEl.getAttribute("data-mode");
+      const bodyEl = window.document.querySelector("body");
+      if (mode === "dark") {
+        bodyEl.classList.add("quarto-dark");
+        bodyEl.classList.remove("quarto-light");
+      } else {
+        bodyEl.classList.add("quarto-light");
+        bodyEl.classList.remove("quarto-dark");
+      }
+    }
+    const toggleBodyColorPrimary = () => {
+      const bsSheetEl = window.document.querySelector("link#quarto-bootstrap:not([rel=disabled-stylesheet])");
+      if (bsSheetEl) {
+        toggleBodyColorMode(bsSheetEl);
+      }
+    }
+    const setColorSchemeToggle = (alternate) => {
+      const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+      for (let i=0; i < toggles.length; i++) {
+        const toggle = toggles[i];
+        if (toggle) {
+          if (alternate) {
+            toggle.classList.add("alternate");
+          } else {
+            toggle.classList.remove("alternate");
+          }
+        }
+      }
+    };
+    const toggleColorMode = (alternate) => {
+      // Switch the stylesheets
+      const primaryStylesheets = window.document.querySelectorAll('link.quarto-color-scheme:not(.quarto-color-alternate)');
+      const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+      manageTransitions('#quarto-margin-sidebar .nav-link', false);
+      if (alternate) {
+        // note: dark is layered on light, we don't disable primary!
+        enableStylesheet(alternateStylesheets);
+        for (const sheetNode of alternateStylesheets) {
+          if (sheetNode.id === "quarto-bootstrap") {
+            toggleBodyColorMode(sheetNode);
+          }
+        }
+      } else {
+        disableStylesheet(alternateStylesheets);
+        enableStylesheet(primaryStylesheets)
+        toggleBodyColorPrimary();
+      }
+      manageTransitions('#quarto-margin-sidebar .nav-link', true);
+      // Switch the toggles
+      setColorSchemeToggle(alternate)
+      // Hack to workaround the fact that safari doesn't
+      // properly recolor the scrollbar when toggling (#1455)
+      if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+        manageTransitions("body", false);
+        window.scrollTo(0, 1);
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+          manageTransitions("body", true);
+        }, 40);
+      }
+    }
+    const disableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        stylesheet.rel = 'disabled-stylesheet';
+      }
+    }
+    const enableStylesheet = (stylesheets) => {
+      for (let i=0; i < stylesheets.length; i++) {
+        const stylesheet = stylesheets[i];
+        if(stylesheet.rel !== 'stylesheet') { // for Chrome, which will still FOUC without this check
+          stylesheet.rel = 'stylesheet';
+        }
+      }
+    }
+    const manageTransitions = (selector, allowTransitions) => {
+      const els = window.document.querySelectorAll(selector);
+      for (let i=0; i < els.length; i++) {
+        const el = els[i];
+        if (allowTransitions) {
+          el.classList.remove('notransition');
+        } else {
+          el.classList.add('notransition');
+        }
+      }
+    }
+    const isFileUrl = () => {
+      return window.location.protocol === 'file:';
+    }
+    const hasAlternateSentinel = () => {
+      let styleSentinel = getColorSchemeSentinel();
+      if (styleSentinel !== null) {
+        return styleSentinel === "alternate";
+      } else {
+        return false;
+      }
+    }
+    const setStyleSentinel = (alternate) => {
+      const value = alternate ? "alternate" : "default";
+      if (!isFileUrl()) {
+        window.localStorage.setItem("quarto-color-scheme", value);
+      } else {
+        localAlternateSentinel = value;
+      }
+    }
+    const getColorSchemeSentinel = () => {
+      if (!isFileUrl()) {
+        const storageValue = window.localStorage.getItem("quarto-color-scheme");
+        return storageValue != null ? storageValue : localAlternateSentinel;
+      } else {
+        return localAlternateSentinel;
+      }
+    }
+    const toggleGiscusIfUsed = (isAlternate, darkModeDefault) => {
+      const baseTheme = document.querySelector('#giscus-base-theme')?.value ?? 'light';
+      const alternateTheme = document.querySelector('#giscus-alt-theme')?.value ?? 'dark';
+      let newTheme = '';
+      if(authorPrefersDark) {
+        newTheme = isAlternate ? baseTheme : alternateTheme;
+      } else {
+        newTheme = isAlternate ? alternateTheme : baseTheme;
+      }
+      const changeGiscusTheme = () => {
+        // From: https://github.com/giscus/giscus/issues/336
+        const sendMessage = (message) => {
+          const iframe = document.querySelector('iframe.giscus-frame');
+          if (!iframe) return;
+          iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+        }
+        sendMessage({
+          setConfig: {
+            theme: newTheme
+          }
+        });
+      }
+      const isGiscussLoaded = window.document.querySelector('iframe.giscus-frame') !== null;
+      if (isGiscussLoaded) {
+        changeGiscusTheme();
+      }
+    };
+    const authorPrefersDark = false;
+    const queryPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const darkModeDefault = queryPrefersDark.matches;
+      document.querySelector('link#quarto-text-highlighting-styles.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+      document.querySelector('link#quarto-bootstrap.quarto-color-scheme-extra').rel = 'disabled-stylesheet';
+    let localAlternateSentinel = darkModeDefault ? 'alternate' : 'default';
+    // Dark / light mode switch
+    window.quartoToggleColorScheme = () => {
+      // Read the current dark / light value
+      let toAlternate = !hasAlternateSentinel();
+      toggleColorMode(toAlternate);
+      setStyleSentinel(toAlternate);
+      toggleGiscusIfUsed(toAlternate, darkModeDefault);
+      window.dispatchEvent(new Event('resize'));
+    };
+    queryPrefersDark.addEventListener("change", e => {
+      if(window.localStorage.getItem("quarto-color-scheme") !== null)
+        return;
+      const alternate = e.matches
+      toggleColorMode(alternate);
+      localAlternateSentinel = e.matches ? 'alternate' : 'default'; // this is used alongside local storage!
+      toggleGiscusIfUsed(alternate, darkModeDefault);
+    });
+    // Switch to dark mode if need be
+    if (hasAlternateSentinel()) {
+      toggleColorMode(true);
+    } else {
+      toggleColorMode(false);
+    }
+  </script>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tutorials.html">Tutoriais</a></li><li class="breadcrumb-item"><a href="./t040-graphics.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Alternar barra lateral" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Procurar" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Estatística e Ciência de Dados</a> 
+        <div class="sidebar-tools-main tools-wide">
+    <a href="https://github.com/antduarte/ecd/" title="Código fonte" class="quarto-navigation-tool px-1" aria-label="Código fonte"><i class="bi bi-github"></i></a>
+  <a href="" class="quarto-color-scheme-toggle quarto-navigation-tool  px-1" onclick="window.quartoToggleColorScheme(); return false;" title="Alternar modo escuro"><i class="bi"></i></a>
+  <a href="" class="quarto-reader-toggle quarto-navigation-tool px-1" onclick="window.quartoToggleReader(); return false;" title="Alternar modo de leitor">
+  <div class="quarto-reader-toggle-btn">
+  <i class="bi"></i>
+  </div>
+</a>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Procurar"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Nota Prévia</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./chapters.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Capítulos</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c010-method.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Metodologia e Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c020-collect.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Recolha de Dados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c030-qualitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Dados Qualitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c040-quantitative.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dados Quantitativos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c050-bivariate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Dados Bivariados</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./c060-probability.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Probabilidades</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a href="./tutorials.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tutoriais</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Alternar seção">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t010-tools.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Ferramentas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t020-basics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Introdução ao R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t030-data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Dados no R</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t040-graphics.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t050-barplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Gráfico de Barras</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t060-histogram.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Histogramas</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t070-boxplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Diagramas de Extremos e Quartis</span></span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./t080-counting.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Técnicas de Contagem</span></span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Bibliografia</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Índice</h2>
+   
+  <ul>
+  <li><a href="#sec-tut-graphics-plot" id="toc-sec-tut-graphics-plot" class="nav-link active" data-scroll-target="#sec-tut-graphics-plot"><span class="header-section-number">10.1</span> A função <code>plot()</code></a>
+  <ul class="collapse">
+  <li><a href="#uma-ou-duas-variáveis" id="toc-uma-ou-duas-variáveis" class="nav-link" data-scroll-target="#uma-ou-duas-variáveis"><span class="header-section-number">10.1.1</span> Uma ou duas variáveis</a></li>
+  <li><a href="#data-frames" id="toc-data-frames" class="nav-link" data-scroll-target="#data-frames"><span class="header-section-number">10.1.2</span> <em>Data frames</em></a></li>
+  <li><a href="#outros-objetos" id="toc-outros-objetos" class="nav-link" data-scroll-target="#outros-objetos"><span class="header-section-number">10.1.3</span> Outros objetos</a></li>
+  <li><a href="#outras-representações" id="toc-outras-representações" class="nav-link" data-scroll-target="#outras-representações"><span class="header-section-number">10.1.4</span> Outras representações</a></li>
+  </ul></li>
+  <li><a href="#sec-tut-graphics-high" id="toc-sec-tut-graphics-high" class="nav-link" data-scroll-target="#sec-tut-graphics-high"><span class="header-section-number">10.2</span> Outras funções (alto nível)</a></li>
+  <li><a href="#a-função-par" id="toc-a-função-par" class="nav-link" data-scroll-target="#a-função-par"><span class="header-section-number">10.3</span> A função <code>par()</code></a></li>
+  <li><a href="#títulos-e-rótulos" id="toc-títulos-e-rótulos" class="nav-link" data-scroll-target="#títulos-e-rótulos"><span class="header-section-number">10.4</span> Títulos e rótulos</a></li>
+  <li><a href="#eixos-escalas-e-caixa" id="toc-eixos-escalas-e-caixa" class="nav-link" data-scroll-target="#eixos-escalas-e-caixa"><span class="header-section-number">10.5</span> Eixos, escalas e caixa</a></li>
+  <li><a href="#pontos" id="toc-pontos" class="nav-link" data-scroll-target="#pontos"><span class="header-section-number">10.6</span> Pontos</a>
+  <ul class="collapse">
+  <li><a href="#símbolo-pch" id="toc-símbolo-pch" class="nav-link" data-scroll-target="#símbolo-pch"><span class="header-section-number">10.6.1</span> Símbolo (<code>pch</code>)</a></li>
+  <li><a href="#tamanho-cex" id="toc-tamanho-cex" class="nav-link" data-scroll-target="#tamanho-cex"><span class="header-section-number">10.6.2</span> Tamanho (<code>cex</code>)</a></li>
+  <li><a href="#cores-col" id="toc-cores-col" class="nav-link" data-scroll-target="#cores-col"><span class="header-section-number">10.6.3</span> Cores (<code>col</code>)</a></li>
+  </ul></li>
+  <li><a href="#linhas" id="toc-linhas" class="nav-link" data-scroll-target="#linhas"><span class="header-section-number">10.7</span> Linhas</a>
+  <ul class="collapse">
+  <li><a href="#tipo-lty" id="toc-tipo-lty" class="nav-link" data-scroll-target="#tipo-lty"><span class="header-section-number">10.7.1</span> Tipo (<code>lty</code>)</a></li>
+  <li><a href="#espesura-lwd" id="toc-espesura-lwd" class="nav-link" data-scroll-target="#espesura-lwd"><span class="header-section-number">10.7.2</span> Espesura (<code>lwd</code>)</a></li>
+  </ul></li>
+  <li><a href="#sec-tut-graphics-margins" id="toc-sec-tut-graphics-margins" class="nav-link" data-scroll-target="#sec-tut-graphics-margins"><span class="header-section-number">10.8</span> Margens</a></li>
+  <li><a href="#sec-tut-graphics-low" id="toc-sec-tut-graphics-low" class="nav-link" data-scroll-target="#sec-tut-graphics-low"><span class="header-section-number">10.9</span> Funções gráficas de baixo nível</a></li>
+  <li><a href="#sec-tut-graphics-col" id="toc-sec-tut-graphics-col" class="nav-link" data-scroll-target="#sec-tut-graphics-col"><span class="header-section-number">10.10</span> Cores</a>
+  <ul class="collapse">
+  <li><a href="#especificação-de-cores" id="toc-especificação-de-cores" class="nav-link" data-scroll-target="#especificação-de-cores"><span class="header-section-number">10.10.1</span> Especificação de cores</a></li>
+  </ul></li>
+  <li><a href="#sec-tut-graphics-legend" id="toc-sec-tut-graphics-legend" class="nav-link" data-scroll-target="#sec-tut-graphics-legend"><span class="header-section-number">10.11</span> Legendas</a></li>
+  <li><a href="#ficheiros-de-imagens" id="toc-ficheiros-de-imagens" class="nav-link" data-scroll-target="#ficheiros-de-imagens"><span class="header-section-number">10.12</span> Ficheiros de imagens</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/t040-graphics.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/t040-graphics.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div><div class="quarto-other-links"><h2>Outros Links</h2><ul><li><a href="https://r-graph-gallery.com/color-palette-finder" rel="external" target="_blank"><i class="bi bi-link-45deg"></i>Color Palette Finder</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./tutorials.html">Tutoriais</a></li><li class="breadcrumb-item"><a href="./t040-graphics.html"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span id="sec-tut-graphics" class="quarto-section-identifier"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Gráficos</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Data de Publicação</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">14 de abril de 2025</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>Neste tutorial apresentam-se conceitos introdutórios sobre a elaboração de gráficos no R. Estes conceitos serão depois aplicados em situações específicas ao longo de outros tutoriais.</p>
+<section id="sec-tut-graphics-plot" class="level2" data-number="10.1">
+<h2 data-number="10.1" class="anchored" data-anchor-id="sec-tut-graphics-plot"><span class="header-section-number">10.1</span> A função <code>plot()</code></h2>
+<p>A função <code>plot()</code> é uma função genérica para representar graficamente o objeto que é passado à função. O tipo de gráfico criado depende da natureza do objeto fornecido à função, sendo o processo de seleção automático.</p>
+<section id="uma-ou-duas-variáveis" class="level3" data-number="10.1.1">
+<h3 data-number="10.1.1" class="anchored" data-anchor-id="uma-ou-duas-variáveis"><span class="header-section-number">10.1.1</span> Uma ou duas variáveis</h3>
+<p>Por norma são passadas à função <code>plot()</code> um (<code>x</code>) ou dois (<code>x</code> e <code>y</code>) vetores com os dados a serem representados. O tipo de gráfico produzido depende da natureza, numérica ou categórica, das variáveis especificadas. O código que se segue ilustra as várias possibilidades estando os gráficos resultantes na <a href="#fig-tut-graphics-plot" class="quarto-xref">Figura&nbsp;<span>10.1</span></a>. A descrição das variáveis pode ser obtida executando <code>?mtcars</code> na consola do R.</p>
+<div class="sourceCode cell-code" id="annotated-cell-1"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-1" class="code-annotation-target"><a href="#annotated-cell-1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-1-2" class="code-annotation-target"><a href="#annotated-cell-1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, mtcars<span class="sc">$</span>disp)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-1-3" class="code-annotation-target"><a href="#annotated-cell-1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>am)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-1-4" class="code-annotation-target"><a href="#annotated-cell-1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">factor</span>(mtcars<span class="sc">$</span>am))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-1-5" class="code-annotation-target"><a href="#annotated-cell-1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">factor</span>(mtcars<span class="sc">$</span>am), <span class="fu">factor</span>(mtcars<span class="sc">$</span>vs))</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-1-6" class="code-annotation-target"><a href="#annotated-cell-1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">factor</span>(mtcars<span class="sc">$</span>am), mtcars<span class="sc">$</span>mpg)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="1" data-code-annotation="1"><a href="#fig-tut-graphics-plot-1" class="quarto-xref">Figura&nbsp;<span>10.1 (a)</span></a>: quando a variável passada à função é numérica, é produzido um diagrama de dispersão com o índice da observação no eixo horizontal.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="2" data-code-annotation="2"><a href="#fig-tut-graphics-plot-2" class="quarto-xref">Figura&nbsp;<span>10.1 (b)</span></a>: no caso de serem passadas duas variáveis numéricas é produzido um diagrama de dispersão de <code>y</code> em função de <code>x</code>. Esta é a utilização mais frequente da função <code>plot()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="3" data-code-annotation="3"><a href="#fig-tut-graphics-plot-3" class="quarto-xref">Figura&nbsp;<span>10.1 (c)</span></a>: como não foi indicado ao R que a variável <code>am</code> é nominal e foram utilizados os valores 0 e 1 para codificar a informação, o resultado é um diagrama de dispersão semelhante ao primeiro caso.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="4" data-code-annotation="4"><a href="#fig-tut-graphics-plot-4" class="quarto-xref">Figura&nbsp;<span>10.1 (d)</span></a>: neste caso, indicou-se ao R que a variável <code>am</code> é de natureza nominal utilizando a função <code>factor()</code> apresentada na <a href="t030-data.html#sec-data-categorical" class="quarto-xref"><span>Secção 9.7</span></a>. De forma sensata, o gráfico apresentado é um diagrama de barras mostrando a contagem de observações em cada categoria.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="5" data-code-annotation="5"><a href="#fig-tut-graphics-plot-5" class="quarto-xref">Figura&nbsp;<span>10.1 (e)</span></a>: No caso de ambas as variáveis serem categóricas é produzido um gráfico de barras sobrepostas normalizadas. A largura das barras é proporcional às contagens da variável <code>x</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-1" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="6" data-code-annotation="6"><a href="#fig-tut-graphics-plot-6" class="quarto-xref">Figura&nbsp;<span>10.1 (f)</span></a>: quando se passa à função <code>plot()</code> uma variável categórica e uma numérica (nesta ordem) o gráfico produzido é um diagrama de extremos e quartis para cada nível da variável categórica.</span>
+</dd>
+</dl>
+</div>
+<div id="fig-tut-graphics-plot" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Uma variável numérica
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Duas variáveis numéricas
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-3.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Uma variável categórica codificada como numérica
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-4.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Uma variável categórica codificada corretamente
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-5" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-5.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) Duas variáveis categóricas
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-6" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-6.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) Uma variável categórica e uma variável numérica
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.1: Resultado de <code>plot()</code> conforme o tipo de variáveis
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Para já, vamos ignorar as questões estéticas. Sem parametrização adicional, os gráficos do R são bastante simples, apenas com os elementos essenciais. Voltar-se-à a este tópico noutras secções.</p>
+</div>
+</div>
+</section>
+<section id="data-frames" class="level3" data-number="10.1.2">
+<h3 data-number="10.1.2" class="anchored" data-anchor-id="data-frames"><span class="header-section-number">10.1.2</span> <em>Data frames</em></h3>
+<p>Para especificar as variáveis a representar, não é obrigatório utilizar vetores. Em alternativa pode passar-se à função <code>plot()</code>, como argumento <code>x</code>, uma <em>data frame</em> com duas variáveis uma uma matriz com duas colunas. Por exemplo, considere-se o conjunto de dados <code>cars</code> e invoque-se a função <code>plot()</code>. O resultado é o da <a href="#fig-tut-graphics-plot-cars" class="quarto-xref">Figura&nbsp;<span>10.2</span></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-tut-graphics-plot-cars" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-cars-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.2: Resultado de <code>plot(cars)</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Neste caso, como o objeto <code>cars</code> é uma <em>data frame</em> com duas variáveis, <code>speed</code> (velocidade) e <code>dist</code> (distância de paragem), a função devolve um diagrama de dispersão com a primeira variável no eixo horizontal e a segunda no eixo vertical.</p>
+<p>Caso houvesse mais de duas variáveis, como no conjunto de dados <code>trees</code>, seria apresentado um gráfico semelhante ao da <a href="#fig-tut-graphics-plot-trees" class="quarto-xref">Figura&nbsp;<span>10.3</span></a>, em que é apresentado um diagrama de dispersão para cada combinação de duas de variáveis, escolhidas entre as variáveis presentes na <em>data frame</em>, podendo este gráfico ser também obtido com a função <code>pairs()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(trees)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-tut-graphics-plot-trees" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-trees-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-trees-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-trees-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.3: Resultado de <code>plot(trees)</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="outros-objetos" class="level3" data-number="10.1.3">
+<h3 data-number="10.1.3" class="anchored" data-anchor-id="outros-objetos"><span class="header-section-number">10.1.3</span> Outros objetos</h3>
+<p>Para uso em aplicações mais avançadas, a função <code>plot()</code> está definida para outro tipo de objetos, como séries cronológicas e números complexos, e tem inúmeras potencialidades. Nesta secção pretendeu-se apenas dar uma ideia da flexibilidade da função.</p>
+</section>
+<section id="outras-representações" class="level3" data-number="10.1.4">
+<h3 data-number="10.1.4" class="anchored" data-anchor-id="outras-representações"><span class="header-section-number">10.1.4</span> Outras representações</h3>
+<p>Por omissão, a função <code>plot()</code> representa diagramas de dispersão utilizando pontos. É possível obter outro tipo de representações através do argumento <code>type =</code>. Na <a href="#fig-tut-graphics-plot-type" class="quarto-xref">Figura&nbsp;<span>10.4</span></a> ilustram-se os vários tipos de representações disponíveis.</p>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"l"</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"b"</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"o"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"h"</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"s"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"S"</span>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"n"</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-plot-type" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Pontos, <code>type = "p"</code> (por omissão)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Linhas, <code>type = "l"</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-3.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Pontos e linhas, <code>type = "b"</code>
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-4.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Pontos e linhas, <code>type = "o"</code>
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-5" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-5.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-5-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(e) Densidade, <code>type = "h"</code>
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-6" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-6.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-6-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(f) Escada, <code>type = "s"</code> (ponto no topo)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-7" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-7.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-7-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(g) Escada, <code>type = "S"</code> (ponto no fundo)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-type" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-type-8" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-type-8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-type-8.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-type" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-type-8-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(h) Nada, <code>type = "n"</code> (apenas estabelece os eixos)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-type-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.4: Diferentes tipos de representação disponíveis em <code>plot()</code>
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-tut-graphics-high" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="sec-tut-graphics-high"><span class="header-section-number">10.2</span> Outras funções (alto nível)</h2>
+<p>A função <code>plot()</code> é designada por <em>função gráfica de alto nível</em>, pois produz um gráfico completo. Para além de <code>plot()</code>, existem outras funções de alto nível que produzem outros tipos de gráficos. Algumas destas funções são automaticamente invocadas pela função <code>plot()</code> quando as variáveis fornecidas à função são de determinado tipo. Enumeram-se abaixo as funções de utilização mais comum:</p>
+<ul>
+<li><p><code>plot()</code>: normalmente utilizada para produzir diagramas de dispersão (<a href="c050-bivariate.html#sec-bivar-scatter" class="quarto-xref"><span>Secção 5.3.1</span></a>), mas trata-se de uma função genérica que produz outros tipos de visualizações e representações adequadas para vários tipos de objetos conforme discutido em acima.</p></li>
+<li><p><code>hist()</code>: função específica para produzir histogramas (<a href="c040-quantitative.html#sec-quant-hist" class="quarto-xref"><span>Secção 4.2.2</span></a>).</p></li>
+<li><p><code>boxplot()</code>: função específica para diagramas de extremos e quartis (<a href="c040-quantitative.html#sec-quant-disp" class="quarto-xref"><span>Secção 4.3.2</span></a>).</p></li>
+<li><p><code>barplot()</code>: função específica para elaborar gráficos de barras (<a href="c030-qualitative.html#sec-quali-barplot" class="quarto-xref"><span>Secção 3.2</span></a>).</p></li>
+<li><p><code>mosaicplot()</code>: função específica para o gráfico em mosaico (<a href="c050-bivariate.html#sec-bivar-mosaic" class="quarto-xref"><span>Secção 5.1.2</span></a>).</p></li>
+<li><p><code>stripchart()</code>: função para produzir diagramas de pontos (como por exemplo a <a href="c040-quantitative.html#fig-quant-strip-mean" class="quarto-xref">Figura&nbsp;<span>4.7</span></a>, úteis para visualizar pequenos conjuntos de dados.</p></li>
+<li><p><code>pie()</code>: função para elaborar gráficos circulares] (<a href="c030-qualitative.html#sec-quali-barplot" class="quarto-xref"><span>Secção 3.2</span></a>).</p></li>
+</ul>
+<p>Nas secções que se seguem será discutida a utilização de alguns parâmetros comuns a todas as funções enumeradas acima. Noutros tutoriais será abordada a utilização de cada função específica mencionada acima.</p>
+</section>
+<section id="a-função-par" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="a-função-par"><span class="header-section-number">10.3</span> A função <code>par()</code></h2>
+<p>A função <code>par()</code> serve para estabelecer de forma permanente ou consultar o valor de parâmetros a utilizar nos gráficos. Alguns parâmetros gráficos só podem ser modificados através de uma chamada a <code>par()</code> mas, na grande maioria, pode ser ajustados nas funções gráficas, tal como em <code>plot()</code>.</p>
+<p>Por exemplo, <code>bty</code> é um parâmetro gráfico que controla a aparência da caixa que envolve os gráficos (<code>bty = "l"</code> especifica uma caixa em forma de “L”) e <code>ann = FALSE</code> suprime os rótulos dos eixos. Estes parâmetros podem ser especificados numa chamada a <code>par()</code> ou podem ser especificados na chamada a uma função gráfica de alto nível, tal como <code>plot()</code>. Atente no exemplo no código que se segue e que produz a <a href="#fig-tut-graphics-plot-cars-xy-par" class="quarto-xref">Figura&nbsp;<span>10.5</span></a>.</p>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">bty =</span> <span class="st">"l"</span>, <span class="at">ann =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">ann =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-plot-cars-xy-par" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-par-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-par" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-par-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-par-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-par-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-par" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-par-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) O ajuste <code>ann = TRUE</code> afeta apenas este gráfico
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-par" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-par-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-par-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-par-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-par" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-par-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) A chamada a <code>par()</code> afeta todos os gráficos
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-cars-xy-par-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.5: Ajuste de parâmetros com <code>par()</code>
+</figcaption>
+</figure>
+</div>
+<p>Note que o ajuste realizados em <code>par()</code> afetam ambos os gráficos da <a href="#fig-tut-graphics-plot-cars-xy-par" class="quarto-xref">Figura&nbsp;<span>10.5</span></a>. No entanto, na <a href="#fig-tut-graphics-plot-cars-xy-par-1" class="quarto-xref">Figura&nbsp;<span>10.5 (a)</span></a> um dos parâmetros, <code>ann</code>, foi redefinido, afetando apenas essa figura.</p>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Importante
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Quando o parâmetro é especificado na chamada a <code>plot()</code> (ou outra função gráfica de alto nível) apenas afeta o gráfico que está a ser gerado. Por outro lado, se o parâmetro for estabelecido numa chamada a <code>par()</code> o valor definido será utilizado em todos os gráficos subsequentes.</p>
+</div>
+</div>
+<p>A função <code>par()</code> permite consultar o valor dos parâmetros, devolvendo uma lista de valores. Uma utilização frequente desta possibilidade é poder fazer alterações nos parâmetros para um gráfico específico e depois recuperar os valores por omissão. No código que se segue exemplifica-se essa possibilidade.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-6"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-6-1" class="code-annotation-target"><a href="#annotated-cell-6-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">bty =</span> <span class="st">"l"</span>, <span class="at">ann =</span> <span class="cn">FALSE</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-6-2" class="code-annotation-target"><a href="#annotated-cell-6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-6" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-6-3" class="code-annotation-target"><a href="#annotated-cell-6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(p)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-6" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="1" data-code-annotation="1">Chamada a <code>par()</code>, guardando os valores prévios dos parâmetros modificados no objeto <code>p</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="2" data-code-annotation="2">Código para elaborar os gráficos desejados.</span>
+</dd>
+<dt data-target-cell="annotated-cell-6" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-6" data-code-lines="3" data-code-annotation="3">No final, restaura os valores dos parâmetros modificados.</span>
+</dd>
+</dl>
+</div>
+</div>
+<p>Há inúmeros parâmetros que podem ser modificados e que não serão referidos neste tutorial. Recomenda-se a leitura da documentação, por exemplo, executando <code>?par</code> na consola do R.</p>
+</section>
+<section id="títulos-e-rótulos" class="level2" data-number="10.4">
+<h2 data-number="10.4" class="anchored" data-anchor-id="títulos-e-rótulos"><span class="header-section-number">10.4</span> Títulos e rótulos</h2>
+<p>Em geral, em todas as funções que produzem gráficos, tal como a função <code>plot()</code>, é necessário ajustar os títulos e os rótulos dos eixos, pois os valores por omissão do R podem não ser adequados. A forma de o fazer é comum às diversas funções que produzem gráficos.</p>
+<p>Para alterar os títulos e os rótulos dos eixos utilizam-se os argumentos descritos na <a href="#tbl-graphics-labels" class="quarto-xref">Tabela&nbsp;<span>10.1</span></a> na chamada da função gráfica.</p>
+<div id="tbl-graphics-labels" class="striped quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[30,70]">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-graphics-labels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;10.1: Configuração de títulos e rótulos
+</figcaption>
+<div aria-describedby="tbl-graphics-labels-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table-striped caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Argumento</th>
+<th style="text-align: left;">Elemento</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>main =</code></td>
+<td style="text-align: left;">Título principal (no topo do gráfico)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>sub =</code></td>
+<td style="text-align: left;">Título secundário (ao fundo do gráfico)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>xlab =</code></td>
+<td style="text-align: left;">Rótulo do eixo horizontal</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ylab =</code></td>
+<td style="text-align: left;">Rótulo do eixo vertical</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ann = false</code></td>
+<td style="text-align: left;">Suprime títulos e rótulos</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>O código que se segue ilustra a utilização deste argumentos para configuração do gráfico apresentado na <a href="#fig-tut-graphics-plot-cars" class="quarto-xref">Figura&nbsp;<span>10.2</span></a>, que se apresenta novamente na <a href="#fig-tut-graphics-plot-cars-xy-ann" class="quarto-xref">Figura&nbsp;<span>10.6</span></a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Distância de paragem vs. velocidade"</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">sub =</span> <span class="st">"(elaborado a partir do conjunto cars)"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Velocidade"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distância de paragem"</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-tut-graphics-plot-cars-xy-ann" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-ann-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-ann-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-cars-xy-ann-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.6: Configuração de títulos e rótulos
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="eixos-escalas-e-caixa" class="level2" data-number="10.5">
+<h2 data-number="10.5" class="anchored" data-anchor-id="eixos-escalas-e-caixa"><span class="header-section-number">10.5</span> Eixos, escalas e caixa</h2>
+<p>Salvo indicação em contrário, os gráficos abrangem o intervalo de valores das variáveis fornecidas adicionada de uma pequena margem e o número e posição das marcas da escala são determinadas automaticamente de forma a serem valores <em>redondos</em>. Os argumentos da <a href="#tbl-graphics-axes" class="quarto-xref">Tabela&nbsp;<span>10.2</span></a> permitem modificar a forma como os eixos são desenhados.</p>
+<div id="tbl-graphics-axes" class="striped quarto-float quarto-figure quarto-figure-center anchored" data-tbl-colwidths="[30,70]">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-graphics-axes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;10.2: Configuração dos eixos e escalas
+</figcaption>
+<div aria-describedby="tbl-graphics-axes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table-striped caption-top table">
+<colgroup>
+<col style="width: 30%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Argumento</th>
+<th style="text-align: left;">Elemento</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>axes = false</code></td>
+<td style="text-align: left;">Suprime a apresentação dos eixos e da caixa envolvente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>bty = "n"</code> ou<br><code>frame.plot = FALSE</code></td>
+<td style="text-align: left;">Supressão da caixa envolvente. Também se pode especificar um tipo de caixa envolvente diferente através de <code>bty</code>: <code>"o"</code> (por omissão), <code>"l"</code>, <code>"7"</code>, <code>"c"</code>, <code>"u"</code> ou <code>"]"</code>, sendo que a caixa imitará a letra maiúscula correspondente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>xaxt = "n"</code></td>
+<td style="text-align: left;">Suprime a apresentação do eixo horizontal (vertical para <code>yaxt</code>)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>xlim = c(x1, x2)</code></td>
+<td style="text-align: left;">Define os limites do eixo horizontal (vertical para <code>ylim</code>) sendo <code>x1</code> e <code>x2</code> os limites inferior e superior, respetivamente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>xaxp = c(x1, x2, n)</code></td>
+<td style="text-align: left;">Define a posição das marcas no eixo horizontal (vertical para <code>yaxp</code>), sendo <code>x1</code> e <code>x2</code> as coordenadas da primeira e última marcas e <code>n</code> o número de intervalos desejado<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>las =</code></td>
+<td style="text-align: left;">Especifica como a escala deve ser apresentada podendo tomar os valores 0 (paralela aos eixos), 1 (na horizontal), 2 (perpendicular aos eixos) ou 3 (na vertical)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>xlog = true</code></td>
+<td style="text-align: left;">Para utilizar uma escala logarítmica no eixo horizontal (vertical para <code>ylog</code>). Alternativamente é possível especificar <code>log = "x"</code>, <code>log = "y"</code> ou <code>log = "xy"</code> para indicar o(s) eixo(s) que devem ter escala logarítmica</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>asp =</code></td>
+<td style="text-align: left;">Configura o rácio entre as escalas horizontal e vertical. Por exemplo, para representar um círculo é necessário <code>asp = 1</code> para evitar que este fique com um aspeto ovalizado</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>O código que se segue produz os gráficos da <a href="#fig-tut-graphics-plot-cars-xy-axes" class="quarto-xref">Figura&nbsp;<span>10.7</span></a> onde se podem verificar os efeitos dos ajustes nos vários parâmetros.</p>
+<div class="sourceCode cell-code" id="annotated-cell-8"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-8-1" class="code-annotation-target"><a href="#annotated-cell-8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">axes =</span> <span class="cn">FALSE</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-8-2" class="code-annotation-target"><a href="#annotated-cell-8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">xaxt =</span> <span class="st">"n"</span>, <span class="at">yaxt =</span> <span class="st">"n"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-8-3" class="code-annotation-target"><a href="#annotated-cell-8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="annotated-cell-8-4"><a href="#annotated-cell-8-4" aria-hidden="true" tabindex="-1"></a>  cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist,                    </span>
+<span id="annotated-cell-8-5"><a href="#annotated-cell-8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">30</span>),                                         </span>
+<span id="annotated-cell-8-6"><a href="#annotated-cell-8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">yaxp =</span> <span class="fu">c</span>(<span class="dv">20</span>, <span class="dv">100</span>, <span class="dv">5</span>),</span>
+<span id="annotated-cell-8-7"><a href="#annotated-cell-8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"u"</span></span>
+<span id="annotated-cell-8-8"><a href="#annotated-cell-8-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-8" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-8-9" class="code-annotation-target"><a href="#annotated-cell-8-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">log =</span> <span class="st">"y"</span>, <span class="at">frame.plot =</span> <span class="cn">FALSE</span>, <span class="at">las =</span> <span class="dv">1</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-8" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="1" data-code-annotation="1"><a href="#fig-tut-graphics-plot-cars-xy-axes-1" class="quarto-xref">Figura&nbsp;<span>10.7 (a)</span></a>: o argumento <code>axes = FALSE</code> suprime os eixos e a caixa envolvente.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="2" data-code-annotation="2"><a href="#fig-tut-graphics-plot-cars-xy-axes-2" class="quarto-xref">Figura&nbsp;<span>10.7 (b)</span></a>: os eixos podem ser suprimidos individualmente com <code>xaxt = "n"</code> e <code>yaxt = "n"</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="3" data-code-annotation="3"><a href="#fig-tut-graphics-plot-cars-xy-axes-3" class="quarto-xref">Figura&nbsp;<span>10.7 (c)</span></a>: especificaram-se os limites do eixo horizontal com <code>xlim</code>, as marcas do eixo vertical com <code>yaxp</code> e uma caixa envolvente aberta com <code>bty = "u"</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-8" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-8" data-code-lines="9" data-code-annotation="4"><a href="#fig-tut-graphics-plot-cars-xy-axes-4" class="quarto-xref">Figura&nbsp;<span>10.7 (d)</span></a>: o eixo vertical é logarítmica com <code>log = "y"</code>, ambas as escalas são apresentadas na horizontal com <code>las = 1</code> e foi omitida a caixa envolvente com <code>frame.plot = FALSE</code>.</span>
+</dd>
+</dl>
+</div>
+<div id="fig-tut-graphics-plot-cars-xy-axes" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-axes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-axes-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-axes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-axes-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-axes-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Supressão dos eixos e caixa
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-axes-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-axes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-axes-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-axes-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Supressão dos eixos
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-axes-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-axes-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-axes-3.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-axes-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Ajuste das escalas e caixa
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-plot-cars-xy-axes-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-plot-cars-xy-axes-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-plot-cars-xy-axes-4.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-plot-cars-xy-axes" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-plot-cars-xy-axes-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Escala vertical logarítmica
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-plot-cars-xy-axes-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.7: Exemplos de ajustes nos eixos e escalas
+</figcaption>
+</figure>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Os parâmetros utilizados nos gráficos apresentados neste tutorial podem não fazer grande sentido prático. De facto, apenas se está a explorar as potencialidades na parametrização dos gráficos do R.</p>
+</div>
+</div>
+</section>
+<section id="pontos" class="level2" data-number="10.6">
+<h2 data-number="10.6" class="anchored" data-anchor-id="pontos"><span class="header-section-number">10.6</span> Pontos</h2>
+<p>O símbolo que representa cada ponto é determinado pelos parâmetros gráficos <code>pch</code> (símbolo), <code>cex</code> (tamanho) e <code>col</code> (cor). Os valores destes parâmetros podem ser fornecidos como um valor único, afetando todos os pontos, ou como um vetor de valores, afetando cada ponto individualmente e sendo <em>reciclado</em> como necessário (para relembrar a <em>regra da reciclagem</em> do R, ver a <a href="t030-data.html#sec-tut-data-vec-recycle" class="quarto-xref"><span>Secção 9.1.8</span></a>).</p>
+<section id="símbolo-pch" class="level3" data-number="10.6.1">
+<h3 data-number="10.6.1" class="anchored" data-anchor-id="símbolo-pch"><span class="header-section-number">10.6.1</span> Símbolo (<code>pch</code>)</h3>
+<p>Geralmente, para especificar o símbolo a utilizar, utiliza-se um número inteiro entre 0 e 25, que corresponde a um dos símbolos definidos no R. Por omissão o símbolo utilizado é o 1 (círculo). Para consultar a lista de símbolos pode executar <code>?pch</code> na consola. Na <a href="#fig-tut-graphics-pch" class="quarto-xref">Figura&nbsp;<span>10.8</span></a> apresentam-se dois exemplos da utilização do parâmetro <code>pch</code>.</p>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">pch =</span> <span class="dv">17</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">pch =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-pch" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-pch-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-pch" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-pch-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-pch-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-pch-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-pch" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-pch-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Apenas um símbolo para os pontos todos
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-pch" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-pch-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-pch-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-pch-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-pch" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-pch-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Vetor com 4 símbolos (reciclado)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-pch-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.8: Especificação do parâmetro <code>pch</code>
+</figcaption>
+</figure>
+</div>
+<p>Note que, na <a href="#fig-tut-graphics-pch-2" class="quarto-xref">Figura&nbsp;<span>10.8 (b)</span></a>, o símbolo 1 é utilizado para as observações 1, 5, 9, …, o símbolo 2 para as observações 2, 6, 10, … e assim sucessivamente. Na prática, os símbolos devem ser associados a uma qualquer condição e o gráfico deve ter uma legenda (<a href="#sec-tut-graphics-legend" class="quarto-xref"><span>Secção 10.11</span></a>).</p>
+</section>
+<section id="tamanho-cex" class="level3" data-number="10.6.2">
+<h3 data-number="10.6.2" class="anchored" data-anchor-id="tamanho-cex"><span class="header-section-number">10.6.2</span> Tamanho (<code>cex</code>)</h3>
+<p>Por omissão, o valor do parâmetro <code>cex</code> é 1. O tamanho do símbolo é proporcional ao valor utilizado. As regras para a utilização de vetores de tamanhos são as mesmas que para os símbolos. A <a href="#fig-tut-graphics-cex" class="quarto-xref">Figura&nbsp;<span>10.9</span></a> mostra exemplos da utilização de <code>cex</code>.</p>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">cex =</span> <span class="fl">5.5</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">cex =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-cex" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-cex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-cex" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-cex-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-cex-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-cex-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-cex" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-cex-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Apenas um tamanho para os pontos todos
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-cex" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-cex-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-cex-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-cex-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-cex" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-cex-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Vetor com 3 tamanhos (reciclado)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-cex-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.9: Especificação do parâmetro <code>cex</code>
+</figcaption>
+</figure>
+</div>
+</section>
+<section id="cores-col" class="level3" data-number="10.6.3">
+<h3 data-number="10.6.3" class="anchored" data-anchor-id="cores-col"><span class="header-section-number">10.6.3</span> Cores (<code>col</code>)</h3>
+<p>O R dispõe de várias formas para especificar as cores a utilizar nos diversos elementos gráficos (ver <a href="#sec-tut-graphics-col" class="quarto-xref"><span>Secção 10.10</span></a>). Para especificar a cor dos símbolos utilizam-se os parâmetros <code>col</code>, para o contorno dos símbolos, e <code>bg</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a> para o preenchimento, nos símbolos que o permitem.</p>
+<p>As cores podem ser identificadas por números inteiros, por códigos ou por nomes. Tal como para os parâmetros acima, podem ser fornecidos vetores de cores. O código que se segue produz a <a href="#fig-tut-graphics-col" class="quarto-xref">Figura&nbsp;<span>10.10</span></a> e permite ver alguns exemplos da utilização de <code>col</code>.</p>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">bg =</span> <span class="st">"lightblue"</span>)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars<span class="sc">$</span>speed, cars<span class="sc">$</span>dist, <span class="at">pch =</span> <span class="dv">22</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">bg =</span> <span class="st">"lightblue"</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-col" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-col" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-col-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-col-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-col-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-col" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-col-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Apenas uma cor para os pontos todos
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-col" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-col-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-col-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-col-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-col" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-col-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Vetor com 3 cores (reciclado)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-col" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-col-3" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-col-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-col-3.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-col" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-col-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c) Símbolo que não permite especificar preenchimento
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-col" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-col-4" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-col-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-col-4.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-col" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-col-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d) Símbolo que permite especificar preenchimento
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-col-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.10: Especificação dos parâmetros <code>col</code> e <code>bg</code>
+</figcaption>
+</figure>
+</div>
+<p>Na <a href="#sec-tut-graphics-col" class="quarto-xref"><span>Secção 10.10</span></a> serão abordadas com mais detalhe as diversas formas de utilização da cor nos diferentes elementos gráficos</p>
+</section>
+</section>
+<section id="linhas" class="level2" data-number="10.7">
+<h2 data-number="10.7" class="anchored" data-anchor-id="linhas"><span class="header-section-number">10.7</span> Linhas</h2>
+<p>A aparência das linhas é controlada pelos parâmetros <code>lty</code> (tipo), <code>lwd</code> (espessura) e <code>col</code> (cor). Relativamente à cor das linhas, esta é especificada da mesma forma que para os pontos. Discutem-se a seguir os outros dois parâmetros.</p>
+<section id="tipo-lty" class="level3" data-number="10.7.1">
+<h3 data-number="10.7.1" class="anchored" data-anchor-id="tipo-lty"><span class="header-section-number">10.7.1</span> Tipo (<code>lty</code>)</h3>
+<p>O R dispõe de um conjunto de linhas pré-definidas e permite definir outras. As linhas pré-definidas podem ser especificadas com um número entre 0 e 6, correspondendo, respetivamente aos tipos <code>"blank"</code>, <code>"solid"</code>, <code>"dashed"</code>, <code>"dotted"</code>, <code>"dotdash"</code>, <code>"longdash"</code> e <code>"twodash"</code>. Na <a href="#fig-tut-graphics-lty-lwd" class="quarto-xref">Figura&nbsp;<span>10.11</span></a> e código precedente estão exemplos da utilização de <code>lty</code>.</p>
+</section>
+<section id="espesura-lwd" class="level3" data-number="10.7.2">
+<h3 data-number="10.7.2" class="anchored" data-anchor-id="espesura-lwd"><span class="header-section-number">10.7.2</span> Espesura (<code>lwd</code>)</h3>
+<p>O parâmetro <code>lwd</code> controla a espessura da linha e deve ser numérico. Por omissão o valor de <code>lwd</code> é 1. Na figura <a href="#fig-tut-graphics-lty-lwd-2" class="quarto-xref">Figura&nbsp;<span>10.11 (b)</span></a> encontra-se um exemplo da especificação de <code>lwd</code>. Note que, no caso dos segmentos, o comprimento destes também é proporcional ao valor de <code>lwd</code>.</p>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="st">"dashed"</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mtcars<span class="sc">$</span>mpg, <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lty =</span> <span class="dv">2</span>, <span class="at">lwd =</span> <span class="dv">3</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-lty-lwd" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-lty-lwd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-lty-lwd" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-lty-lwd-1" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-lty-lwd-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-lty-lwd-1.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-lty-lwd" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-lty-lwd-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a) Especificação de uma linha tracejada
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-lty-lwd" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-lty-lwd-2" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-lty-lwd-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-lty-lwd-2.png" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-lty-lwd" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-lty-lwd-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b) Especificação de uma linha tracejada mais espessa
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-lty-lwd-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.11: Especificação do parâmetro <code>lty</code>
+</figcaption>
+</figure>
+</div>
+</section>
+</section>
+<section id="sec-tut-graphics-margins" class="level2" data-number="10.8">
+<h2 data-number="10.8" class="anchored" data-anchor-id="sec-tut-graphics-margins"><span class="header-section-number">10.8</span> Margens</h2>
+<p>As margens das figuras, definidas como o espaço que vai desde o limite da figura até à caixa que envolve o gráfico, podem ser ajustadas através dos parâmetros <code>mai</code> e <code>mar</code>, recorrendo à função <code>par()</code>. As margens podem ser especificadas em polegadas (<code>mai</code>) ou, mais frequentemente, em linhas de texto com <code>mar</code>.</p>
+<p>Em ambos os casos é necessário fornecer um vetor com 4 valores, especificando as margens inferior, esquerda, superior e direita, respetivamente. Por omissão, o R estabelece <code>mar = c(5, 4, 4, 2) + 0.1</code>. Note que a margem direita é mais pequena, pois, por norma, está vazia. As outras devem ser suficientes para os títulos, subtítulos, escalas e rótulos dos eixos.</p>
+<p>As situações mais comuns em que é necessário alterar as margens são a colocação de um segundo eixo vertical ou de uma legenda do lado direito. Caso o gráfico não inclua algum dos elementos referidos acima, as margens podem ser ajustadas.</p>
+<p>A <a href="#fig-tut-graphics-mar" class="quarto-xref">Figura&nbsp;<span>10.12</span></a> contém exatamente o mesmo gráfico da <a href="#fig-tut-graphics-plot-cars" class="quarto-xref">Figura&nbsp;<span>10.2</span></a>. No entanto, especificaram-se margens muito pequenas (1.5 linhas) e vários elementos gráficos foram cortados ou seriam colocados fora da área útil. Para que as área das margens seja evidente utilizou-se um fundo cinzento (<code>bg = "gray95"</code>).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">bg =</span> <span class="st">"gray95"</span>, <span class="at">mar =</span> <span class="fu">rep</span>(<span class="fl">1.5</span>, <span class="dv">4</span>))</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(p)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div id="fig-tut-graphics-mar" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-mar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-mar-1.png" class="img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-mar-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.12: Especificação das margens
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-tut-graphics-low" class="level2" data-number="10.9">
+<h2 data-number="10.9" class="anchored" data-anchor-id="sec-tut-graphics-low"><span class="header-section-number">10.9</span> Funções gráficas de baixo nível</h2>
+<p>No sistema de gráficos do R existem dois tipos de funções para colocar elementos gráficos numa figura:</p>
+<ul>
+<li><p><strong>Funções gráficas de alto nível</strong>: são capazes de produzir um gráfico completo, tal como <code>plot()</code> ou as funções descritas na <a href="#sec-tut-graphics-high" class="quarto-xref"><span>Secção 10.2</span></a>.</p></li>
+<li><p><strong>Funções gráficas de baixo nível</strong>: este conjunto de funções acrescenta elementos a um gráfico já existente, por exemplo, pontos adicionais, linhas, anotações, etc.</p></li>
+</ul>
+<p>Algumas das funções de baixo nível mais utilizadas são:</p>
+<ul>
+<li><p><code>points(x, y, ...)</code>: para adicionar pontos adicionais ao gráfico, sendo possível especificar símbolos, cores, etc.</p></li>
+<li><p><code>lines(x, y, ...)</code>: para adicionar linhas a ligar as coordenadas especificadas, sendo possível especificar tipos, espessuras, cores, etc.</p></li>
+<li><p><code>text(x, y, labels, ...)</code>: para adicionar anotações ao gráfico, especificando a posição, o texto em si, tamanho, cores, etc.</p></li>
+<li><p><code>mtext(text)</code>: para colocar texto nas margens.</p></li>
+<li><p><code>abline()</code>: trata-se de uma função para acrescentar linhas retas ao gráfico. A linha pode ser especificada de várias formas: <code>a =</code> e <code>b =</code> para a ordenada na origem e o declive, <code>v =</code> ou <code>h =</code> para linhas verticais e horizontais ou um objeto resultante de um modelo de regressão, <code>reg =</code> a partir dos quais se possam extrair os coeficientes da reta. Naturalmente, é possível especificar cores, espessuras, etc.</p></li>
+<li><p><code>polygon(x, y)</code>: para adicionar um polígono fechado delimitado pelas coordenadas especificadas, sendo possível especificar cores, preenchimentos, etc.</p></li>
+<li><p><code>title()</code>: para adicionar um título ou subtítulo ao gráfico, especificando cores, tamanhos, etc.</p></li>
+<li><p><code>axis(side, ...)</code>: para adicionar um eixo completo num dos lados do gráfico à escolha. Normalmente é utilizado quando se especifica <code>axis = FALSE</code> na função <code>plot()</code>, para poder configurar o eixo.</p></li>
+<li><p><code>box()</code>: para colocar uma caixa em torno do gráfico ou da figura, podendo especificar o tipo de linha, cores, etc.</p></li>
+<li><p><code>legend()</code>: para adicionar uma legenda ao gráfico. Esta função será descrita com detalhe na <a href="#sec-tut-graphics-legend" class="quarto-xref"><span>Secção 10.11</span></a>.</p></li>
+</ul>
+<p>O código que se segue produz a animação da <a href="#fig-tut-graphics-low-functions" class="quarto-xref">Figura&nbsp;<span>10.13</span></a>. Naturalmente, a figura final é confusa e não tem qualquer significado, apenas serve para ilustrar as potencialidades do R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-14"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-14-1"><a href="#annotated-cell-14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># posição das marcas em metros</span></span>
+<span id="annotated-cell-14-2"><a href="#annotated-cell-14-2" aria-hidden="true" tabindex="-1"></a>at_m <span class="ot">&lt;-</span> <span class="fu">pretty</span>(cars<span class="sc">$</span>dist <span class="sc">*</span> <span class="fl">0.3048</span>)</span>
+<span id="annotated-cell-14-3"><a href="#annotated-cell-14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="annotated-cell-14-4"><a href="#annotated-cell-14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># alargar margem direita</span></span>
+<span id="annotated-cell-14-5"><a href="#annotated-cell-14-5" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">rep</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">4</span>))</span>
+<span id="annotated-cell-14-6"><a href="#annotated-cell-14-6" aria-hidden="true" tabindex="-1"></a></span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-14-7" class="code-annotation-target"><a href="#annotated-cell-14-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cars, <span class="at">bty =</span> <span class="st">"n"</span>, <span class="at">xlab =</span> <span class="st">"Velocidade (mph)"</span>, <span class="at">ylab =</span> <span class="st">"Distância (ft)"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="2" onclick="event.preventDefault();">2</a><span id="annotated-cell-14-8" class="code-annotation-target"><a href="#annotated-cell-14-8" aria-hidden="true" tabindex="-1"></a><span class="fu">box</span>(<span class="at">lty =</span> <span class="st">"dotted"</span>, <span class="at">col =</span> <span class="st">"gray"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="3" onclick="event.preventDefault();">3</a><span id="annotated-cell-14-9" class="code-annotation-target"><a href="#annotated-cell-14-9" aria-hidden="true" tabindex="-1"></a><span class="fu">axis</span>(<span class="dv">4</span>, <span class="at">at =</span> at_m <span class="sc">/</span> <span class="fl">0.3048</span>, <span class="at">labels =</span> at_m)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="4" onclick="event.preventDefault();">4</a><span id="annotated-cell-14-10" class="code-annotation-target"><a href="#annotated-cell-14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">mtext</span>(<span class="st">"Distância (m)"</span>, <span class="at">side =</span> <span class="dv">4</span>, <span class="at">line =</span> <span class="dv">3</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="5" onclick="event.preventDefault();">5</a><span id="annotated-cell-14-11" class="code-annotation-target"><a href="#annotated-cell-14-11" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">26</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">26</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">pch =</span> <span class="dv">5</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="6" onclick="event.preventDefault();">6</a><span id="annotated-cell-14-12" class="code-annotation-target"><a href="#annotated-cell-14-12" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">26</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">26</span>, letters, <span class="at">cex =</span> <span class="fl">0.75</span>, <span class="at">pos =</span> <span class="dv">1</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="7" onclick="event.preventDefault();">7</a><span id="annotated-cell-14-13" class="code-annotation-target"><a href="#annotated-cell-14-13" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(cars[<span class="dv">10</span><span class="sc">:</span><span class="dv">30</span>, ], <span class="at">lty =</span> <span class="st">"dotted"</span>, <span class="at">col =</span> <span class="st">"blue"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="8" onclick="event.preventDefault();">8</a><span id="annotated-cell-14-14" class="code-annotation-target"><a href="#annotated-cell-14-14" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">30</span>, <span class="at">b =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"orange1"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="9" onclick="event.preventDefault();">9</a><span id="annotated-cell-14-15" class="code-annotation-target"><a href="#annotated-cell-14-15" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">100</span>, <span class="at">col =</span> <span class="st">"orange2"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="10" onclick="event.preventDefault();">10</a><span id="annotated-cell-14-16" class="code-annotation-target"><a href="#annotated-cell-14-16" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">v =</span> <span class="dv">10</span><span class="sc">:</span><span class="dv">12</span>, <span class="at">col =</span> <span class="st">"orange3"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="11" onclick="event.preventDefault();">11</a><span id="annotated-cell-14-17" class="code-annotation-target"><a href="#annotated-cell-14-17" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="fu">lm</span>(dist <span class="sc">~</span> speed, <span class="at">data =</span> cars), <span class="at">col =</span> <span class="st">"purple"</span>, <span class="at">lty =</span> <span class="st">"dotted"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="12" onclick="event.preventDefault();">12</a><span id="annotated-cell-14-18" class="code-annotation-target"><a href="#annotated-cell-14-18" aria-hidden="true" tabindex="-1"></a><span class="fu">polygon</span>(<span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">12</span>, <span class="dv">7</span>), <span class="fu">c</span>(<span class="dv">80</span>, <span class="dv">90</span>, <span class="dv">100</span>, <span class="dv">110</span>), <span class="at">border =</span> <span class="st">"darkred"</span>, <span class="at">col =</span> <span class="st">"pink"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="13" onclick="event.preventDefault();">13</a><span id="annotated-cell-14-19" class="code-annotation-target"><a href="#annotated-cell-14-19" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="dv">8</span>, <span class="dv">95</span>, <span class="st">"um polígono"</span>, <span class="at">cex =</span> <span class="fl">0.75</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-14" data-target-annotation="14" onclick="event.preventDefault();">14</a><span id="annotated-cell-14-20" class="code-annotation-target"><a href="#annotated-cell-14-20" aria-hidden="true" tabindex="-1"></a><span class="fu">title</span>(<span class="at">main =</span> <span class="st">"Funções de baixo nível"</span>, <span class="at">col.main =</span> <span class="st">"darkgreen"</span>)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-14" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="7" data-code-annotation="1">Um gráfico simples, suprimindo a caixa envolvente. Esta é a única chamada a uma função de alto nível, <code>plot()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="2">2</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="8" data-code-annotation="2">Colocação de uma caixa envolvente com <code>box()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="3">3</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="9" data-code-annotation="3">Colocação de um segundo eixo vertical com as distâncias em metros usando <code>axis()</code>. A posição das marcas de escala foram previamente calculadas com a função <code>pretty()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="4">4</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="10" data-code-annotation="4">Adição de um rótulo ao segundo eixo vertical com a função <code>mtext()</code></span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="5">5</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="11" data-code-annotation="5">Adição de um conjunto de pontos, alguns fora da zona visível do gráfico, com a função <code>points()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="6">6</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="12" data-code-annotation="6">Utilização da função <code>text()</code> para colocar texto junto aos pontos adicionados. A constante <code>letters</code> contém as 26 letras minúsculas.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="7">7</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="13" data-code-annotation="7">Adição de linhas a ligar alguns pontos com a função <code>lines()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="8">8</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="14" data-code-annotation="8">Colocação de uma linha reta especificando a ordenada na origem e o declive, com <code>abline()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="9">9</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="15" data-code-annotation="9">Colocação de uma reta horizontal.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="10">10</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="16" data-code-annotation="10">Colocação de várias retas verticais.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="11">11</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="17" data-code-annotation="11">Colocação de uma linha de tendência calculada com <code>lm()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="12">12</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="18" data-code-annotation="12">Adição de um polígono arbitrário com <code>polygon()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="13">13</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="19" data-code-annotation="13">Colocação de texto sobre o polígono com <code>text()</code>.</span>
+</dd>
+<dt data-target-cell="annotated-cell-14" data-target-annotation="14">14</dt>
+<dd>
+<span data-code-cell="annotated-cell-14" data-code-lines="20" data-code-annotation="14">Adição de um título com <code>title()</code>.</span>
+</dd>
+</dl>
+</div>
+<div class="cell-output-display">
+<div id="fig-tut-graphics-low-functions" class="preview-image quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-low-functions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-low-functions-.gif" class="preview-image img-fluid figure-img" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-low-functions-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.13: Funções de baixo nível
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Os diversos elementos são adicionados ao gráfico na ordem em que aparecem no código e são sobrepostos, ocultando objetos anteriores na mesma posição. Deve certificar-se que especifica a ordem correta para o efeito desejado. Outra possibilidade é a utilização de cores com algum grau de transparência.</p>
+</div>
+</div>
+</section>
+<section id="sec-tut-graphics-col" class="level2" data-number="10.10">
+<h2 data-number="10.10" class="anchored" data-anchor-id="sec-tut-graphics-col"><span class="header-section-number">10.10</span> Cores</h2>
+<p>Por norma, as funções gráficas aceitam o argumento <code>col</code> que especifica a cor do elemento a colocar no gráfico: pontos, linhas, texto, contornos ou preenchimentos. Ao longo das secções anteriores, especificaram-se desta forma cores, para diversos elementos gráficos.</p>
+<p>Para além de <code>col</code> existem mais 3 parâmetros gráficos que podem ser especificados na generalidade das funções ou numa chamada a <code>par()</code>:</p>
+<ul>
+<li><code>col.axis</code>: cor a utilizar na escala dos eixos.</li>
+<li><code>col.lab</code>: cor a utilizar nos rótulos dos eixos.</li>
+<li><code>col.main</code>: cor a utilizar no título do gráfico.</li>
+<li><code>col.sub</code>: cor a utilizar no subtítulo do gráfico.</li>
+</ul>
+<section id="especificação-de-cores" class="level3" data-number="10.10.1">
+<h3 data-number="10.10.1" class="anchored" data-anchor-id="especificação-de-cores"><span class="header-section-number">10.10.1</span> Especificação de cores</h3>
+<p>No R, as cores são especificadas utilizando o modelo RGB (<em><strong>R</strong>ed</em>, <em><strong>G</strong>reen</em>, <em><strong>B</strong>lue</em>) em que cada cor é descrita pelo nível de cada um das cores componentes primárias. Esse nível varia entre 0 e 1, que é depois ajustado a um valor entre 0 e 255 descrito por dois símbolos hexadecimais. Desta forma é possível especificar 255<sup>3</sup> <span class="math inline">\(\approx\)</span> 16.6 milhões de cores diferentes.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Um símbolo hexadecimal é um dos seguintes 16 carateres: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F. No caso das cores do modelo RGB, os níveis de cada componente podem tomar os valores 00, 01, 02, …, 0F, 10, 11, …, FD, FE, FF, representando os níveis de 0 a 255.</p>
+</div>
+</div>
+<p>Por exemplo, se os 3 níveis forem iguais a 0 obtém-se a cor preta (<code>"#000000"</code>) e se forem iguais a 255, a branca (<code>"#FFFFFF"</code>).</p>
+<p>Adicionalmente é possível especificar o nível de transparência acrescentando mais dois símbolos hexadecimais. Tal como as componentes primárias, o nível de transparência vai desde 00 (totalmente transparente) a FF (totalmente opaco). Por exemplo, a cor <code>"#FF0000AA"</code> especifica a cor vermelha (<code>"#FF0000"</code>) com algum grau de transparência.</p>
+<p>Para obter uma cor arbitrária, por exemplo, 30% de vermelho, 40% de verde, 50% de azul e 60% opaco, poder-se-ia utilizar a função <code>rgb()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rgb</span>(<span class="fl">0.3</span>, <span class="fl">0.4</span>, <span class="fl">0.5</span>, <span class="fl">0.6</span>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "#4D668099"</code></pre>
+</div>
+</div>
+<p>Naturalmente, seria fastidioso relembrar e escrever códigos RGB sempre que se necessitasse de utilizar cores. Por esse motivo, foram definidos uma série de nomes, já utilizados nas secções anteriores, para que se possam especificar cores de forma expedita.</p>
+<p>Por exemplo, especificar <code>col = "#0000FF"</code> é o mesmo que especificar <code>col = "blue"</code>. Um outro exemplo, <code>col = "chocolate"</code> é o mesmo que <code>col = "#D2691E"</code>. Para obter a lista de nomes de cores que o R conhece pode utilizar-se a função <code>colors()</code>, que devolve uma lista de 657 cores.</p>
+<p>Uma outra forma de especificar as cores a utilizar é através de um número inteiro. Nesse caso, o número identifica uma cor na paleta em uso. As cores da paleta em uso, pode ser obtidas com:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">palette</span>()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "black"   "#DF536B" "#61D04F" "#2297E6" "#28E2E5" "#CD0BBC" "#F5C710"
+[8] "gray62" </code></pre>
+</div>
+</div>
+<p>Neste caso, a paleta em utilização tem 8 cores que podem ser referidas pelos inteiros de 1 a 8. A mesma função pode ser utilizada para especificar uma nova paleta. Para melhor compreender a utilização e manipulação de paletas, deve fazer <code>?palette</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Nota
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>O R tem configuradas várias paletas (pode obter a lista com <code>palette.pals()</code>) e, por omissão, utiliza a paleta <code>"R4"</code>. Caso se produzam vários gráficos para utilizar num mesmo material (por exemplo, um relatório) é importante escolher uma paleta adequada de forma a obter consistência.</p>
+<p>Para lá das paletas pré-configuradas, há várias funções e <em>packages</em> para construir paletas com determinadas propriedades gráficas. Há inúmeros recursos disponíveis sobre o tópico da cor caso queira aprofundar conhecimentos ou configurar paletas, por exemplo, em <a href="https://r-graph-gallery.com/color-palette-finder" target="_blank">Color Palette Finder</a>.</p>
+</div>
+</div>
+<p>Resumindo, para selecionar uma cor, há 3 formas diferentes:</p>
+<ul>
+<li>Pelo <strong>nome</strong>, por exemplo, <code>col = "gray62"</code>.</li>
+<li>Pelo <strong>número</strong> na paleta em uso, por exemplo, <code>col = 8</code>.</li>
+<li>Pelo <strong>código hexadecimal</strong>, por exemplo, <code>col = "#9E9E9E"</code>.</li>
+</ul>
+<p>No caso da paleta apresentada acima, os exemplos da lista especificam exatamente a mesma cor.</p>
+</section>
+</section>
+<section id="sec-tut-graphics-legend" class="level2" data-number="10.11">
+<h2 data-number="10.11" class="anchored" data-anchor-id="sec-tut-graphics-legend"><span class="header-section-number">10.11</span> Legendas</h2>
+<p>Quando um gráfico contém informação múltipla e a interpretação não é óbvia, deve colocar-se uma legenda. Embora algumas funções de alto nível permitam especificar as características da legenda, tipicamente, esta é colocada com a função <code>legend()</code> depois de o gráfico estar desenhado.</p>
+<p>Para especificar uma legenda é necessário passar à função <code>legend()</code> os argumentos relevantes. Na <a href="#tbl-graphics-legend" class="quarto-xref">Tabela&nbsp;<span>10.3</span></a> está uma lista não exaustiva dos principais argumentos da função. Para uma listagem completa pode fazer <code>?legend</code>.</p>
+<div id="tbl-graphics-legend" class="striped quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-tbl figure">
+<figcaption class="quarto-float-caption-top quarto-float-caption quarto-float-tbl" id="tbl-graphics-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabela&nbsp;10.3: Configuração de legendas
+</figcaption>
+<div aria-describedby="tbl-graphics-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<table class="table-striped caption-top table">
+<colgroup>
+<col style="width: 29%">
+<col style="width: 70%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Argumento</th>
+<th style="text-align: left;">Elemento</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><code>x =</code>, <code>y =</code></td>
+<td style="text-align: left;">Coordenadas do ponto superior esquerdo da caixa que contém a legenda. Pode ser especificada uma posição relativa com <code>x =</code> a: <code>"bottomright"</code>, <code>"bottom"</code>, <code>"bottomleft"</code>, <code>"left"</code>, <code>"topleft"</code>, <code>"top"</code>, <code>"topright"</code>, <code>"right"</code> e <code>"center"</code></td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>legend =</code></td>
+<td style="text-align: left;">Vetor com as várias entradas de texto a colocar na legenda</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>fill =</code>, <code>border =</code></td>
+<td style="text-align: left;">Vetor de cores a utilizar no preenchimento e no bordo da caixa de cada entrada</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>col =</code></td>
+<td style="text-align: left;">Vetor de cores a utilizar nos símbolos de cada entrada</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>pch =</code>, <code>pt.cex =</code>, <code>lty =</code>, <code>lwd =</code></td>
+<td style="text-align: left;">Vetores que especificam os símbolos e as linhas para cada entrada</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>bty = "n"</code></td>
+<td style="text-align: left;">Para suprimir a caixa envolvente da legenda</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>ncol =</code></td>
+<td style="text-align: left;">Especifica o número de colunas da legenda</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>horiz = TRUE</code></td>
+<td style="text-align: left;">Para especificar uma legenda na horizontal</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>title =</code></td>
+<td style="text-align: left;">Para especificar um título para a legenda</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>inset =</code></td>
+<td style="text-align: left;">Para especificar a distância da legenda às margens, quando esta é colocada de forma relativa</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><code>xpd = TRUE</code></td>
+<td style="text-align: left;">Para permitir que a legenda ocupe as margens da figura</td>
+</tr>
+</tbody>
+</table>
+</div>
+</figure>
+</div>
+<p>Na <a href="#fig-tut-graphics-legend" class="quarto-xref">Figura&nbsp;<span>10.14</span></a> está o resultado do código abaixo, onde são ilustradas várias técnicas para a colocação de uma legenda.</p>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cyl <span class="ot">&lt;-</span> <span class="fu">ordered</span>(mtcars<span class="sc">$</span>cyl)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  mtcars<span class="sc">$</span>disp, mtcars<span class="sc">$</span>mpg,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Cilindrada (polegadas cúbicas)"</span>, <span class="at">ylab =</span> <span class="st">"Consumo (milhas por galão)"</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">as.numeric</span>(cyl), <span class="at">pch =</span> <span class="fu">as.numeric</span>(cyl)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="st">"topright"</span>,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">levels</span>(cyl),</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Cilindros"</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fl">0.02</span>,</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------</span></span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>cl <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"steelblue"</span>, <span class="st">"darkgreen"</span>, <span class="st">"darkred"</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>sz <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="fl">1.25</span>, <span class="fl">1.5</span>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>  mtcars<span class="sc">$</span>disp, mtcars<span class="sc">$</span>mpg,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Cilindrada (polegadas cúbicas)"</span>, <span class="at">ylab =</span> <span class="st">"Consumo (milhas por galão)"</span>,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> cl[cyl], <span class="at">cex =</span> sz[cyl], <span class="at">pch =</span> <span class="dv">19</span></span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  <span class="st">"top"</span>,</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">levels</span>(cyl),</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Cilindros"</span>,</span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">inset =</span> <span class="fl">0.02</span>,</span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">horiz =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> cl,</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a>  <span class="at">pt.cex =</span> sz</span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------</span></span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">20</span></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(x, x <span class="sc">^</span> <span class="dv">2</span>, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">pch =</span> <span class="dv">15</span>, <span class="at">col =</span> <span class="st">"purple"</span>, <span class="at">ann =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(x, x <span class="sc">*</span> <span class="dv">15</span>, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">pch =</span> <span class="dv">16</span>, <span class="at">col =</span> <span class="st">"blue"</span>, <span class="at">lty =</span> <span class="st">"dotted"</span>)</span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>  <span class="dv">0</span>, <span class="dv">390</span>,</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">"Linear"</span>, <span class="st">"Quadrática"</span>),</span>
+<span id="cb15-50"><a href="#cb15-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">bty =</span> <span class="st">"n"</span>,</span>
+<span id="cb15-51"><a href="#cb15-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">16</span><span class="sc">:</span><span class="dv">15</span>,</span>
+<span id="cb15-52"><a href="#cb15-52" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"blue"</span>, <span class="st">"purple"</span>),</span>
+<span id="cb15-53"><a href="#cb15-53" aria-hidden="true" tabindex="-1"></a>  <span class="at">lty =</span> <span class="fu">c</span>(<span class="st">"dotted"</span>, <span class="st">"solid"</span>)</span>
+<span id="cb15-54"><a href="#cb15-54" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-55"><a href="#cb15-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-56"><a href="#cb15-56" aria-hidden="true" tabindex="-1"></a><span class="co"># ----------</span></span>
+<span id="cb15-57"><a href="#cb15-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-58"><a href="#cb15-58" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">5</span>))</span>
+<span id="cb15-59"><a href="#cb15-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-60"><a href="#cb15-60" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(cyl, <span class="at">xlab =</span> <span class="st">"Cilindros"</span>, <span class="at">col =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>)</span>
+<span id="cb15-61"><a href="#cb15-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-62"><a href="#cb15-62" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(</span>
+<span id="cb15-63"><a href="#cb15-63" aria-hidden="true" tabindex="-1"></a>  <span class="st">"right"</span>,</span>
+<span id="cb15-64"><a href="#cb15-64" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">levels</span>(cyl),</span>
+<span id="cb15-65"><a href="#cb15-65" aria-hidden="true" tabindex="-1"></a>  <span class="at">title =</span> <span class="st">"Cilindros"</span>,</span>
+<span id="cb15-66"><a href="#cb15-66" aria-hidden="true" tabindex="-1"></a>  <span class="at">inset =</span> <span class="sc">-</span><span class="fl">0.15</span>,</span>
+<span id="cb15-67"><a href="#cb15-67" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> <span class="dv">3</span><span class="sc">:</span><span class="dv">5</span>,</span>
+<span id="cb15-68"><a href="#cb15-68" aria-hidden="true" tabindex="-1"></a>  <span class="at">xpd =</span> <span class="cn">TRUE</span></span>
+<span id="cb15-69"><a href="#cb15-69" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div id="fig-tut-graphics-legend" class="quarto-layout-panel">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tut-graphics-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-legend" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-legend-1" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-legend-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-legend-1.png" id="fig-tut-graphics-legend-1" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-legend" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-legend-1-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(a)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-legend" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-legend-2" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-legend-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-legend-2.png" id="fig-tut-graphics-legend-2" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-legend" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-legend-2-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(b)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="quarto-layout-row">
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-legend" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-legend-3" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-legend-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-legend-3.png" id="fig-tut-graphics-legend-3" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-legend" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-legend-3-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(c)
+</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display quarto-layout-cell-subref quarto-layout-cell" data-ref-parent="fig-tut-graphics-legend" style="flex-basis: 50.0%;justify-content: flex-start;">
+<div id="fig-tut-graphics-legend-4" class="quarto-float quarto-figure quarto-figure-center anchored" width="672">
+<figure class="quarto-float quarto-subfloat-fig figure">
+<div aria-describedby="fig-tut-graphics-legend-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="t040-graphics_files/figure-html/fig-tut-graphics-legend-4.png" id="fig-tut-graphics-legend-4" class="img-fluid figure-img" data-ref-parent="fig-tut-graphics-legend" width="672">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-subfloat-caption quarto-subfloat-fig" id="fig-tut-graphics-legend-4-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+(d)
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tut-graphics-legend-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10.14: Configuração de legendas
+</figcaption>
+</figure>
+</div>
+<p>Na <a href="#fig-tut-graphics-legend-1" class="quarto-xref">Figura&nbsp;<span>10.14 (a)</span></a> colocou-se uma legenda em função do nível de uma variável categórica. Por simplicidade, utilizaram-se a cores 1 a 3 da paleta e os símbolos 1 a 3. Desta forma, os vetores de símbolos e de cores foram definidos com facilidade. Note-se que a variável <code>mtcars$cyl</code> é numérica, mas foi definida uma variável categórica, <code>cyl</code>. Quando se utiliza a função <code>as.numeric()</code> numa variável categórica obtém-se o nível como um inteiro entre 1 e o número de níveis. O código a seguir mostra as diferenças:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>mtcars<span class="sc">$</span>cyl</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 6 6 4 6 8 6 8 4 4 6 6 8 8 8 8 8 8 4 4 4 4 8 8 8 8 4 4 4 8 6 8 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>cyl</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 6 6 4 6 8 6 8 4 4 6 6 8 8 8 8 8 8 4 4 4 4 8 8 8 8 4 4 4 8 6 8 4
+Levels: 4 &lt; 6 &lt; 8</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(cyl)</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 2 2 1 2 3 2 3 1 1 2 2 3 3 3 3 3 3 1 1 1 1 3 3 3 3 1 1 1 3 2 3 1</code></pre>
+</div>
+</div>
+<p>A <a href="#fig-tut-graphics-legend-2" class="quarto-xref">Figura&nbsp;<span>10.14 (b)</span></a> é semelhante, optou-se por variar o tamanho e a cor em função da mesma variável categórica mas definiram-se dois vetores com cores e com tamanhos a utilizar. Note-se que, sendo <code>cyl</code> uma variável categórica, utilizar <code>[cyl]</code> é equivalente a utilizar <code>[as.numeric(cyl)]</code>. Utilizou-se também <code>horiz = TRUE</code> para colocar a legenda na horizontal, resultado que poderia ser obtido com <code>ncol = 3</code>.</p>
+<p>Na <a href="#fig-tut-graphics-legend-3" class="quarto-xref">Figura&nbsp;<span>10.14 (c)</span></a> ilustra-se como se pode representar pontos e linhas numa legenda. Neste caso, os vetores foram definidos <em>ad hoc</em>, uma vez que há apenas duas categorias.</p>
+<p>Por último, na <a href="#fig-tut-graphics-legend-4" class="quarto-xref">Figura&nbsp;<span>10.14 (d)</span></a> a legenda (totalmente inútil) é colocada na margem. Note-se que foi necessário alargar a margem, recorrendo a <code>par()</code> e permitir que a legenda seja colocada na margem com <code>xpd = TRUE</code>. Neste caso utilizaram-se as cores 3 a 5 da paleta. O tamanho da margem e o ajuste da posição foram determinados por tentativa e erro, mas poderiam ter sido determinados programaticamente utilizando os resultados de <code>legend(..., plot = FALSE)</code>.</p>
+</section>
+<section id="ficheiros-de-imagens" class="level2" data-number="10.12">
+<h2 data-number="10.12" class="anchored" data-anchor-id="ficheiros-de-imagens"><span class="header-section-number">10.12</span> Ficheiros de imagens</h2>
+<p>Embora o <em>RStudio</em> permita exportar os gráficos criados a partir da aba dos gráficos, ou copiar um gráfico para a área de transferência, não raras vezes, é útil criar esses ficheiros diretamente de forma programática. A forma de o fazer é utilizar os dispositivos (<em>devices</em>) gráficos do R.</p>
+<p>Estão definidos vários dispositivos que permitem criar ficheiros de imagens, como por exemplo, <code>pdf()</code>, <code>png()</code>, <code>jpeg()</code>, <code>bmp()</code>, <code>tiff()</code>, <code>postscript()</code> ou <code>svg()</code>.</p>
+<p>O código que se segue permitiria criar um ficheiro de imagem do tipo PNG com o nome <em>imagem.png</em> e com um tamanho de 480 por 300 pixeis.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">png</span>(<span class="st">"imagem.png"</span>, <span class="at">width =</span> <span class="dv">480</span>, <span class="at">height =</span> <span class="dv">340</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="co"># comandos gráficos </span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ...</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">dev.off</span>()</span></code><button title="Copiar para a área de transferência" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Naturalmente, cada dispositivo permite especificar um conjunto de parâmetros relevantes para esse formato.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" data-line-spacing="2" role="list" style="display: none">
+<div id="ref-os4" class="csl-entry" role="listitem">
+Diez, D., Çetinkaya-Rundel, M., &amp; Barr, C. (2019). <em>OpenIntro Statistics</em>. OpenIntro, Incorporated. <a href="https://www.openintro.org/book/os/">https://www.openintro.org/book/os/</a>
+</div>
+<div id="ref-covid19" class="csl-entry" role="listitem">
+Dinnes, J., Sharma, P., Berhane, S., Wyk, S. S. van, Nyaaba, N., Domen, J., Taylor, M., Cunningham, J., Davenport, C., Dittrich, S., Emperador, D., Hooft, L., Leeflang, M. M. G., McInnes, M. D. F., Spijker, R., Verbakel, Y., J, Takwoingi, Y., Taylor-Phillips, S., Van den Bruel, A., &amp; Deeks, J. J. (2022). Rapid, point‐of‐care antigen tests for diagnosis of SARS‐CoV‐2 infection. <em>Cochrane Database of Systematic Reviews</em>, <em>7</em>. <a href="https://doi.org/10.1002/14651858.CD013705.pub3">https://doi.org/10.1002/14651858.CD013705.pub3</a>
+</div>
+<div id="ref-guimaraes2010e" class="csl-entry" role="listitem">
+Guimarães, R. C., &amp; Cabral, J. S. (2010). <em>Estatística</em>. Verlag Dashöfer Portugal.
+</div>
+<div id="ref-hyndman-fpp" class="csl-entry" role="listitem">
+Hyndman, R. J., &amp; Athanasopoulos, G. (2021). <em>Forecasting: principles and practice</em> (3rd edition). OTexts. <a href="https://otexts.com/fpp3/">https://otexts.com/fpp3/</a>
+</div>
+<div id="ref-lit-digest-blunder" class="csl-entry" role="listitem">
+Lusinchi, D. (2012). <span>«President»</span> Landon and the 1936 Literary Digest Poll: Were Automobile and Telephone Owners to Blame? <em>Social Science History</em>, <em>36</em>(1), 23–54. <a href="https://doi.org/10.1017/S014555320001035X">https://doi.org/10.1017/S014555320001035X</a>
+</div>
+<div id="ref-mann2010is" class="csl-entry" role="listitem">
+Mann, P. S. (2010). <em>Introductory Statistics</em>. John Wiley &amp; Sons.
+</div>
+<div id="ref-infopedia-probabilidade" class="csl-entry" role="listitem">
+Porto Editora. (2025). <em>Porto Editora – no Dicionário infopédia da Língua Portuguesa [em linha]</em>. <a href="https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade">https://www.infopedia.pt/dicionarios/lingua-portuguesa/probabilidade</a>
+</div>
+<div id="ref-rstudio" class="csl-entry" role="listitem">
+Posit team. (2024). <em>RStudio: Integrated Development Environment for R</em>. Posit Software, PBC. <a href="http://www.posit.co/">http://www.posit.co/</a>
+</div>
+<div id="ref-baseR" class="csl-entry" role="listitem">
+R Core Team. (2024). <em>R: A Language and Environment for Statistical Computing</em>. R Foundation for Statistical Computing. <a href="https://www.R-project.org/">https://www.R-project.org/</a>
+</div>
+<div id="ref-sapo-voluntary" class="csl-entry" role="listitem">
+Sapo.pt. (2025). <em>Pergunta do dia</em>. <a href="http://www.sapo.pt">http://www.sapo.pt</a>
+</div>
+<div id="ref-r4ds2016" class="csl-entry" role="listitem">
+Wickham, H., &amp; Grolemund, G. (2016). <em>R for Data Science: Import, Tidy, Transform, Visualize, and Model Data</em>. O’Reilly Media. <a href="https://r4ds.hadley.nz/">https://r4ds.hadley.nz/</a>
+</div>
+<div id="ref-wilson2005mammal" class="csl-entry" role="listitem">
+Wilson, D. E., &amp; Reeder, D. A. M. (2005). <em>Mammal Species of the World: A Taxonomic and Geographic Reference</em>. Johns Hopkins University Press. <a href="https://www.departments.bucknell.edu/biology/resources/msw3/">https://www.departments.bucknell.edu/biology/resources/msw3/</a>
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Para eixos logarítmicos, o significado é diferente, deve consultar a documentação.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Existe um parâmetro gráfico com o mesmo nome que pode ser modificado com a função <code>par()</code> mas que tem um significado diferente (cor de fundo do gráfico).<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    // Ensure there is a toggle, if there isn't float one in the top right
+    if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+      const a = window.document.createElement('a');
+      a.classList.add('top-right');
+      a.classList.add('quarto-color-scheme-toggle');
+      a.href = "";
+      a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+      const i = window.document.createElement("i");
+      i.classList.add('bi');
+      a.appendChild(i);
+      window.document.body.appendChild(a);
+    }
+    setColorSchemeToggle(hasAlternateSentinel())
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiada");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiada");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+        const codeEl = trigger.previousElementSibling.cloneNode(true);
+        for (const childEl of codeEl.children) {
+          if (isCodeAnnotation(childEl)) {
+            childEl.remove();
+          }
+        }
+        return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/pages\.ipb\.pt\/~aduarte\/ecd\/");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+            // default icon
+            link.classList.add("external");
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./t030-data.html" class="pagination-link" aria-label="Dados no R">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Dados no R</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./t050-barplot.html" class="pagination-link" aria-label="Gráfico de Barras">
+        <span class="nav-page-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Gráfico de Barras</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/antduarte/ecd/blob/main/t040-graphics.qmd" class="toc-action"><i class="bi bi-github"></i>Ver o código-fonte</a></li><li><a href="https://github.com/antduarte/ecd/edit/main/t040-graphics.qmd" class="toc-action"><i class="bi empty"></i>Editar a página</a></li><li><a href="https://github.com/antduarte/ecd/issues/new" class="toc-action"><i class="bi empty"></i>Reportar problema</a></li></ul></div></div></div></footer></body></html>

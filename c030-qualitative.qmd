@@ -1,0 +1,368 @@
+---
+metadata-files:
+  - _chapter.yml
+  
+listing:
+  id: quali-listing
+  include:
+    ecd-order: [4, 5]
+---
+
+
+```{r}
+#| include: false
+
+source("R/chapters.R")
+```
+
+# Dados Qualitativos {#sec-quali}
+
+O tratamento de dados qualitativos (categóricos) é comparativamente simples, resumindo-se à elaboração contagens sob a forma de *tabelas de contingência* e sua representação gráfica.
+
+## Tabelas de contingência {#sec-quali-tcont}
+
+Uma tabela de contingência faz a enumeração da todas as categorias (níveis) presentes numa variável categórica e respetivas *frequências*. Uma *frequência* é o número de vezes que cada categoria ocorre nos dados, ou seja, trata-se de uma contagem.
+
+O conjunto de dados do R `HairEyeColor` contém a cor do cabelo e a cor dos olhos de um conjunto de alunos. A @tbl-quali-eyes-cont mostra a tabela de contingência para a variável que contém a cor dos olhos.
+
+```{r}
+#| label: tbl-quali-eyes-cont
+#| tbl-cap: "Tabela de contingência para a cor dos olhos"
+#| echo: false
+#| html-table-processing: none
+
+# TODO: needs some formating
+
+# extract eye color data
+t <- apply(HairEyeColor, 2, sum)
+t <- t[order(names(t))]
+dt <- data.frame(
+  eye_color = c(names(t), "Total"),
+  f_a = c(t, sum(t)),
+  f_r = c(t / sum(t) * 100, 100)
+)
+row.names(dt) <- NULL
+cnames <- c("Cor", "Frequência Absoluta", "Frequência Relativa (%)")
+
+# make table
+kbl(dt, col.names = cnames, digits = 1) |>
+  kable_paper(
+    c("striped"),
+    html_font = "\"Lato\"",
+    font_size = 15,
+    full_width = F
+  ) |>
+  row_spec(
+    nrow(dt),
+    bold = TRUE
+  ) |> 
+  add_footnote("Intencionalmente, os nomes das cores não foram traduzidos.")
+
+# remove total row from df
+dt <- dt[-nrow(dt), ]
+```
+
+Neste caso, as categorias aparecem ordenadas alfabeticamente. Como se trata de uma variável nominal, seria perfeitamente aceitável outra ordenação. A tabela também inclui uma coluna com frequências relativas (ou percentagens) e uma linha final com os totais.
+
+::: {.callout-note appearance="simple"}
+
+# Cálculo das frequências relativas
+
+Se $f_i$ representar a frequência absoluta da categoria $i$ e $n$ for o total de observações, ou seja,  $n=\sum_i f_i$, então, a frequência relativa será $f'_i=\frac{f_i}{n}$. Se este valor for multiplicado por 100, pode ser entendido como a percentagem de observações em cada categoria.
+:::
+
+
+## Representação gráfica {#sec-quali-barplot}
+
+Para visualizar os dados de uma tabela de contingência para uma variável categórica o *gráfico de barras* é visualização mais adequada. Na @fig-quali-bars estão várias visualizações possíveis, nem todas as mais adequadas.
+
+```{r}
+#| label: fig-quali-bars
+#| fig-cap: "Gráfico de barras"
+#| fig-subcap:
+#|   - "Uma cor, simples"
+#|   - "Uma cor, com linhas de referência"
+#|   - "Ordem decrescente"
+#|   - "Barras horizontais"
+#|   - "Várias cores"
+#|   - "Várias cores com legenda"
+#| layout-ncol: 2
+#| echo: false
+
+par(mar = c(4, 4, 4, 2) + 0.1)
+
+# one color
+ecd_barplot(
+  t,
+  xlab = cnames[1],
+  ylab = cnames[2]
+)
+
+# grid
+# just the axis
+ecd_barplot(
+  t,
+  xlab = cnames[1],
+  ylab = cnames[2],
+  col = "transparent", border = NA
+)
+# grid
+ecd_grid(nx = NA, ny = NULL)
+# real plot
+ecd_barplot(
+  t,
+  xlab = cnames[1],
+  ylab = cnames[2],
+  add = TRUE
+)
+
+# decreasing
+ecd_barplot(
+  t[order(t, decreasing = TRUE)],
+  xlab = cnames[1],
+  ylab = cnames[2]
+)
+
+# horizontal
+ecd_barplot(
+  rev(t),
+  horiz = TRUE,
+  las = 1,
+  xlab = cnames[2],
+  ylab = cnames[1],
+  mgp = c(3, 0.5, 0)
+)
+
+# colors
+pcol <- c(3, 2, 4, 5)
+ecd_barplot(
+  t,
+  col = pcol,
+  xlab = cnames[1],
+  ylab = cnames[2]
+)
+
+# with legend
+ecd_barplot(
+  t,
+  col = pcol,
+  xlab = cnames[1],
+  ylab = cnames[2],
+  legend = TRUE,
+  names.arg = NA, args.legend = list(title = cnames[1])
+)
+```
+
+As figuras [-@fig-quali-bars-1] a [-@fig-quali-bars-3] são visualizações aceitáveis, a escolha entre elas é sobretudo uma questão de estilo. A @fig-quali-bars-4 utiliza barras horizontais, o que melhora a visualização quando há muitas categorias, não sendo este o caso, o gráfico é aceitável.
+
+Já na @fig-quali-bars-5 a utilização de cores é redundante, uma vez que não acrescenta qualquer valor informativo e sobrecarrega a figura. Na @fig-quali-bars-6 é colocada uma legenda em vez de rótulos em cada barra, o que dificulta a perceção da correspondência entre cada categoria e cada barra. A utilização de cores diferentes só se justifica quando se pretende destacar determinadas categorias.
+
+:::{.callout-important}
+A questões estéticas e de *design* (proporções, cores, tipo de letra, etc.) têm grande importância na qualidade da visualização gráfica. Como esta questão sai fora do âmbito deste texto, havendo inúmeros recursos disponíveis sobre o assunto, apenas se referem os aspetos mais gerais.
+:::
+
+Na @fig-quali-bars-var apresentam-se mais duas variantes do gráfico de barras. Na @fig-quali-bars-var-1 foram acrescentados rótulos com a quantidade em cada categoria. Na figura @fig-quali-bars-var-2 o gráfico é apresentado em frequências relativas (percentagens), ao contrário dos anteriores, onde se utilizaram frequências absolutas.
+
+
+```{r}
+#| label: fig-quali-bars-var
+#| fig-cap: "Variantes ao gráfico de barras"
+#| fig-subcap:
+#|   - "Com rótulos"
+#|   - "Com frequências relativas"
+#| layout-ncol: 2
+#| echo: false
+
+par(mar = c(4, 4, 3, 2) + 0.1)
+
+# labels
+mp <- ecd_barplot(
+  t,
+  xlab = cnames[1],
+  ylab = cnames[2]
+)
+
+text(mp, t + 0.04 * max(t), t, xpd = TRUE)
+
+# relative
+rf <- t / sum(t) * 100
+ecd_barplot(
+  rf,
+  xlab = cnames[1],
+  ylab = cnames[3],
+)
+```
+
+::: {.callout-tip}
+Os gráficos de barras funcionam bem quando o número de categorias não é exagerado e quando as alturas das barras não são muito díspares. Quando há muitas categorias pode sempre avaliar-se a possibilidade de agrupar categorias menos relevantes.
+:::
+
+
+### O gráfico circular {#sec-quali-piechart .unnumbered}
+
+Neste secção não poderia deixar de referir o "gráfico circular" também referido vulgarmente como *queijo* ou, pelo nome em inglês *pie chart*.
+
+A @fig-quali-pie mostra duas variantes do gráfico em causa. Na @fig-quali-pie-1 foi utilizada uma legenda e na @fig-quali-pie-2 foram utilizados rótulos para as categorias com informação sobre as frequências relativas.
+
+```{r}
+#| label: fig-quali-pie
+#| fig-cap: "Gráfico circular"
+#| fig-subcap:
+#|   - "Com legenda"
+#|   - "Com rótulos"
+#| layout-ncol: 2
+#| echo: false
+#| out-extra: class="preview-image"
+
+par(mar = c(1, 1, 1, 1) + 0.1)
+
+# legend
+pie(t, radius = 1, labels = NA, col = pcol)
+
+legend(
+  "right",
+  legend = names(t),
+  fill = pcol,
+  title = cnames[1]
+)
+
+# labels
+nice_labs <- paste0(dt$eye_color, "\n", format(rf, digits = 3), "%")
+pie(t, radius = 1, labels = nice_labs, col = pcol)
+```
+
+O gráfico de barras não é adequado para ajudar a comparar grandezas e perceber as diferenças relativas. Há muito poucas situações em que o gráfico circular seja preferível ao gráfico de barras. As principais vantagens do gráfico de barras são:
+
+* **Clareza**: torna as comparações entre categorias mais claras e precisas, especialmente se houver muitas categorias.
+* **Flexibilidade**: permite, por exemplo, a utilização de valores negativos, o que é impossível no gráfico circular.
+
+::: {.callout-important}
+O gráfico circular raramente se recomenda. A exceção será quando se pretende criar um maior impacto visual em situações que se pretenda mostrar comparações simples entre poucas categorias (duas a cinco). E mesmo nestas situações, o gráfico de barras é perfeitamente aceitável.
+:::
+
+O livro *OpenIntro Statistics* [@os4] ilustra este ponto com um exemplo da área da Biologia [@wilson2005mammal]. O gráfico circular da @fig-quali-pie-mammals pretende mostrar quantas espécies existem em cada ordem da classe dos mamíferos. Como existe um número elevado de ordens e algumas delas têm frequências muito baixas, o gráfico circular é totalmente ineficaz como forma de veicular a informação.
+
+```{r}
+#| label: fig-quali-pie-mammals
+#| fig-cap: "Exemplo de mau gráfico circular"
+#| echo: false
+#| fig-width: 10
+#| fig-height: 5
+
+# setup data
+dt <- read.csv("datasets/msw3-all.csv", na.strings = "")
+dt <- subset(dt, !is.na(Species) & is.na(Subspecies))
+t <- table(dt$Order)
+dt <- data.frame(
+  Order = factor(names(t), levels = names(t)[order(t)]),
+  f_a = unclass(unname(t))
+)
+
+# pie
+set.seed(202503) # Polychrome uses random colors
+cols <- Polychrome::createPalette(
+  N = nrow(dt),
+  seedcolors = palette.colors()[2:9]
+)
+
+srt <- order(t, decreasing = TRUE)
+
+par(mar = c(0, 0, 0, 25) + 0.1)
+pie(t[srt], radius = 1, labels = NA, col = cols)
+
+legend(
+  "right",
+  legend = names(t[srt]),
+  fill = cols,
+  title = "Ordem",
+  ncol = 2,
+  inset = -0.95,
+  xpd = TRUE
+)
+```
+
+A mesma informação pode ser visualizada mais claramente através de um gráfico de barras como o apresentado na @fig-quali-bar-mammals. Embora o número de categorias seja elevado e torne o gráfico "pesado", é muito mais eficaz que o gráfico circular equivalente.
+
+No entanto, como as observações estão concentradas num pequeno conjunto de categorias, a maior parte da área da @fig-quali-bar-mammals está vazia. Uma alternativa para melhorar este de gráfico seria a representação das frequências numa escala logarítmica, tal como se apresenta na @fig-quali-bar-mammals-log.
+
+```{r}
+#| label: fig-quali-bar-mammals
+#| fig-cap: "Gráfico de barras com categorias díspares"
+#| echo: false
+#| fig-width: 7
+#| fig-height: 6
+
+par(mar = c(3, 8.5, 1, 1) + 0.1)
+
+# blank
+ecd_barplot(
+  t[rev(srt)],
+  horiz = TRUE,
+  las = 1,
+  cex.names = 0.75, cex.axis = 0.75, cex.lab = 0.9,
+  mgp = c(2, 0.5, 0),
+  xlab = "Frequência",
+  ylab = "Ordem\n\n\n\n\n\n",
+  col = "transparent", border = NA
+)
+# grid
+ecd_grid(nx = NULL, ny = NA)
+#bars
+ecd_barplot(
+  t[rev(srt)],
+  horiz = TRUE,
+  axes = FALSE, axisnames = FALSE,
+  add = TRUE
+)
+```
+
+
+```{r}
+#| label: fig-quali-bar-mammals-log
+#| fig-cap: "Gráfico de barras com escala logarítmica"
+#| echo: false
+#| fig-width: 7
+#| fig-height: 6
+
+par(mar = c(3, 8.5, 1, 1) + 0.1)
+
+# bars (log)
+ecd_barplot(
+  t[rev(srt)],
+  horiz = TRUE,
+  las = 1,
+  cex.names = 0.75, cex.axis = 0.75, cex.lab = 0.9,
+  mgp = c(2, 0.5, 0),
+  xlab = "Frequência",
+  ylab = "Ordem\n\n\n\n\n\n",
+  log = "x",
+  col = "transparent", border = NA
+)
+# grid
+ecd_grid(nx = NULL, ny = NA, equilogs = FALSE)
+#bars
+ecd_barplot(
+  t[rev(srt)],
+  horiz = TRUE,
+  axes = FALSE, axisnames = FALSE,
+  log = "x",
+  add = TRUE
+)
+```
+
+::: {.callout-note}
+
+# Escala logaritmica
+
+Numa escala logarítmica os intervalos entre valores são potências da base utilizada no logaritmo. Por exemplo, na @fig-quali-bar-mammals-log utilizou-se o logaritmo decimal (a base é 10). Logo, o intervalo entre 1 e 10 é o mesmo que entre 10 e 100 e que entre 100 e 1000, ou seja, potências da base 10
+(10^0^ = 1, 10^1^ = 10, 10^2^ = 100, 10^3^ = 1000, etc.).
+
+Uma escala logarítmica é uma ferramenta de grande utilidade sempre que os diferentes valores a representar diferem em várias ordens de grandeza, tal como neste caso, em que a frequência mínima é `r min(dt$f_a)` e a máxima é `r max(dt$f_a)`.
+:::
+
+O exemplo anterior ilustra a existência de múltiplas alternativas para a visualização dos dados. A escolha da mais adequada resulta de um processo iterativo de tentativa e erro, explorando as possibilidades do *software* no sentido de melhorar a apresentação da informação.
+
+{{< include _tutorial-section.qmd >}}
+
+::: {#quali-listing}
+:::
